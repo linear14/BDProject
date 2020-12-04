@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- seekbar의 thumb 너비/높이-->
+    <dimen name="sb_thumb">38dp</dimen>
+</resources>

@@ -4,15 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tv_brightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:layout_marginBottom="76dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/sb_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="20" />
+
+    <com.lukelorusso.verticalseekbar.VerticalSeekBar
+        android:id="@+id/sb_light"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:vsb_bar_background="@android:color/darker_gray"
+        app:vsb_bar_progress_gradient_end="@android:color/darker_gray"
+        app:vsb_bar_progress_gradient_start="@android:color/darker_gray"
+        app:vsb_bar_width="4dp"
+        app:vsb_max_value="100"
+        app:vsb_progress="0"
+        app:vsb_show_thumb="true"
+        app:vsb_thumb_container_corner_radius="90dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
