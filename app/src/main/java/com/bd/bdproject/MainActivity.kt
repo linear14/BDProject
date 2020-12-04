@@ -1,7 +1,7 @@
 package com.bd.bdproject
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bd.bdproject.databinding.ActivityMainBinding
 
