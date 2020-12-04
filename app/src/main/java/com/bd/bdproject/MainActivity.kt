@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(this@MainActivity, R.drawable.deco_seekbar_thumb)
             sbLight.setOnProgressChangeListener {
-                tvBrightness.text = it.toString()
+                tvBrightness.text = (it * 5).toString()
             }
         }
 

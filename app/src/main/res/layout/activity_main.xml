@@ -29,7 +29,7 @@
         app:vsb_bar_progress_gradient_end="@android:color/darker_gray"
         app:vsb_bar_progress_gradient_start="@android:color/darker_gray"
         app:vsb_bar_width="4dp"
-        app:vsb_max_value="100"
+        app:vsb_max_value="20"
         app:vsb_progress="0"
         app:vsb_show_thumb="true"
         app:vsb_thumb_container_corner_radius="90dp" />
