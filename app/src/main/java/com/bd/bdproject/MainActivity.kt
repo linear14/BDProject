@@ -1,9 +1,13 @@
 package com.bd.bdproject
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bd.bdproject.databinding.ActivityMainBinding
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,8 +24,46 @@ class MainActivity : AppCompatActivity() {
             sbLight.setOnProgressChangeListener {
                 tvBrightness.text = (it * 5).toString()
             }
+
+            sbLight.setOnPressListener {
+                tvAsk.visibility = View.GONE
+                tvBrightness.visibility = View.VISIBLE
+                tvBrightness.text = (it * 5).toString()
+                sbLight.barWidth = 4
+            }
         }
 
+        showMessageWithDelay()
+    }
 
+    private fun showMessageWithDelay() {
+        GlobalScope.launch {
+            binding.apply {
+                tvAsk.clearAnimation()
+                tvAsk.visibility = View.GONE
+                sbLight.clearAnimation()
+                delay(1000)
+
+                withContext(Dispatchers.Main) {
+                    tvAsk.animate()
+                        .alpha(1.0f)
+                        .setDuration(2000)
+                        .setListener(object: AnimatorListenerAdapter() {
+                            override fun onAnimationStart(animation: Animator?) {
+                                super.onAnimationStart(animation)
+                                tvAsk.visibility = View.VISIBLE
+
+                            }
+
+                            override fun onAnimationEnd(animation: Animator?) {
+                                super.onAnimationEnd(animation)
+                                sbLight.animate()
+                                    .alpha(1.0f)
+                                    .setDuration(2000)
+                            }
+                        })
+                }
+            }
+        }
     }
 }

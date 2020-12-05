@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">빛담-빛을담다</string>
+
+    <string name="ask_today_condition">오늘의 기분은 밝았나요?</string>
 </resources>
