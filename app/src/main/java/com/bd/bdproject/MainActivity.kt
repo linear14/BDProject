@@ -22,13 +22,13 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(this@MainActivity, R.drawable.deco_seekbar_thumb)
             sbLight.setOnProgressChangeListener {
-                tvBrightness.text = (it * 5).toString()
+                tvBrightness.text = getBrightness(it).toString()
             }
 
             sbLight.setOnPressListener {
                 tvAsk.visibility = View.GONE
                 tvBrightness.visibility = View.VISIBLE
-                tvBrightness.text = (it * 5).toString()
+                tvBrightness.text = getBrightness(it).toString()
                 sbLight.barWidth = 4
             }
         }
@@ -65,5 +65,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun getBrightness(step: Int): Int {
+        val convertedStep = step / 10
+        return (convertedStep * 5)
     }
 }
