@@ -1,4 +1,4 @@
-package com.bd.bdproject.light
+package com.bd.bdproject.project.light
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

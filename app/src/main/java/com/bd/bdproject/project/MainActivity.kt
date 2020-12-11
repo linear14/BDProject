@@ -1,10 +1,10 @@
-package com.bd.bdproject
+package com.bd.bdproject.project
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivityMainBinding
-import com.bd.bdproject.light.AddLightFragment
+import com.bd.bdproject.project.light.AddLightFragment
 
 class MainActivity : AppCompatActivity() {
 
