@@ -4,6 +4,9 @@ import com.bd.bdproject.data.AppDatabase
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
+import com.bd.bdproject.viewmodel.LightTagRelationViewModel
+import com.bd.bdproject.viewmodel.LightViewModel
+import com.bd.bdproject.viewmodel.TagViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -17,7 +20,7 @@ val appModule = module {
     single { TagRepository(get()) }
     single { LightTagRelationRepository(get()) }
 
-    /*viewModel { LightViewModel(get()) }
+    viewModel { LightViewModel(get()) }
     viewModel { TagViewModel(get()) }
-    viewModel { LightTagCrossViewModel(get()) }*/
+    viewModel { LightTagRelationViewModel(get()) }
 }
