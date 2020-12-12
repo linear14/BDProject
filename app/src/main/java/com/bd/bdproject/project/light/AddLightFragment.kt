@@ -15,11 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
+import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
@@ -83,6 +85,7 @@ class AddLightFragment: Fragment() {
             sbLight.setOnPressListener { step ->
                 tvAskCondition.visibility = View.GONE
                 tvBrightness.visibility = View.VISIBLE
+                chipGroupTagEnrolled.visibility = View.VISIBLE
                 tvBrightness.text = getBrightness(step).toString()
                 sbLight.barWidth = 4
             }
@@ -124,9 +127,25 @@ class AddLightFragment: Fragment() {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             if(s.isNotEmpty()) {
-                if(s[s.length-1].toInt() == 32) {
-                    Toast.makeText(applicationContext(), "스페이스 눌림", Toast.LENGTH_SHORT).show()
+                val lastIndex = s.length - 1
+                val tagName = s.substring(0, lastIndex)
+
+                if(s[lastIndex].toInt() == 32) {
+                    tagViewModel.candidateTags.add(Tag(tagName))
+                    makeChip(tagName)
+                    Toast.makeText(applicationContext(), "\'$tagName\' 저장", Toast.LENGTH_SHORT).show()
+                    binding.inputTag.text.clear()
                 }
+            }
+        }
+
+        private fun makeChip(name: String): Chip {
+            val nameWithHash = "# $name"
+            return Chip(requireActivity()).apply {
+                text = nameWithHash
+                setTextAppearanceResource(R.style.ChipTextStyle)
+            }.also {
+                binding.chipGroupTagEnrolled.addView(it)
             }
         }
 

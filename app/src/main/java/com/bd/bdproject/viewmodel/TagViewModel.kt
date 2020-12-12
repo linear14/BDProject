@@ -11,6 +11,8 @@ import kotlinx.coroutines.runBlocking
 
 class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
 
+    val candidateTags = mutableListOf<Tag>()
+
     fun asyncInsertTag(tags: List<Tag>) {
         runBlocking {
             val job = GlobalScope.launch { tagRepo.insertTag(tags) }

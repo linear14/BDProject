@@ -49,4 +49,10 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <!-- Chip Text Style -->
+    <style name="ChipTextStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 </resources>
