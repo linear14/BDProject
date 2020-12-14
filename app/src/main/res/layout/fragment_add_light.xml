@@ -7,6 +7,15 @@
     android:background="@android:color/transparent"
     tools:background="@color/black">
 
+    <Button
+        android:id="@+id/btn_enroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
+        android:text="등록"/>
+
     <TextView
         android:id="@+id/tv_ask_condition"
         android:layout_width="wrap_content"

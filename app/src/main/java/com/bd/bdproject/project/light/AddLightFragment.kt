@@ -14,9 +14,11 @@ import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
+import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
@@ -37,6 +39,7 @@ class AddLightFragment: Fragment() {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
             inputTag.addTextChangedListener(InputTagWatcher())
+            btnEnroll.setOnClickListener { insertLightWithTag() }
         }
         showUiWithDelay()
 
@@ -77,6 +80,39 @@ class AddLightFragment: Fragment() {
                 }
             }
         }
+    }
+
+    private fun insertLightWithTag() {
+        binding.apply {
+            val dateCode = insertLight()
+            val tagList = insertTag()
+            insertRelation(dateCode, tagList)
+        }
+    }
+
+    private fun insertLight(): String {
+        binding.apply {
+            val currentTime = System.currentTimeMillis().timeToString()
+            val light = Light(
+                currentTime,
+                tvBrightness.text.toString().toInt(),
+                null
+            )
+            lightViewModel.asyncInsertLight(light)
+
+            return currentTime
+        }
+    }
+
+    private fun insertTag(): MutableList<Tag> {
+        binding.apply {
+            tagViewModel.asyncInsertTag(tagViewModel.candidateTags)
+        }
+        return tagViewModel.candidateTags
+    }
+
+    private fun insertRelation(dateCode: String, tagList: MutableList<Tag>) {
+        lightTagRelationViewModel.insertRelation(dateCode, tagList)
     }
 
     private fun setSeekBarPressListener() {
