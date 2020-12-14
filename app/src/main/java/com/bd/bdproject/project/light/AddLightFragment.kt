@@ -5,14 +5,11 @@ import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginEnd
 import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
@@ -117,10 +114,7 @@ class AddLightFragment: Fragment() {
     }
 
     inner class InputTagWatcher: TextWatcher {
-        /* TODO
-            1. 맨 첫글자 SPACE 불가
-            2. SPACE 누르자마자 CHIP 생성 및 CHIPGROUP에 넣어주기 + edittext 글자 지우기
-         */
+
         override fun afterTextChanged(p0: Editable?) {
         }
 
@@ -132,11 +126,37 @@ class AddLightFragment: Fragment() {
                 val lastIndex = s.length - 1
                 val tagName = s.substring(0, lastIndex)
 
-                if(s[lastIndex].toInt() == 32) {
-                    tagViewModel.candidateTags.add(Tag(tagName))
-                    makeChip(tagName)
-                    Toast.makeText(applicationContext(), "\'$tagName\' 저장", Toast.LENGTH_SHORT).show()
+                // 공백이 중간에 끼어있을 경우
+                if((s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" ")))  {
+                    Toast.makeText(applicationContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
                     binding.inputTag.text.clear()
+                    return
+                }
+
+                if(isLastWordBlank(s)) {
+                    when {
+                        // 태그가 4개 이미 등록되어 있을 경우
+                        tagViewModel.candidateTags.size >= 4 -> {
+                            Toast.makeText(applicationContext(), "태그는 최대 4개까지 등록 가능합니다.", Toast.LENGTH_SHORT).show()
+                            binding.inputTag.setText(tagName)
+                            binding.inputTag.setSelection(binding.inputTag.text.length)
+                        }
+
+                        // 태그명 중복된 경우, 나머지는 정상 처리
+                        else -> {
+                            val candidateTags = tagViewModel.candidateTags
+                            if(tagName !in candidateTags.map{ it.name } ) {
+                                candidateTags.add(Tag(tagName))
+                                makeChip(tagName)
+                                Toast.makeText(applicationContext(), "\'$tagName\' 저장", Toast.LENGTH_SHORT).show()
+                                binding.inputTag.text.clear()
+                            } else {
+                                Toast.makeText(applicationContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                binding.inputTag.setText(tagName)
+                                binding.inputTag.setSelection(binding.inputTag.text.length)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -154,6 +174,9 @@ class AddLightFragment: Fragment() {
                 )
             }
         }
+
+        private fun isLastWordBlank(s: CharSequence): Boolean =
+            s[s.length - 1].toInt() == ' '.toInt()
 
     }
 }
