@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginEnd
+import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
@@ -85,7 +87,7 @@ class AddLightFragment: Fragment() {
             sbLight.setOnPressListener { step ->
                 tvAskCondition.visibility = View.GONE
                 tvBrightness.visibility = View.VISIBLE
-                chipGroupTagEnrolled.visibility = View.VISIBLE
+                flexBoxTagEnrolled.visibility = View.VISIBLE
                 tvBrightness.text = getBrightness(step).toString()
                 sbLight.barWidth = 4
             }
@@ -145,7 +147,11 @@ class AddLightFragment: Fragment() {
                 text = nameWithHash
                 setTextAppearanceResource(R.style.ChipTextStyle)
             }.also {
-                binding.chipGroupTagEnrolled.addView(it)
+                binding.flexBoxTagEnrolled.addView(it)
+                (it.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
+                    left = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
+                    right = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
+                )
             }
         }
 

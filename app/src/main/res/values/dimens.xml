@@ -2,4 +2,7 @@
 <resources>
     <!-- seekbar의 thumb 너비/높이-->
     <dimen name="sb_thumb">38dp</dimen>
+
+    <!-- chip -->
+    <dimen name="chip_margin">4dp</dimen>
 </resources>
