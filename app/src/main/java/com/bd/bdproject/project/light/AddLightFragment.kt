@@ -183,6 +183,8 @@ class AddLightFragment: Fragment() {
      */
     inner class InputTagWatcher: TextWatcher {
 
+        var job: Job? = null
+
         override fun afterTextChanged(p0: Editable?) {
         }
 
@@ -190,9 +192,24 @@ class AddLightFragment: Fragment() {
         }
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            if(s.isEmpty()) {
+                job?.cancel()
+                job = GlobalScope.launch {
+                    delay(500)
+                    withContext(Dispatchers.Main) { binding.flexBoxTagRecommend.removeAllViews() }
+                }
+            }
             if(s.isNotEmpty()) {
+
+                // 추천 검색어
                 if(!isLastWordBlank(s)) {
-                    tagViewModel.searchTag(s.toString())
+                    job?.cancel()
+                    job = GlobalScope.launch {
+                        delay(500)
+                        if(s.isNotBlank()) {
+                            tagViewModel.searchTag(s.toString())
+                        }
+                    }
                 }
 
                 val lastIndex = s.length - 1
