@@ -158,12 +158,30 @@ class AddLightFragment: Fragment() {
         return Chip(requireActivity()).apply {
             text = nameWithHash
             setTextAppearanceResource(R.style.ChipTextStyle)
-        }.also {
-            vg.addView(it)
-            (it.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
-                left = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
-                right = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
+        }.also { chip ->
+            vg.addView(chip)
+            (chip.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
+                left = chip.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
+                right = chip.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
             )
+
+            chip.setOnClickListener {
+                when(vg) {
+                    binding.flexBoxTagEnrolled -> {}
+                    binding.flexBoxTagRecommend -> {
+                        val candidateTags = tagViewModel.candidateTags
+                        if((name !in candidateTags.map{ it.name }) && candidateTags.size < 4) {
+                            candidateTags.add(Tag(name))
+                            makeChip(name, binding.flexBoxTagEnrolled)
+                            Toast.makeText(applicationContext(), "\'$name\' 저장", Toast.LENGTH_SHORT).show()
+                            binding.inputTag.text.clear()
+                            binding.flexBoxTagRecommend.removeAllViews()
+                        } else {
+                            Toast.makeText(applicationContext(), "이미 등록된 태그이거나 개수 제한 초과입니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -200,7 +218,6 @@ class AddLightFragment: Fragment() {
                 }
             }
             if(s.isNotEmpty()) {
-
                 // 추천 검색어
                 if(!isLastWordBlank(s)) {
                     job?.cancel()
@@ -239,6 +256,7 @@ class AddLightFragment: Fragment() {
                                 makeChip(tagName, binding.flexBoxTagEnrolled)
                                 Toast.makeText(applicationContext(), "\'$tagName\' 저장", Toast.LENGTH_SHORT).show()
                                 binding.inputTag.text.clear()
+                                binding.flexBoxTagRecommend.removeAllViews()
                             } else {
                                 Toast.makeText(applicationContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show()
                                 binding.inputTag.setText(tagName)
