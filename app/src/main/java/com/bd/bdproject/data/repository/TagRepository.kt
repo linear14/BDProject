@@ -1,6 +1,7 @@
 package com.bd.bdproject.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.bd.bdproject.data.dao.TagDao
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.TagWithLights
@@ -14,6 +15,11 @@ class TagRepository(private val tagDao: TagDao) {
     // CREATE
     suspend fun insertTag(tags: List<Tag>) {
         tagDao.insertTag(tags)
+    }
+
+    // READ
+    fun searchTag(word: String): List<String> {
+        return tagDao.searchTag(word)
     }
 
     /*suspend fun deleteTag(tags: List<Tag>) {

@@ -1,6 +1,8 @@
 package com.bd.bdproject.viewmodel
 
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.data.model.Tag
@@ -12,6 +14,7 @@ import kotlinx.coroutines.runBlocking
 class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
 
     val candidateTags = mutableListOf<Tag>()
+    val searchedTagNames: MutableLiveData<List<String>> = MutableLiveData()
 
     fun asyncInsertTag(tags: List<Tag>) {
         runBlocking {
@@ -22,6 +25,12 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
                 "${tags.size}개의 태그 등록 완료",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    fun searchTag(word: String) {
+        GlobalScope.launch {
+            searchedTagNames.postValue(tagRepo.searchTag("%${word}%"))
         }
     }
 }

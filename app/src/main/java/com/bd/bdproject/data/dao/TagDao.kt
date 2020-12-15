@@ -1,9 +1,12 @@
 package com.bd.bdproject.data.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.lifecycle.MutableLiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.data.model.TagWithLights
 
 @Dao
 interface TagDao {
@@ -15,6 +18,10 @@ interface TagDao {
     // CREATE
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTag(tags: List<Tag>)
+
+    // READ
+    @Query("SELECT name FROM tag WHERE name LIKE :word")
+    fun searchTag(word: String): List<String>
 
     /*@Query("UPDATE tag SET name=:name WHERE name=:name")
     suspend fun updateTag(name: String)

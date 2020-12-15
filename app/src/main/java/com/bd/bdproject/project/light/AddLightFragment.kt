@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Light
@@ -46,6 +47,8 @@ class AddLightFragment: Fragment() {
         setSeekBarPressListener()
         setSeekBarProgressChangedListener()
         setSeekBarReleaseListener()
+
+        observeTagSearched()
 
         return binding.root
     }
@@ -140,6 +143,7 @@ class AddLightFragment: Fragment() {
             sbLight.setOnReleaseListener { step ->
                 sbLight.visibility = View.GONE
                 layoutInput.visibility = View.VISIBLE
+                layoutTagRecommend.visibility = View.VISIBLE
             }
         }
     }
@@ -149,6 +153,34 @@ class AddLightFragment: Fragment() {
         return (convertedStep * 5)
     }
 
+    private fun makeChip(name: String, vg: ViewGroup): Chip {
+        val nameWithHash = "# $name"
+        return Chip(requireActivity()).apply {
+            text = nameWithHash
+            setTextAppearanceResource(R.style.ChipTextStyle)
+        }.also {
+            vg.addView(it)
+            (it.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
+                left = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
+                right = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
+            )
+        }
+    }
+
+    private fun observeTagSearched() {
+        tagViewModel.searchedTagNames.observe(requireActivity()) {
+            binding.flexBoxTagRecommend.removeAllViews()
+            for(word in it) {
+                makeChip(word, binding.flexBoxTagRecommend)
+            }
+        }
+    }
+
+    /***
+     *  EditText 변화 감지 TextWatcher
+     *  1. 태그 등록 감지 (띄어쓰기 관련 처리)
+     *  2. 검색 기능
+     */
     inner class InputTagWatcher: TextWatcher {
 
         override fun afterTextChanged(p0: Editable?) {
@@ -159,6 +191,10 @@ class AddLightFragment: Fragment() {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             if(s.isNotEmpty()) {
+                if(!isLastWordBlank(s)) {
+                    tagViewModel.searchTag(s.toString())
+                }
+
                 val lastIndex = s.length - 1
                 val tagName = s.substring(0, lastIndex)
 
@@ -183,7 +219,7 @@ class AddLightFragment: Fragment() {
                             val candidateTags = tagViewModel.candidateTags
                             if(tagName !in candidateTags.map{ it.name } ) {
                                 candidateTags.add(Tag(tagName))
-                                makeChip(tagName)
+                                makeChip(tagName, binding.flexBoxTagEnrolled)
                                 Toast.makeText(applicationContext(), "\'$tagName\' 저장", Toast.LENGTH_SHORT).show()
                                 binding.inputTag.text.clear()
                             } else {
@@ -194,20 +230,6 @@ class AddLightFragment: Fragment() {
                         }
                     }
                 }
-            }
-        }
-
-        private fun makeChip(name: String): Chip {
-            val nameWithHash = "# $name"
-            return Chip(requireActivity()).apply {
-                text = nameWithHash
-                setTextAppearanceResource(R.style.ChipTextStyle)
-            }.also {
-                binding.flexBoxTagEnrolled.addView(it)
-                (it.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
-                    left = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
-                    right = it.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
-                )
             }
         }
 
