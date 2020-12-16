@@ -20,6 +20,11 @@ class LightRepository(private val lightDao: LightDao) {
         lightDao.insertLight(light)
     }
 
+    // READ
+    fun isEnrolledToday(dateCode: String): Boolean {
+        return lightDao.isEnrolledToday(dateCode)
+    }
+
     /*suspend fun updateLight(dateCode: Int, newBright: Int, newMemo: String) {
         lightDao.updateLight(dateCode, newBright, newMemo)
     }
