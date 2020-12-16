@@ -27,6 +27,7 @@
     <style name="TextViewStyle" parent="@android:style/Widget.DeviceDefault.TextView">
         <item name="android:fontFamily">@font/font</item>
         <item name="android:includeFontPadding">false</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="ButtonStyle" parent="@android:style/Widget.DeviceDefault.Button.Borderless">
