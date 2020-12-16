@@ -1,4 +1,4 @@
-package com.bd.bdproject.project.light
+package com.bd.bdproject.ui.light
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -26,6 +26,8 @@ import com.bd.bdproject.viewmodel.TagViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+
+// insert 부분 메서드들이 viewmodel의 메서드를 사용하기는 하는데, 그래도 이걸 viewmodel로 따리 관리를 해야하는건가?
 
 class AddLightFragment: Fragment() {
 
@@ -153,8 +155,8 @@ class AddLightFragment: Fragment() {
         return (convertedStep * 5)
     }
 
-    private fun makeChip(name: String, vg: ViewGroup): Chip {
-        val nameWithHash = "# $name"
+    private fun makeChip(tagName: String, vg: ViewGroup): Chip {
+        val nameWithHash = "# $tagName"
         return Chip(requireActivity()).apply {
             text = nameWithHash
             setTextAppearanceResource(R.style.ChipTextStyle)
@@ -169,20 +171,43 @@ class AddLightFragment: Fragment() {
                 when(vg) {
                     binding.flexBoxTagEnrolled -> {}
                     binding.flexBoxTagRecommend -> {
-                        val candidateTags = tagViewModel.candidateTags
-                        if((name !in candidateTags.map{ it.name }) && candidateTags.size < 4) {
-                            candidateTags.add(Tag(name))
-                            makeChip(name, binding.flexBoxTagEnrolled)
-                            Toast.makeText(applicationContext(), "\'$name\' 저장", Toast.LENGTH_SHORT).show()
-                            binding.inputTag.text.clear()
-                            binding.flexBoxTagRecommend.removeAllViews()
-                        } else {
-                            Toast.makeText(applicationContext(), "이미 등록된 태그이거나 개수 제한 초과입니다.", Toast.LENGTH_SHORT).show()
+                        if(checkIsValidTag(tagName)) {
+                            enrollTagToCandidate(tagName)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun checkIsValidTag(tagName: String): Boolean {
+        val candidateTags = tagViewModel.candidateTags
+
+        // 태그 갯수가 4개 이상
+        if (candidateTags.size >= 4) {
+            Toast.makeText(applicationContext(), "태그는 최대 4개까지 등록 가능합니다.", Toast.LENGTH_SHORT).show()
+            binding.inputTag.setText(tagName)
+            binding.inputTag.setSelection(binding.inputTag.text.length)
+            return false
+        }
+
+        // 태그명 중복
+        if (tagName in candidateTags.map { it.name }) {
+            Toast.makeText(applicationContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT)
+                .show()
+            binding.inputTag.setText(tagName)
+            binding.inputTag.setSelection(binding.inputTag.text.length)
+            return false
+        }
+
+        return true
+    }
+
+    private fun enrollTagToCandidate(tagName: String) {
+        tagViewModel.candidateTags.add(Tag(tagName))
+        makeChip(tagName, binding.flexBoxTagEnrolled)
+        binding.inputTag.text.clear()
+        binding.flexBoxTagRecommend.removeAllViews()
     }
 
     private fun observeTagSearched() {
@@ -201,7 +226,7 @@ class AddLightFragment: Fragment() {
      */
     inner class InputTagWatcher: TextWatcher {
 
-        var job: Job? = null
+        var searchJob: Job? = null
 
         override fun afterTextChanged(p0: Editable?) {
         }
@@ -211,8 +236,8 @@ class AddLightFragment: Fragment() {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             if(s.isEmpty()) {
-                job?.cancel()
-                job = GlobalScope.launch {
+                searchJob?.cancel()
+                searchJob = GlobalScope.launch {
                     delay(500)
                     withContext(Dispatchers.Main) { binding.flexBoxTagRecommend.removeAllViews() }
                 }
@@ -220,8 +245,8 @@ class AddLightFragment: Fragment() {
             if(s.isNotEmpty()) {
                 // 추천 검색어
                 if(!isLastWordBlank(s)) {
-                    job?.cancel()
-                    job = GlobalScope.launch {
+                    searchJob?.cancel()
+                    searchJob = GlobalScope.launch {
                         delay(500)
                         if(s.isNotBlank()) {
                             tagViewModel.searchTag(s.toString())
@@ -232,40 +257,24 @@ class AddLightFragment: Fragment() {
                 val lastIndex = s.length - 1
                 val tagName = s.substring(0, lastIndex)
 
-                // 공백이 중간에 끼어있을 경우
-                if((s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" ")))  {
-                    Toast.makeText(applicationContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                    binding.inputTag.text.clear()
-                    return
-                }
+                if(checkIsThereAnyBlank(s)) { return }
 
                 if(isLastWordBlank(s)) {
-                    when {
-                        // 태그가 4개 이미 등록되어 있을 경우
-                        tagViewModel.candidateTags.size >= 4 -> {
-                            Toast.makeText(applicationContext(), "태그는 최대 4개까지 등록 가능합니다.", Toast.LENGTH_SHORT).show()
-                            binding.inputTag.setText(tagName)
-                            binding.inputTag.setSelection(binding.inputTag.text.length)
-                        }
-
-                        // 태그명 중복된 경우, 나머지는 정상 처리
-                        else -> {
-                            val candidateTags = tagViewModel.candidateTags
-                            if(tagName !in candidateTags.map{ it.name } ) {
-                                candidateTags.add(Tag(tagName))
-                                makeChip(tagName, binding.flexBoxTagEnrolled)
-                                Toast.makeText(applicationContext(), "\'$tagName\' 저장", Toast.LENGTH_SHORT).show()
-                                binding.inputTag.text.clear()
-                                binding.flexBoxTagRecommend.removeAllViews()
-                            } else {
-                                Toast.makeText(applicationContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show()
-                                binding.inputTag.setText(tagName)
-                                binding.inputTag.setSelection(binding.inputTag.text.length)
-                            }
-                        }
+                    if(checkIsValidTag(tagName)) {
+                        enrollTagToCandidate(tagName)
                     }
                 }
             }
+        }
+
+        // 공백이 중간에 끼어있을 경우를 검사 (마지막 스페이스는 제외)
+        private fun checkIsThereAnyBlank(s: CharSequence): Boolean {
+            if((s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" ")))  {
+                Toast.makeText(applicationContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                binding.inputTag.text.clear()
+                return true
+            }
+            return false
         }
 
         private fun isLastWordBlank(s: CharSequence): Boolean =

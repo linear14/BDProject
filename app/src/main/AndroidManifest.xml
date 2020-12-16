@@ -11,7 +11,7 @@
         android:theme="@style/Theme.BDProject"
         android:name=".BitDamApplication">
 
-        <activity android:name=".project.MainActivity"
+        <activity android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
