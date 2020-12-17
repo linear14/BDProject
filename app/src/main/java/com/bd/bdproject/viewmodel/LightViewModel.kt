@@ -1,15 +1,19 @@
 package com.bd.bdproject.viewmodel
 
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class LightViewModel(private val lightRepo: LightRepository): ViewModel() {
+
+    val lightWithTags: MutableLiveData<LightWithTags> = MutableLiveData()
 
     fun asyncInsertLight(light: Light) {
         runBlocking {
@@ -20,6 +24,12 @@ class LightViewModel(private val lightRepo: LightRepository): ViewModel() {
                 "${light.dateCode}번의 빛 등록 완료",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    fun getLightWithTags(dateCode: String) {
+        GlobalScope.launch {
+            lightWithTags.postValue(lightRepo.selectLightsWithTagsByDateCode(dateCode))
         }
     }
 }

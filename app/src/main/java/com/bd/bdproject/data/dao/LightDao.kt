@@ -1,21 +1,13 @@
 package com.bd.bdproject.data.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.lifecycle.MutableLiveData
+import androidx.room.*
 import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.data.model.LightWithTags
 
 @Dao
 interface LightDao {
-
-/*    @Query("SELECT * FROM light")
-    fun selectAll(): LiveData<List<Light>>
-
-    @Transaction
-    @Query("SELECT * FROM light")
-    fun selectLightsWithTags(): LiveData<List<LightWithTags>>*/
 
     // CREATE
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,9 +17,8 @@ interface LightDao {
     @Query("SELECT EXISTS(SELECT 1 FROM light WHERE dateCode = :dateCode)")
     fun isEnrolledToday(dateCode: String): Boolean
 
-    /*@Query("UPDATE light SET bright=:newBright, memo=:newMemo WHERE dateCode=:dateCode")
-    suspend fun updateLight(dateCode: Int, newBright: Int, newMemo: String)
+    @Transaction
+    @Query("SELECT * FROM light WHERE dateCode = :dateCode")
+    fun selectLightsWithTagsByDateCode(dateCode: String): LightWithTags
 
-    @Delete
-    suspend fun deleteLight(light: Light)*/
 }
