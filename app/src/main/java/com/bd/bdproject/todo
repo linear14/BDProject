@@ -1,8 +1,8 @@
-코드 리팩토링
-- AddLightFragment 부분 코드 정리가 필요함 (분리 및 정리)
+TagView를 하나 만들어서 관리하자
+--> 필요한 메서드
+setBackgroundColor
+setTextColor
+setStrokeColor
+setStrokeWidth
 
-태그 등록 후
-- 프래그먼트 전환
 
-그날의 기분 등록 되어있는 경우와 아닌경우를 나누어서
-진입 액티비티를 다르게 바꾸어주는 작업
