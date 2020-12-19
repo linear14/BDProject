@@ -6,7 +6,6 @@ import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class LightViewModel(private val lightRepo: LightRepository): ViewModel() {

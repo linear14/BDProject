@@ -1,8 +1,7 @@
 package com.bd.bdproject.ui.main
 
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.google.android.material.chip.Chip
@@ -24,6 +24,10 @@ class LightDetailFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
+
+    val gradientDrawable = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.TL_BR
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentLightDetailBinding.inflate(inflater, container, false).apply {
@@ -43,6 +47,8 @@ class LightDetailFragment: Fragment() {
         lightViewModel.lightWithTags.observe(requireActivity()) {
             binding.apply {
                 tvBrightness.text = it.light.bright.toString()
+                gradientDrawable.colors = LightUtil.getDiagonalLight(it.light.bright * 2)
+                layoutLightDetail.background = gradientDrawable
 
                 for(i in it.tags) {
                     val nameWithHash = "# ${i.name}"
