@@ -17,15 +17,7 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
     val searchedTagNames: MutableLiveData<List<String>> = MutableLiveData()
 
     fun asyncInsertTag(tags: List<Tag>) {
-        runBlocking {
-            val job = GlobalScope.launch { tagRepo.insertTag(tags) }
-            job.join()
-            Toast.makeText(
-                applicationContext(),
-                "${tags.size}개의 태그 등록 완료",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        GlobalScope.launch { tagRepo.insertTag(tags) }
     }
 
     fun searchTag(word: String) {

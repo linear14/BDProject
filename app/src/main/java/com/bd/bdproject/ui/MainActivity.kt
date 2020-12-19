@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.bd.bdproject.R
+import com.bd.bdproject.`interface`.JobFinishedListener
 import com.bd.bdproject.databinding.ActivityMainBinding
 import com.bd.bdproject.ui.main.AddLightFragment
 import com.bd.bdproject.ui.main.LightDetailFragment
@@ -27,8 +28,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun setFragmentByEnrolledState(isEnrolled: Boolean) {
         when(isEnrolled) {
-            true -> supportFragmentManager.beginTransaction().add(R.id.layout_frame, LightDetailFragment()).commit()
-            false -> supportFragmentManager.beginTransaction().add(R.id.layout_frame, AddLightFragment()).commit()
+            true -> supportFragmentManager.beginTransaction().replace(R.id.layout_frame, LightDetailFragment()).commit()
+            false -> {
+                // TODO lambda로 어떻게 못바꾸나?
+                val fragment = AddLightFragment().apply {
+                    setOnJobFinishedListener(object: JobFinishedListener {
+                        override fun onSuccess() {
+                            setFragmentByEnrolledState(true)
+                        }
+                    })
+                }
+                supportFragmentManager.beginTransaction().replace(R.id.layout_frame, fragment).commit()
+            }
         }
     }
 }

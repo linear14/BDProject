@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
+import com.bd.bdproject.`interface`.JobFinishedListener
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddLightBinding
@@ -43,6 +45,8 @@ class AddLightFragment: Fragment() {
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
+
+    private var jobFinishedListener: JobFinishedListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
@@ -94,11 +98,28 @@ class AddLightFragment: Fragment() {
     }
 
     private fun insertLightWithTag() {
-        binding.apply {
-            val dateCode = insertLight()
-            val tagList = insertTag()
-            insertRelation(dateCode, tagList)
+        runBlocking {
+            binding.apply {
+                val dateCode = GlobalScope.async { insertLight() }
+                val tagList = GlobalScope.async { insertTag() }
+                val job = GlobalScope.launch { insertRelation(dateCode.await(), tagList.await()) }
+
+                job.join()
+
+                // 왜 withContext로는 안되지? --> 완료된 함수 안에서만 사용?
+                if(job.isCancelled) {
+                    // TODO 예외 처리를 어떻게 할까? __ 이렇게 예외 처리하는건 맞는지 알아보기
+                    Toast.makeText(applicationContext(), "등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        jobFinishedListener?.onSuccess()
+                    }
+                }
+
+            }
         }
+
     }
 
     private fun insertLight(): String {
@@ -110,7 +131,6 @@ class AddLightFragment: Fragment() {
                 null
             )
             lightViewModel.asyncInsertLight(light)
-
             return currentTime
         }
     }
@@ -226,6 +246,10 @@ class AddLightFragment: Fragment() {
                 makeChip(word, binding.flexBoxTagRecommend)
             }
         }
+    }
+
+    fun setOnJobFinishedListener(li: JobFinishedListener) {
+        this.jobFinishedListener = li
     }
 
     /***
