@@ -2,6 +2,7 @@ package com.bd.bdproject.ui.main
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +19,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddLightBinding
+import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
@@ -37,6 +39,10 @@ class AddLightFragment: Fragment() {
     private val lightViewModel: LightViewModel by inject()
     private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
+
+    private val gradientDrawable = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.TL_BR
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
@@ -122,11 +128,11 @@ class AddLightFragment: Fragment() {
 
     private fun setSeekBarPressListener() {
         binding.apply {
-            sbLight.setOnPressListener { step ->
+            sbLight.setOnPressListener { progress ->
                 tvAskCondition.visibility = View.GONE
                 tvBrightness.visibility = View.VISIBLE
                 flexBoxTagEnrolled.visibility = View.VISIBLE
-                tvBrightness.text = getBrightness(step).toString()
+                tvBrightness.text = getBrightness(progress).toString()
                 sbLight.barWidth = 4
             }
         }
@@ -134,15 +140,18 @@ class AddLightFragment: Fragment() {
 
     private fun setSeekBarProgressChangedListener() {
         binding.apply {
-            sbLight.setOnProgressChangeListener { step ->
-                tvBrightness.text = getBrightness(step).toString()
+            sbLight.setOnProgressChangeListener { progress ->
+                tvBrightness.text = getBrightness(progress).toString()
+
+                gradientDrawable.colors = getDiagonalLight(progress)
+                layoutAddLight.background = gradientDrawable
             }
         }
     }
 
     private fun setSeekBarReleaseListener() {
         binding.apply {
-            sbLight.setOnReleaseListener { step ->
+            sbLight.setOnReleaseListener { progress ->
                 sbLight.visibility = View.GONE
                 layoutInput.visibility = View.VISIBLE
                 layoutTagRecommend.visibility = View.VISIBLE
@@ -150,9 +159,9 @@ class AddLightFragment: Fragment() {
         }
     }
 
-    private fun getBrightness(step: Int): Int {
-        val convertedStep = step / 10
-        return (convertedStep * 5)
+    private fun getBrightness(progress: Int): Int {
+        val converted = progress / 10
+        return (converted * 5)
     }
 
     private fun makeChip(tagName: String, vg: ViewGroup): Chip {
