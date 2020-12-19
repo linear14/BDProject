@@ -14,6 +14,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.google.android.material.chip.Chip
 import org.koin.android.ext.android.inject
@@ -46,6 +47,7 @@ class LightDetailFragment: Fragment() {
     private fun observeLight() {
         lightViewModel.lightWithTags.observe(requireActivity()) {
             binding.apply {
+                tvDate.text = it.light.dateCode.toBitDamDateFormat()
                 tvBrightness.text = it.light.bright.toString()
                 gradientDrawable.colors = LightUtil.getDiagonalLight(it.light.bright * 2)
                 layoutLightDetail.background = gradientDrawable
