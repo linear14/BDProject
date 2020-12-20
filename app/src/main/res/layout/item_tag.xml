@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="tag"
+            type="com.bd.bdproject.data.model.Tag" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +15,7 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="8dp"
@@ -21,18 +25,22 @@
 
             <TextView
                 android:id="@+id/tv_tag"
+                tagName="@{tag.name}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/deco_tag_default_or_selected"
                 android:fontFamily="@font/noto_light"
                 android:includeFontPadding="false"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
+                android:stateListAnimator="@null"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="# 태그네임" />
+
+            <!--android:paddingHorizontal="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="6dp"-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -41,7 +49,9 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:src="@drawable/ic_delete_tag"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/layout_tag"
+            app:layout_constraintStart_toEndOf="@id/layout_tag"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

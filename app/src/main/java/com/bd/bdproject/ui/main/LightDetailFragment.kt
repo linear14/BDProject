@@ -1,22 +1,20 @@
 package com.bd.bdproject.ui.main
 
-import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
-import com.bd.bdproject.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
+import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.viewmodel.LightViewModel
-import com.google.android.material.chip.Chip
 import org.koin.android.ext.android.inject
 
 class LightDetailFragment: Fragment() {
@@ -25,18 +23,24 @@ class LightDetailFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
+    private var tagAdapter: TagAdapter? = null
 
-    val gradientDrawable = GradientDrawable().apply {
+    private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentLightDetailBinding.inflate(inflater, container, false).apply {
-            lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
             observeLight()
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
+        setTagRecyclerView()
     }
 
     override fun onDestroyView() {
@@ -52,23 +56,21 @@ class LightDetailFragment: Fragment() {
                 gradientDrawable.colors = LightUtil.getDiagonalLight(it.light.bright * 2)
                 layoutLightDetail.background = gradientDrawable
 
-                for(i in it.tags) {
-                    val nameWithHash = "# ${i.name}"
-                    Chip(requireActivity()).apply {
-                        text = nameWithHash
-                        setTextAppearanceResource(R.style.ChipTextStyle)
-                    }.also { chip ->
-                        chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(chip.context, android.R.color.transparent))
-                        chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(chip.context, android.R.color.white))
-                        chip.chipStrokeWidth = 1f
-                        flexBoxTag.addView(chip)
-                        (chip.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
-                            left = chip.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
-                            right = chip.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
-                        )
-                    }
-                }
+                // 여기에 밝기까지 다 넘겨버리기 (밝기비교를 여기서 할까 아니면 어댑터 안에서 할까)
+                tagAdapter?.submitList(it.tags.toMutableList(), it.light.bright)
             }
+        }
+    }
+
+    private fun setTagRecyclerView() {
+        binding.apply {
+            val layoutManager = LinearLayoutManager(requireActivity()).apply {
+                orientation = RecyclerView.VERTICAL
+            }
+            tagAdapter = TagAdapter()
+
+            rvTag.layoutManager = layoutManager
+            rvTag.adapter = tagAdapter
         }
     }
 

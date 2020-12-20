@@ -12,6 +12,10 @@
         android:bottom="6dp"/>
 
     <solid
-        android:color="#cccccc"/>
+        android:color="@android:color/transparent"/>
+
+    <stroke
+        android:width="0.5dp"
+        android:color="@color/black"/>
 
 </shape>

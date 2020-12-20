@@ -36,21 +36,20 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toTopOf="@id/flex_box_tag"
+        app:layout_constraintBottom_toTopOf="@id/rv_tag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_brightness" />
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flex_box_tag"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tag"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
+        android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center_horizontal|top"
-        app:flexDirection="column"
-        app:flexWrap="wrap"
-        app:justifyContent="center"
+        android:overScrollMode="never"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_spread_up_down" />
@@ -67,7 +66,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/flex_box_tag" />
+        app:layout_constraintTop_toBottomOf="@id/rv_tag" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
