@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
@@ -51,14 +54,30 @@ class LightDetailFragment: Fragment() {
     private fun observeLight() {
         lightViewModel.lightWithTags.observe(requireActivity()) {
             binding.apply {
-                tvDate.text = it.light.dateCode.toBitDamDateFormat()
-                tvBrightness.text = it.light.bright.toString()
-                gradientDrawable.colors = LightUtil.getDiagonalLight(it.light.bright * 2)
+                val dateCode = it.light.dateCode
+                val brightness = it.light.bright
+                val memo = it.light.memo
+                val tags = it.tags
+
+                when(brightness) {
+                    in 0 until 80 -> { setEntireTextColor(R.color.white, tvDate, tvBrightness, tvMemo) }
+                    else -> { setEntireTextColor(R.color.black, tvDate, tvBrightness, tvMemo) }
+                }
+
+                tvDate.text = dateCode.toBitDamDateFormat()
+                tvBrightness.text = brightness.toString()
+                tvMemo.text = memo?:""
+                gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
                 layoutLightDetail.background = gradientDrawable
 
-                // 여기에 밝기까지 다 넘겨버리기 (밝기비교를 여기서 할까 아니면 어댑터 안에서 할까)
-                tagAdapter?.submitList(it.tags.toMutableList(), it.light.bright)
+                tagAdapter?.submitList(tags.toMutableList(), brightness)
             }
+        }
+    }
+
+    private fun setEntireTextColor(color: Int, vararg view: TextView) {
+        for(item in view) {
+            item.setTextColor(ContextCompat.getColor(requireActivity(), color))
         }
     }
 
