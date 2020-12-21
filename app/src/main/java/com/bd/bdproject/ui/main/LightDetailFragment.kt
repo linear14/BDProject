@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.ui.main.adapter.TagAdapter
+import com.bd.bdproject.ui.main.adapter.TagAdapter.Companion.ORIENTATION_VERTICAL
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
@@ -86,7 +87,7 @@ class LightDetailFragment: Fragment() {
             val layoutManager = LinearLayoutManager(requireActivity()).apply {
                 orientation = RecyclerView.VERTICAL
             }
-            tagAdapter = TagAdapter()
+            tagAdapter = TagAdapter(ORIENTATION_VERTICAL)
 
             rvTag.layoutManager = layoutManager
             rvTag.adapter = tagAdapter

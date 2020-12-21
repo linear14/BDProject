@@ -11,7 +11,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ItemTagBinding
 
-class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
+class TagAdapter(val orientation: Int): ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
 
     var brightness: Int? = null
 
@@ -26,6 +26,10 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
     }
 
     inner class TagViewHolder(private val binding: ItemTagBinding): RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            setLayoutParams()
+        }
 
         fun bind(item: Tag) {
             binding.apply {
@@ -47,6 +51,19 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
                 else -> { binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.black)) }
             }
         }
+
+        private fun setLayoutParams() {
+            when(orientation) {
+                ORIENTATION_VERTICAL -> {
+                    binding.layoutItemTag.layoutParams =
+                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                }
+                ORIENTATION_HORIZONTAL -> {
+                    binding.layoutItemTag.layoutParams =
+                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                }
+            }
+        }
     }
 
     fun submitList(list: MutableList<Tag>?, brightness: Int) {
@@ -56,6 +73,11 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
             this.brightness = brightness
             notifyDataSetChanged()
         }
+    }
+
+    companion object {
+        val ORIENTATION_HORIZONTAL = 0
+        val ORIENTATION_VERTICAL = 1
     }
 }
 
