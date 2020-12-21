@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
+import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
@@ -18,7 +21,6 @@ import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import org.koin.android.ext.android.inject
 
 class LightDetailFragment: Fragment() {
@@ -36,6 +38,8 @@ class LightDetailFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentLightDetailBinding.inflate(inflater, container, false).apply {
             observeLight()
+            fabMore.setOnClickListener { controlBackgroundByFabState() }
+            viewFilter.setOnClickListener { controlBackgroundByFabState() }
         }
 
         return binding.root
@@ -91,6 +95,30 @@ class LightDetailFragment: Fragment() {
 
             rvTag.layoutManager = layoutManager
             rvTag.adapter = tagAdapter
+        }
+    }
+
+    private fun controlBackgroundByFabState() {
+        binding.apply {
+            when(viewFilter.visibility) {
+                View.GONE -> {
+                    viewFilter.visibility = View.VISIBLE
+                    layoutMore.visibility = View.VISIBLE
+                    (activity as MainActivity).binding.apply {
+                        btnDrawer.visibility = View.GONE
+                        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    }
+
+                }
+                View.VISIBLE -> {
+                    viewFilter.visibility = View.GONE
+                    layoutMore.visibility = View.GONE
+                    (activity as MainActivity).binding.apply {
+                        btnDrawer.visibility = View.VISIBLE
+                        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                    }
+                }
+            }
         }
     }
 
