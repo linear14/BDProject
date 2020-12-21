@@ -9,16 +9,16 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.ui.main.adapter.TagAdapter
-import com.bd.bdproject.ui.main.adapter.TagAdapter.Companion.ORIENTATION_VERTICAL
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.viewmodel.LightViewModel
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import org.koin.android.ext.android.inject
 
 class LightDetailFragment: Fragment() {
@@ -84,10 +84,10 @@ class LightDetailFragment: Fragment() {
 
     private fun setTagRecyclerView() {
         binding.apply {
-            val layoutManager = LinearLayoutManager(requireActivity()).apply {
-                orientation = RecyclerView.VERTICAL
+            val layoutManager = FlexboxLayoutManager(requireActivity()).apply {
+                flexDirection = FlexDirection.COLUMN
             }
-            tagAdapter = TagAdapter(ORIENTATION_VERTICAL)
+            tagAdapter = TagAdapter()
 
             rvTag.layoutManager = layoutManager
             rvTag.adapter = tagAdapter
