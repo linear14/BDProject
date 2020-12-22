@@ -6,28 +6,30 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.JobFinishedListener
+import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddLightBinding
+import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
-import com.google.android.material.chip.Chip
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
@@ -36,11 +38,15 @@ import org.koin.android.ext.android.inject
 class AddLightFragment: Fragment() {
 
     private var _binding: FragmentAddLightBinding? = null
+
     private val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
     private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
+
+    private var tagEnrolledAdapter = TagAdapter()
+    private var tagRecommendAdapter = TagAdapter()
 
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
@@ -60,9 +66,16 @@ class AddLightFragment: Fragment() {
         setSeekBarProgressChangedListener()
         setSeekBarReleaseListener()
 
+        observeTagEnrolled()
         observeTagSearched()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setTagRecyclerView()
     }
 
     override fun onDestroyView() {
@@ -135,14 +148,14 @@ class AddLightFragment: Fragment() {
         }
     }
 
-    private fun insertTag(): MutableList<Tag> {
+    private fun insertTag(): MutableList<Tag>? {
         binding.apply {
-            tagViewModel.asyncInsertTag(tagViewModel.candidateTags)
+            tagViewModel.asyncInsertTag(tagViewModel.candidateTags.value)
         }
-        return tagViewModel.candidateTags
+        return tagViewModel.candidateTags.value
     }
 
-    private fun insertRelation(dateCode: String, tagList: MutableList<Tag>) {
+    private fun insertRelation(dateCode: String, tagList: MutableList<Tag>?) {
         lightTagRelationViewModel.insertRelation(dateCode, tagList)
     }
 
@@ -151,7 +164,7 @@ class AddLightFragment: Fragment() {
             sbLight.setOnPressListener { progress ->
                 tvAskCondition.visibility = View.GONE
                 tvBrightness.visibility = View.VISIBLE
-                flexBoxTagEnrolled.visibility = View.VISIBLE
+                rvTagEnrolled.visibility = View.VISIBLE
                 tvBrightness.text = getBrightness(progress).toString()
                 sbLight.barWidth = 4
             }
@@ -184,33 +197,8 @@ class AddLightFragment: Fragment() {
         return (converted * 5)
     }
 
-    private fun makeChip(tagName: String, vg: ViewGroup): Chip {
-        val nameWithHash = "# $tagName"
-        return Chip(requireActivity()).apply {
-            text = nameWithHash
-            setTextAppearanceResource(R.style.ChipTextStyle)
-        }.also { chip ->
-            vg.addView(chip)
-            (chip.layoutParams as ViewGroup.MarginLayoutParams).updateMargins(
-                left = chip.context.resources.getDimensionPixelSize(R.dimen.chip_margin),
-                right = chip.context.resources.getDimensionPixelSize(R.dimen.chip_margin)
-            )
-
-            chip.setOnClickListener {
-                when(vg) {
-                    binding.flexBoxTagEnrolled -> {}
-                    binding.flexBoxTagRecommend -> {
-                        if(checkIsValidTag(tagName)) {
-                            enrollTagToCandidate(tagName)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun checkIsValidTag(tagName: String): Boolean {
-        val candidateTags = tagViewModel.candidateTags
+        val candidateTags = tagViewModel.candidateTags.value?: mutableListOf()
 
         // 태그 갯수가 4개 이상
         if (candidateTags.size >= 4) {
@@ -233,23 +221,54 @@ class AddLightFragment: Fragment() {
     }
 
     private fun enrollTagToCandidate(tagName: String) {
-        tagViewModel.candidateTags.add(Tag(tagName))
-        makeChip(tagName, binding.flexBoxTagEnrolled)
+        tagViewModel.insertTagToCandidate(tagName)
         binding.inputTag.text.clear()
-        binding.flexBoxTagRecommend.removeAllViews()
+        tagViewModel.searchTag(null)
+    }
+
+    private fun observeTagEnrolled() {
+        tagViewModel.candidateTags.observe(requireActivity()) { enrolled ->
+            tagEnrolledAdapter.submitList(enrolled.toMutableList())
+        }
     }
 
     private fun observeTagSearched() {
-        tagViewModel.searchedTagNames.observe(requireActivity()) {
-            binding.flexBoxTagRecommend.removeAllViews()
-            for(word in it) {
-                makeChip(word, binding.flexBoxTagRecommend)
-            }
+        tagViewModel.searchedTagNames.observe(requireActivity()) { searchedResult ->
+            tagRecommendAdapter.submitList(searchedResult.map{ Tag(it) } )
         }
     }
 
     fun setOnJobFinishedListener(li: JobFinishedListener) {
         this.jobFinishedListener = li
+    }
+
+    private fun setTagRecyclerView() {
+        binding.apply {
+            val layoutManagerEnrolled = FlexboxLayoutManager(requireActivity()).apply {
+                flexDirection = FlexDirection.ROW
+                justifyContent = JustifyContent.CENTER
+            }
+
+            val layoutManagerRecommend = FlexboxLayoutManager(requireActivity()).apply {
+                flexDirection = FlexDirection.ROW
+                justifyContent = JustifyContent.CENTER
+            }
+
+            rvTagEnrolled.layoutManager = layoutManagerEnrolled
+            rvTagRecommend.layoutManager = layoutManagerRecommend
+
+            rvTagEnrolled.adapter = tagEnrolledAdapter
+            rvTagRecommend.adapter = tagRecommendAdapter.also {
+                it.onTagClickListener = object: OnTagClickListener {
+                    override fun onClick(tagName: String) {
+                        if(checkIsValidTag(tagName)) {
+                            enrollTagToCandidate(tagName)
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     /***
@@ -272,7 +291,7 @@ class AddLightFragment: Fragment() {
                 searchJob?.cancel()
                 searchJob = GlobalScope.launch {
                     delay(500)
-                    withContext(Dispatchers.Main) { binding.flexBoxTagRecommend.removeAllViews() }
+                    tagViewModel.searchTag(null)
                 }
             }
             if(s.isNotEmpty()) {

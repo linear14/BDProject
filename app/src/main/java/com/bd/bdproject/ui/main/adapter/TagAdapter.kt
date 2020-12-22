@@ -8,12 +8,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
+import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ItemTagBinding
 
 class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
 
     var brightness: Int? = null
+
+    var onTagClickListener: OnTagClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         return TagViewHolder(ItemTagBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -31,6 +34,10 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
             binding.apply {
                 tag = item
                 executePendingBindings()
+
+                layoutTag.setOnClickListener {
+                    onTagClickListener?.onClick(item.name)
+                }
             }
         }
 

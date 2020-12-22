@@ -61,16 +61,14 @@
         app:vsb_show_thumb="true"
         app:vsb_thumb_container_corner_radius="90dp" />
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flex_box_tag_enrolled"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tag_enrolled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:paddingHorizontal="16dp"
         android:visibility="gone"
-        app:flexWrap="wrap"
-        app:justifyContent="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_brightness" />
@@ -145,14 +143,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/flex_box_tag_recommend"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_tag_recommend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            app:flexWrap="wrap"
-            app:justifyContent="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_recommend" />

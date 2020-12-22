@@ -1,28 +1,41 @@
 package com.bd.bdproject.viewmodel
 
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.TagRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
 
-    val candidateTags = mutableListOf<Tag>()
+    val candidateTags: MutableLiveData<MutableList<Tag>> = MutableLiveData()
     val searchedTagNames: MutableLiveData<List<String>> = MutableLiveData()
 
-    fun asyncInsertTag(tags: List<Tag>) {
-        GlobalScope.launch { tagRepo.insertTag(tags) }
+    init {
+        candidateTags.value = mutableListOf()
     }
 
-    fun searchTag(word: String) {
-        GlobalScope.launch {
-            searchedTagNames.postValue(tagRepo.searchTag("%${word}%"))
+    fun asyncInsertTag(tags: List<Tag>?) {
+        tags?.let {
+            GlobalScope.launch { tagRepo.insertTag(tags) }
         }
+    }
+
+    fun searchTag(word: String?) {
+        GlobalScope.launch {
+            if(word == null) {
+                searchedTagNames.postValue(listOf())
+            } else {
+                searchedTagNames.postValue(tagRepo.searchTag("%${word}%"))
+            }
+        }
+    }
+
+    fun insertTagToCandidate(tagName: String) {
+        val temp = candidateTags.value
+        temp?.add(Tag(tagName))
+
+        candidateTags.value = temp
     }
 }
