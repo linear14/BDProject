@@ -54,7 +54,6 @@
             android:src="@drawable/ic_delete_tag"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/layout_tag"
-            app:layout_constraintStart_toEndOf="@id/layout_tag"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

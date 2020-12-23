@@ -257,7 +257,18 @@ class AddLightFragment: Fragment() {
             rvTagEnrolled.layoutManager = layoutManagerEnrolled
             rvTagRecommend.layoutManager = layoutManagerRecommend
 
-            rvTagEnrolled.adapter = tagEnrolledAdapter
+            rvTagEnrolled.adapter = tagEnrolledAdapter.also {
+                it.onTagClickListener = object: OnTagClickListener {
+                    override fun onClick(tagName: String) {
+                        inputTag.setText(tagName)
+                        inputTag.setSelection(inputTag.text.length)
+                        it.isChangeState = true
+                        it.editModeTag = tagName
+                        it.notifyDataSetChanged()
+                    }
+                }
+            }
+
             rvTagRecommend.adapter = tagRecommendAdapter.also {
                 it.onTagClickListener = object: OnTagClickListener {
                     override fun onClick(tagName: String) {

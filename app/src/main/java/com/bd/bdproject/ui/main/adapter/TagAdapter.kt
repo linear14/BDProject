@@ -1,6 +1,7 @@
 package com.bd.bdproject.ui.main.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -15,6 +16,10 @@ import com.bd.bdproject.databinding.ItemTagBinding
 class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
 
     var brightness: Int? = null
+
+    // 태그 변경 시 필요한 flag 및 temp 스트링 프로퍼티
+    var isChangeState: Boolean = false
+    var editModeTag: String? = null
 
     var onTagClickListener: OnTagClickListener? = null
 
@@ -35,6 +40,8 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
                 tag = item
                 executePendingBindings()
 
+                setDeleteTagVisibility(item.name)
+
                 layoutTag.setOnClickListener {
                     onTagClickListener?.onClick(item.name)
                 }
@@ -52,6 +59,13 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
             when(brightness) {
                 in 0 until 80 -> { binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.white)) }
                 else -> { binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.black)) }
+            }
+        }
+
+        fun setDeleteTagVisibility(tagName: String) {
+            binding.apply {
+                if(isChangeState && editModeTag == tagName) btnDeleteTag.visibility = View.VISIBLE
+                else btnDeleteTag.visibility = View.GONE
             }
         }
 
