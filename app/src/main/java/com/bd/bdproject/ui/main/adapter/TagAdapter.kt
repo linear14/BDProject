@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnTagClickListener
+import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ItemTagBinding
 
@@ -22,6 +23,7 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
     var editModeTag: String? = null
 
     var onTagClickListener: OnTagClickListener? = null
+    var onTagDeleteButtonClickListener: OnTagDeleteButtonClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         return TagViewHolder(ItemTagBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -35,16 +37,24 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
 
     inner class TagViewHolder(private val binding: ItemTagBinding): RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.apply {
+                layoutTag.setOnClickListener {
+                    onTagClickListener?.onClick(getItem(adapterPosition).name)
+                }
+
+                btnDeleteTag.setOnClickListener {
+                    onTagDeleteButtonClickListener?.onClick(getItem(adapterPosition).name)
+                }
+            }
+        }
+
         fun bind(item: Tag) {
             binding.apply {
                 tag = item
                 executePendingBindings()
 
                 setDeleteTagVisibility(item.name)
-
-                layoutTag.setOnClickListener {
-                    onTagClickListener?.onClick(item.name)
-                }
             }
         }
 

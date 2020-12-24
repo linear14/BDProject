@@ -52,4 +52,10 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
 
         candidateTags.value = temp
     }
+
+    fun deleteTagCandidate(tagName: String) {
+        val temp = candidateTags.value
+        temp?.remove(Tag(tagName))
+        candidateTags.value = temp
+    }
 }

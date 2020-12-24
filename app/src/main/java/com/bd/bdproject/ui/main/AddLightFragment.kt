@@ -19,6 +19,7 @@ import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.JobFinishedListener
 import com.bd.bdproject.`interface`.OnTagClickListener
+import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddLightBinding
@@ -237,6 +238,12 @@ class AddLightFragment: Fragment() {
         tagViewModel.searchTag(null)
     }
 
+    private fun deleteTag(tagName: String) {
+        tagViewModel.deleteTagCandidate(tagName)
+        binding.inputTag.text.clear()
+        tagViewModel.searchTag(null)
+    }
+
     private fun observeTagEnrolled() {
         tagViewModel.candidateTags.observe(requireActivity()) { enrolled ->
             tagEnrolledAdapter.apply {
@@ -285,6 +292,11 @@ class AddLightFragment: Fragment() {
                         it.isEditMode = true
                         it.editModeTag = tagName
                         it.notifyDataSetChanged()
+                    }
+                }
+                it.onTagDeleteButtonClickListener = object: OnTagDeleteButtonClickListener {
+                    override fun onClick(tagName: String) {
+                        deleteTag(tagName)
                     }
                 }
             }
