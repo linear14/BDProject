@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.JobFinishedListener
@@ -200,16 +202,19 @@ class AddLightFragment: Fragment() {
     private fun checkIsValidTag(tagName: String): Boolean {
         val candidateTags = tagViewModel.candidateTags.value?: mutableListOf()
 
-        // 태그 갯수가 4개 이상
-        if (candidateTags.size >= 4) {
+        // 태그 갯수가 4개 이상 (등록)
+        if (!tagEnrolledAdapter.isEditMode && candidateTags.size >= 4) {
             Toast.makeText(applicationContext(), "태그는 최대 4개까지 등록 가능합니다.", Toast.LENGTH_SHORT).show()
             binding.inputTag.setText(tagName)
             binding.inputTag.setSelection(binding.inputTag.text.length)
             return false
         }
 
-        // 태그명 중복
-        if (tagName in candidateTags.map { it.name }) {
+        // 태그명 중복 (등록, 수정)
+        if ((!tagEnrolledAdapter.isEditMode && tagName in candidateTags.map { it.name }) ||
+            (tagEnrolledAdapter.isEditMode && tagName in candidateTags
+                .filter { tag -> tag.name != tagEnrolledAdapter.editModeTag }
+                .map { it.name })) {
             Toast.makeText(applicationContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT)
                 .show()
             binding.inputTag.setText(tagName)
@@ -226,9 +231,24 @@ class AddLightFragment: Fragment() {
         tagViewModel.searchTag(null)
     }
 
+    private fun editTag(oldTagName: String, newTagName: String) {
+        tagViewModel.editTagCandidate(oldTagName, newTagName)
+        binding.inputTag.text.clear()
+        tagViewModel.searchTag(null)
+    }
+
     private fun observeTagEnrolled() {
         tagViewModel.candidateTags.observe(requireActivity()) { enrolled ->
-            tagEnrolledAdapter.submitList(enrolled.toMutableList())
+            tagEnrolledAdapter.apply {
+                if(isEditMode) {
+                    binding.rvTagEnrolled.itemAnimator = null
+                    isEditMode = false
+                    editModeTag = null
+                } else {
+                    binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
+                }
+                submitList(enrolled.toMutableList())
+            }
         }
     }
 
@@ -262,7 +282,7 @@ class AddLightFragment: Fragment() {
                     override fun onClick(tagName: String) {
                         inputTag.setText(tagName)
                         inputTag.setSelection(inputTag.text.length)
-                        it.isChangeState = true
+                        it.isEditMode = true
                         it.editModeTag = tagName
                         it.notifyDataSetChanged()
                     }
@@ -273,7 +293,12 @@ class AddLightFragment: Fragment() {
                 it.onTagClickListener = object: OnTagClickListener {
                     override fun onClick(tagName: String) {
                         if(checkIsValidTag(tagName)) {
-                            enrollTagToCandidate(tagName)
+                            if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
+                                editTag(tagEnrolledAdapter.editModeTag!!, tagName)
+                            }
+                            else {
+                                enrollTagToCandidate(tagName)
+                            }
                         }
                     }
 
@@ -324,7 +349,12 @@ class AddLightFragment: Fragment() {
 
                 if(isLastWordBlank(s)) {
                     if(checkIsValidTag(tagName)) {
-                        enrollTagToCandidate(tagName)
+                        if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
+                            editTag(tagEnrolledAdapter.editModeTag!!, tagName)
+                        }
+                        else {
+                            enrollTagToCandidate(tagName)
+                        }
                     }
                 }
             }

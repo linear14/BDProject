@@ -38,4 +38,18 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
 
         candidateTags.value = temp
     }
+
+    fun editTagCandidate(oldTagName: String, newTagName: String) {
+        val temp = candidateTags.value
+
+        temp?.let {
+            for((i, tag) in temp.withIndex()) {
+                if(tag.name == oldTagName) {
+                    temp[i] = Tag(newTagName)
+                }
+            }
+        }
+
+        candidateTags.value = temp
+    }
 }

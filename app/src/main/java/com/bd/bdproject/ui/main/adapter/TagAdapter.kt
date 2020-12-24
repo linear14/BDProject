@@ -18,7 +18,7 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
     var brightness: Int? = null
 
     // 태그 변경 시 필요한 flag 및 temp 스트링 프로퍼티
-    var isChangeState: Boolean = false
+    var isEditMode: Boolean = false
     var editModeTag: String? = null
 
     var onTagClickListener: OnTagClickListener? = null
@@ -64,7 +64,7 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
 
         fun setDeleteTagVisibility(tagName: String) {
             binding.apply {
-                if(isChangeState && editModeTag == tagName) btnDeleteTag.visibility = View.VISIBLE
+                if(isEditMode && editModeTag == tagName) btnDeleteTag.visibility = View.VISIBLE
                 else btnDeleteTag.visibility = View.GONE
             }
         }
