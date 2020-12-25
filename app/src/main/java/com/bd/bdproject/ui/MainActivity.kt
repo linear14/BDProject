@@ -7,6 +7,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.JobFinishedListener
 import com.bd.bdproject.databinding.ActivityMainBinding
 import com.bd.bdproject.ui.main.AddLightFragment
+import com.bd.bdproject.ui.main.AddMemoFragment
 import com.bd.bdproject.ui.main.LightDetailFragment
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFragmentByEnrolledState(isEnrolled: Boolean) {
+        /*** TEST MEMO ***/
+        supportFragmentManager.beginTransaction().replace(R.id.layout_frame, AddMemoFragment()).commit()
+        return
+
         when(isEnrolled) {
             true -> supportFragmentManager.beginTransaction().replace(R.id.layout_frame, LightDetailFragment()).commit()
             false -> {
