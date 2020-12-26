@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainNavigation"
+    app:startDestination="@id/lightDetailFragment">
+    <fragment
+        android:id="@+id/addLightFragment"
+        android:name="com.bd.bdproject.ui.main.AddLightFragment"
+        tools:layout="@layout/fragment_add_light">
+        <action
+            android:id="@+id/action_addLightFragment_to_addTagFragment"
+            app:destination="@id/addTagFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addTagFragment"
+        android:name="com.bd.bdproject.ui.main.AddTagFragment"
+        tools:layout="@layout/fragment_add_tag">
+        <action
+            android:id="@+id/action_addTagFragment_to_addMemoFragment"
+            app:destination="@id/addMemoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addMemoFragment"
+        android:name="com.bd.bdproject.ui.main.AddMemoFragment"
+        tools:layout="@layout/fragment_add_memo">
+        <action
+            android:id="@+id/action_addMemoFragment_to_lightDetailFragment"
+            app:destination="@id/lightDetailFragment"
+            app:popUpTo="@id/addLightFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lightDetailFragment"
+        android:name="com.bd.bdproject.ui.main.LightDetailFragment"
+        tools:layout="@layout/fragment_light_detail" />
+
+    <action
+        android:id="@+id/action_global_addLightFragment"
+        app:destination="@id/addLightFragment"
+        app:popUpTo="@id/lightDetailFragment"
+        app:popUpToInclusive="true"/>
+</navigation>

@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'koin'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -70,6 +71,14 @@ dependencies {
 
     // FlexBox
     implementation 'com.google.android:flexbox:2.0.1'
+
+    // fragment
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation "androidx.fragment:fragment-testing:$fragment_version"
+
+    // navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // Test
     testImplementation 'junit:junit:4.13.1'
