@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
+import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
@@ -23,7 +24,7 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import org.koin.android.ext.android.inject
 
-class LightDetailFragment: Fragment() {
+class LightDetailFragment: BaseFragment() {
 
     private var _binding: FragmentLightDetailBinding? = null
     private val binding get() = _binding!!

@@ -17,6 +17,7 @@ import com.bd.bdproject.`interface`.JobFinishedListener
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddMemoBinding
+import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
@@ -28,7 +29,7 @@ import com.bd.bdproject.viewmodel.main.AddViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-class AddMemoFragment: Fragment() {
+class AddMemoFragment: BaseFragment() {
 
     private var _binding: FragmentAddMemoBinding? = null
 

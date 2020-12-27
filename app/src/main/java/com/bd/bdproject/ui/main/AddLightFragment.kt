@@ -15,12 +15,13 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentAddLightBinding
+import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.main.AddViewModel
 import kotlinx.coroutines.*
 
-class AddLightFragment: Fragment() {
+class AddLightFragment: BaseFragment() {
 
     private var _binding: FragmentAddLightBinding? = null
     private val binding get() = _binding!!
@@ -35,12 +36,12 @@ class AddLightFragment: Fragment() {
      *  - isFirstPressed :
      *      seekbar의 thumb를 클릭했는지 여부에 따라 값이 바뀝니다. (클릭하자마자 값이 바뀌는것을 방지)
      *
-     *  - isChangingView :
+     *  - isChangingFragment :
      *      다음 화면으로 전환 애니메이션이 동작하면 true로 변합니다.
      *      true 상태에서는 추가적인 값의 조작이 불가능합니다.
      * ***/
     var isFirstPressed = true
-    var isChangingView = false
+    var isChangingFragment = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
@@ -62,9 +63,9 @@ class AddLightFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         isFirstPressed = true
-        isChangingView = false
+        isChangingFragment = false
 
-        Log.d("FLAG_STATE", "isFirstPressed: $isFirstPressed, isChangingView: $isChangingView")
+        Log.d("FLAG_STATE", "isFirstPressed: $isFirstPressed, isChangingView: $isChangingFragment")
     }
 
     override fun onDestroyView() {
@@ -91,7 +92,7 @@ class AddLightFragment: Fragment() {
 
                             override fun onAnimationEnd(animation: Animator?) {
                                 super.onAnimationEnd(animation)
-                                if(!isChangingView) {
+                                if(!isChangingFragment) {
                                     sbLight.animateTransparency(1.0f, 2000)
                                 }
                             }
@@ -131,7 +132,7 @@ class AddLightFragment: Fragment() {
     private fun setSeekBarProgressChangedListener() {
         binding.apply {
             sbLight.setOnProgressChangeListener { progress ->
-                if(!isChangingView) {
+                if(!isChangingFragment) {
                     tvBrightness.text = getBrightness(progress).toString()
 
                     gradientDrawable.colors = getDiagonalLight(progress)
@@ -145,8 +146,8 @@ class AddLightFragment: Fragment() {
     private fun setSeekBarReleaseListener() {
         binding.apply {
             sbLight.setOnReleaseListener { progress ->
-                if(!isFirstPressed && !isChangingView) {
-                    isChangingView = true
+                if(!isFirstPressed && !isChangingFragment) {
+                    isChangingFragment = true
                     saveBrightness()
                     goToFragmentAddLight()
                 }

@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,33 +17,31 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.BitDamApplication
+import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddTagBinding
+import com.bd.bdproject.ui.BaseFragment
+import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.viewmodel.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
 import com.bd.bdproject.viewmodel.main.AddViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-class AddTagFragment: Fragment() {
+class AddTagFragment: BaseFragment() {
 
     private var _binding: FragmentAddTagBinding? = null
-
     private val binding get() = _binding!!
 
-    private val lightViewModel: LightViewModel by inject()
     private val tagViewModel: TagViewModel by inject()
-    private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
-
     private val sharedViewModel: AddViewModel by activityViewModels()
 
     private var tagEnrolledAdapter = TagAdapter()
@@ -53,6 +50,19 @@ class AddTagFragment: Fragment() {
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
+
+    /***
+     *  @flag
+     *  - isKeyboardShowing:
+     *  소프트 키보드가 보이는지 감춰져있는지 판단하는 플래그.
+     *  onBackPressed를 활용하기위해 박상권님의 라이브러리를 사용했다.
+     *
+     *  - isChangingFragment :
+     *      다음 화면으로 전환 애니메이션이 동작하면 true로 변합니다.
+     *      true 상태에서는 추가적인 값의 조작이 불가능합니다.
+     */
+    var isKeyboardShowing: Boolean = false
+    var isChangingFragment = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddTagBinding.inflate(inflater, container, false).apply {
@@ -63,21 +73,54 @@ class AddTagFragment: Fragment() {
         }
         initBackground()
         showUi()
+        setTagRecyclerView()
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
 
-        setTagRecyclerView()
+        isKeyboardShowing = false
+        isChangingFragment = false
+
         observeTagEnrolled()
         observeTagSearched()
+        observeKeyboard()
+        setOnBackPressed()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setOnBackPressed() {
+        onBackPressedListener = object: OnBackPressedInFragment {
+            override fun onBackPressed(): Boolean {
+                binding.apply {
+                    return if (isKeyboardShowing) {
+                        false
+                    } else {
+                        if(!isChangingFragment) {
+                            isChangingFragment = true
+                            rvTagEnrolled.animateTransparency(0.0f, 2000)
+                            layoutInput.animateTransparency(0.0f, 2000)
+                            layoutTagRecommend.animateTransparency(0.0f, 2000)
+                                .setListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        super.onAnimationEnd(animation)
+                                        (activity as MainActivity).onBackPressed(true)
+                                    }
+                                })
+                            true
+                        } else {
+                            true
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun checkIsValidTag(tagName: String): Boolean {
@@ -204,6 +247,7 @@ class AddTagFragment: Fragment() {
 
     private fun showUi() {
         CoroutineScope(Dispatchers.Main).launch {
+            binding.rvTagEnrolled.animateTransparency(1.0f, 2000)
             binding.layoutInput.animateTransparency(1.0f, 2000)
         }
     }
@@ -217,6 +261,12 @@ class AddTagFragment: Fragment() {
                     Navigation.findNavController(view).navigate(navDirection)
                 }
             })
+    }
+
+    private fun observeKeyboard() {
+        TedKeyboardObserver(requireActivity()).listen { isShow ->
+            isKeyboardShowing = isShow
+        }
     }
 
     /***

@@ -7,7 +7,9 @@ import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import com.bd.bdproject.MainNavigationDirections
 import com.bd.bdproject.R
+import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.ActivityMainBinding
+import com.bd.bdproject.ui.main.AddTagFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,5 +39,27 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.layout_fragment).navigate(navDirection)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.layout_fragment)
+        val currentFragment = fragment?.let { it.childFragmentManager.fragments[0] }
+
+        if(currentFragment is BaseFragment) {
+            currentFragment.onBackPressedListener?.let {
+                val popInFragment = it.onBackPressed()
+
+                if (!popInFragment) {
+                    super.onBackPressed()
+                }
+            }?:super.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    fun onBackPressed(isAnimationEnd: Boolean) {
+        if(isAnimationEnd) super.onBackPressed()
+        else onBackPressed()
     }
 }
