@@ -12,10 +12,6 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
     val candidateTags: MutableLiveData<MutableList<Tag>> = MutableLiveData()
     val searchedTagNames: MutableLiveData<List<String>> = MutableLiveData()
 
-    init {
-        candidateTags.value = mutableListOf()
-    }
-
     fun asyncInsertTag(tags: List<Tag>?) {
         tags?.let {
             GlobalScope.launch { tagRepo.insertTag(tags) }

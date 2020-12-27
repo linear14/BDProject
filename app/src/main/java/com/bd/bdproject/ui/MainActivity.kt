@@ -63,4 +63,11 @@ class MainActivity : AppCompatActivity() {
         if(isAnimationEnd) super.onBackPressed()
         else onBackPressed()
     }
+
+    companion object {
+        const val ADD_LIGHT = 8000
+        const val ADD_TAG = 8100
+        const val ADD_MEMO = 8200
+        const val LIGHT_DETAIL = 8300
+    }
 }

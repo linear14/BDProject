@@ -8,4 +8,6 @@ class AddViewModel: ViewModel() {
     val brightness: MutableLiveData<Int?> = MutableLiveData()
     val tags: MutableLiveData<List<Tag>?> = MutableLiveData()
     val memo: MutableLiveData<String?> = MutableLiveData()
+
+    val previousPage: MutableLiveData<Int?> = MutableLiveData()
 }

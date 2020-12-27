@@ -23,6 +23,7 @@ import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddTagBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
+import com.bd.bdproject.ui.MainActivity.Companion.ADD_MEMO
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
@@ -68,8 +69,11 @@ class AddTagFragment: BaseFragment() {
         _binding = FragmentAddTagBinding.inflate(inflater, container, false).apply {
             inputTag.addTextChangedListener(InputTagWatcher())
             actionNext.setOnClickListener {
-                saveTags()
-                goToFragmentAddMemo(it)
+                if(!isChangingFragment) {
+                    isChangingFragment = true
+                    saveTags()
+                    goToFragmentAddMemo(it)
+                }
             }
         }
         initBackground()
@@ -113,6 +117,7 @@ class AddTagFragment: BaseFragment() {
                                 .setListener(object : AnimatorListenerAdapter() {
                                     override fun onAnimationEnd(animation: Animator?) {
                                         super.onAnimationEnd(animation)
+                                        sharedViewModel.previousPage.value = MainActivity.ADD_TAG
                                         KeyboardUtil.keyBoardHide(binding.inputTag)
                                         (activity as MainActivity).onBackPressed(true)
                                     }
@@ -210,16 +215,20 @@ class AddTagFragment: BaseFragment() {
             rvTagEnrolled.adapter = tagEnrolledAdapter.also {
                 it.onTagClickListener = object: OnTagClickListener {
                     override fun onClick(tagName: String) {
-                        inputTag.setText(tagName)
-                        inputTag.setSelection(inputTag.text.length)
-                        it.isEditMode = true
-                        it.editModeTag = tagName
-                        it.notifyDataSetChanged()
+                        if(!isChangingFragment) {
+                            inputTag.setText(tagName)
+                            inputTag.setSelection(inputTag.text.length)
+                            it.isEditMode = true
+                            it.editModeTag = tagName
+                            it.notifyDataSetChanged()
+                        }
                     }
                 }
                 it.onTagDeleteButtonClickListener = object: OnTagDeleteButtonClickListener {
                     override fun onClick(tagName: String) {
-                        deleteTag(tagName)
+                        if(!isChangingFragment) {
+                            deleteTag(tagName)
+                        }
                     }
                 }
             }
@@ -232,7 +241,7 @@ class AddTagFragment: BaseFragment() {
                                 editTag(tagEnrolledAdapter.editModeTag!!, tagName)
                             }
                             else {
-                                enrollTagToCandidate(tagName)
+                                if(!isChangingFragment) { enrollTagToCandidate(tagName) }
                             }
                         }
                     }
@@ -256,17 +265,19 @@ class AddTagFragment: BaseFragment() {
     }
 
     private fun showUi() {
-        CoroutineScope(Dispatchers.Main).launch {
+        if(sharedViewModel.previousPage.value == ADD_MEMO) {
+            binding.rvTagEnrolled.alpha = 1.0f
+        } else {
             binding.rvTagEnrolled.animateTransparency(1.0f, 2000)
                 .setListener(object: AnimatorListenerAdapter() {
                     override fun onAnimationStart(animation: Animator?) {
                         binding.rvTagEnrolled.alpha = 0f
                     }
                 })
-            binding.layoutInput.animateTransparency(1.0f, 2000)
-            binding.layoutTagRecommend.animateTransparency(1.0f, 2000)
-
         }
+
+        binding.layoutInput.animateTransparency(1.0f, 2000)
+        binding.layoutTagRecommend.animateTransparency(1.0f, 2000)
     }
 
     private fun saveTags() {
@@ -274,11 +285,13 @@ class AddTagFragment: BaseFragment() {
     }
 
     private fun goToFragmentAddMemo(view: View) {
+        KeyboardUtil.keyBoardHide(binding.inputTag)
         binding.layoutInput.animateTransparency(0.0f, 2000)
         binding.layoutTagRecommend.animateTransparency(0.0f, 2000)
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
+                    sharedViewModel.previousPage.value = MainActivity.ADD_TAG
                     KeyboardUtil.keyBoardHide(binding.inputTag)
                     val navDirection: NavDirections = AddTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
                     Navigation.findNavController(view).navigate(navDirection)
@@ -338,7 +351,7 @@ class AddTagFragment: BaseFragment() {
                             editTag(tagEnrolledAdapter.editModeTag!!, tagName)
                         }
                         else {
-                            enrollTagToCandidate(tagName)
+                            if(!isChangingFragment) { enrollTagToCandidate(tagName) }
                         }
                     }
                 }

@@ -1,5 +1,7 @@
 package com.bd.bdproject.ui.main
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
@@ -8,18 +10,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.BitDamApplication
-import com.bd.bdproject.`interface`.JobFinishedListener
+import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddMemoBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
+import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.util.timeToString
@@ -27,13 +30,16 @@ import com.bd.bdproject.viewmodel.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
 import com.bd.bdproject.viewmodel.main.AddViewModel
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
+import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
 class AddMemoFragment: BaseFragment() {
 
     private var _binding: FragmentAddMemoBinding? = null
-
     private val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
@@ -43,26 +49,49 @@ class AddMemoFragment: BaseFragment() {
 
     private var tagEnrolledAdapter = TagAdapter()
 
-    private var jobFinishedListener: JobFinishedListener? = null
-
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
 
+    /***
+     *  @flag
+     *  - isKeyboardShowing:
+     *  소프트 키보드가 보이는지 감춰져있는지 판단하는 플래그.
+     *  onBackPressed를 활용하기위해 박상권님의 라이브러리를 사용했다.
+     *
+     *  - isChangingFragment :
+     *      다음 화면으로 전환 애니메이션이 동작하면 true로 변합니다.
+     *      true 상태에서는 추가적인 값의 조작이 불가능합니다.
+     */
+    var isKeyboardShowing: Boolean = false
+    var isChangingFragment = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddMemoBinding.inflate(inflater, container, false).apply {
             inputMemo.addTextChangedListener(InputMemoWatcher())
+            actionEnroll.setOnClickListener {
+                if(!isChangingFragment) {
+                    isChangingFragment = true
+                    insertLightWithTag()
+                }
+            }
         }
 
         initBackground()
         showUi()
+        setTagRecyclerView()
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
 
+        isKeyboardShowing = false
+        isChangingFragment = false
+
+        observeKeyboard()
+        setOnBackPressed()
     }
 
     override fun onDestroyView() {
@@ -70,7 +99,54 @@ class AddMemoFragment: BaseFragment() {
         _binding = null
     }
 
+    private fun setOnBackPressed() {
+        onBackPressedListener = object: OnBackPressedInFragment {
+            override fun onBackPressed(): Boolean {
+                binding.apply {
+                    return if (isKeyboardShowing) {
+                        KeyboardUtil.keyBoardHide(binding.inputMemo)
+                        true
+                    } else {
+                        if(!isChangingFragment) {
+                            saveMemo()
+                            isChangingFragment = true
+                            layoutMemo.animateTransparency(0.0f, 2000)
+                                .setListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        super.onAnimationEnd(animation)
+                                        sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
+                                        KeyboardUtil.keyBoardHide(binding.inputMemo)
+                                        (activity as MainActivity).onBackPressed(true)
+                                    }
+                                })
+                            true
+                        } else {
+                            true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeKeyboard() {
+        TedKeyboardObserver(requireActivity()).listen { isShow ->
+            isKeyboardShowing = isShow
+        }
+    }
+
+    private fun setTagRecyclerView() {
+        val layoutManagerEnrolled = FlexboxLayoutManager(requireActivity()).apply {
+            flexDirection = FlexDirection.ROW
+            justifyContent = JustifyContent.CENTER
+        }
+
+        binding.rvTagEnrolled.layoutManager = layoutManagerEnrolled
+        binding.rvTagEnrolled.adapter = tagEnrolledAdapter
+    }
+
     private fun insertLightWithTag() {
+        KeyboardUtil.keyBoardHide(binding.inputMemo)
         runBlocking {
             binding.apply {
                 val dateCode = GlobalScope.async { insertLight() }
@@ -82,11 +158,15 @@ class AddMemoFragment: BaseFragment() {
                 // 왜 withContext로는 안되지? --> 완료된 함수 안에서만 사용?
                 if(job.isCancelled) {
                     // TODO 예외 처리를 어떻게 할까? __ 이렇게 예외 처리하는건 맞는지 알아보기
+                    isChangingFragment = false
                     Toast.makeText(BitDamApplication.applicationContext(), "등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     CoroutineScope(Dispatchers.Main).launch {
+                        sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
                         Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                        jobFinishedListener?.onSuccess()
+
+                        val navDirection: NavDirections = AddMemoFragmentDirections.actionAddMemoFragmentToLightDetailFragment()
+                        findNavController(binding.root).navigate(navDirection)
                     }
                 }
 
@@ -101,7 +181,7 @@ class AddMemoFragment: BaseFragment() {
             val light = Light(
                 currentTime,
                 tvBrightness.text.toString().toInt(),
-                null
+                inputMemo.text.toString()
             )
             lightViewModel.asyncInsertLight(light)
             return currentTime
@@ -110,9 +190,9 @@ class AddMemoFragment: BaseFragment() {
 
     private fun insertTag(): MutableList<Tag>? {
         binding.apply {
-            tagViewModel.asyncInsertTag(tagViewModel.candidateTags.value)
+            tagViewModel.asyncInsertTag(sharedViewModel.tags.value?: mutableListOf())
         }
-        return tagViewModel.candidateTags.value
+        return sharedViewModel.tags.value?.toMutableList()
     }
 
     private fun insertRelation(dateCode: String, tagList: MutableList<Tag>?) {
@@ -125,16 +205,23 @@ class AddMemoFragment: BaseFragment() {
 
         val brightness = sharedViewModel.brightness.value?:0
         val tags = sharedViewModel.tags.value?: mutableListOf()
+        val memo = sharedViewModel.memo.value
 
         gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
         binding.layoutAddMemo.background = gradientDrawable
         binding.tvBrightness.text = brightness.toString()
+        tagEnrolledAdapter.submitList(tags.toMutableList())
+        binding.inputMemo.setText(memo)
     }
 
     private fun showUi() {
         CoroutineScope(Dispatchers.Main).launch {
             binding.layoutMemo.animateTransparency(1.0f, 2000)
         }
+    }
+
+    private fun saveMemo() {
+        sharedViewModel.memo.value = binding.inputMemo.text.toString()
     }
 
     inner class InputMemoWatcher: TextWatcher {
@@ -151,9 +238,9 @@ class AddMemoFragment: BaseFragment() {
                 if(length > MAX_MEMO_LENGTH) {
                     inputMemo.setText(s?.substring(0, MAX_MEMO_LENGTH))
                     inputMemo.setSelection(MAX_MEMO_LENGTH)
-                    Toast.makeText(requireActivity(), "메모는 80자를 넘을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireActivity(), "메모는 ${MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Toast.LENGTH_SHORT).show()
                 } else {
-                    tvTextCount.text = "${s?.length?:0}/80자"
+                    tvTextCount.text = "${s?.length?:0}/${MAX_MEMO_LENGTH}자"
                 }
             }
         }
@@ -161,7 +248,7 @@ class AddMemoFragment: BaseFragment() {
     }
 
     companion object {
-        const val MAX_MEMO_LENGTH = 80
+        const val MAX_MEMO_LENGTH = 50
     }
 
 }

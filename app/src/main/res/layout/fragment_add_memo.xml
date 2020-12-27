@@ -8,12 +8,15 @@
     android:background="@android:color/transparent"
     tools:background="@color/black">
 
-    <Button
-        android:id="@+id/btn_enroll"
+    <TextView
+        android:id="@+id/action_enroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="등록"
+        android:fontFamily="@font/noto_light"
+        android:padding="24dp"
+        android:text="완료"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
+        android:overScrollMode="never"
         android:paddingHorizontal="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="메모 입력하기"
-            android:maxLines="6"
+            android:maxLines="4"
             android:textColor="#848484"
             android:textColorHint="#848484"
             android:textIsSelectable="true"

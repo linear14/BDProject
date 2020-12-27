@@ -41,6 +41,9 @@ class LightDetailFragment: BaseFragment() {
             observeLight()
             fabMore.setOnClickListener { controlBackgroundByFabState() }
             viewFilter.setOnClickListener { controlBackgroundByFabState() }
+
+            (activity as MainActivity).binding.btnDrawer.visibility = View.VISIBLE
+            (activity as MainActivity).binding.btnBack.visibility = View.GONE
         }
 
         return binding.root

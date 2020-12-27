@@ -17,6 +17,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
+import com.bd.bdproject.ui.MainActivity.Companion.ADD_LIGHT
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.main.AddViewModel
@@ -172,6 +173,7 @@ class AddLightFragment: BaseFragment() {
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
+                    sharedViewModel.previousPage.value = ADD_LIGHT
                     (activity as MainActivity).binding.drawer.closeDrawer(GravityCompat.START)
                     val navDirection: NavDirections = AddLightFragmentDirections.actionAddLightFragmentToAddTagFragment()
                     findNavController(binding.sbLight).navigate(navDirection)

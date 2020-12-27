@@ -29,6 +29,8 @@
         <action
             android:id="@+id/action_addMemoFragment_to_lightDetailFragment"
             app:destination="@id/lightDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/addLightFragment"
             app:popUpToInclusive="true" />
     </fragment>
