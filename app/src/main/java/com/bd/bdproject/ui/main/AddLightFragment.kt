@@ -9,13 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.ui.BaseFragment
+import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.main.AddViewModel
@@ -46,6 +47,8 @@ class AddLightFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
+            (activity as MainActivity).binding.btnDrawer.visibility = View.VISIBLE
+            (activity as MainActivity).binding.btnBack.visibility = View.GONE
         }
         if(sharedViewModel.brightness.value == null) {
             showUiWithDelay()
@@ -169,6 +172,7 @@ class AddLightFragment: BaseFragment() {
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
+                    (activity as MainActivity).binding.drawer.closeDrawer(GravityCompat.START)
                     val navDirection: NavDirections = AddLightFragmentDirections.actionAddLightFragmentToAddTagFragment()
                     findNavController(binding.sbLight).navigate(navDirection)
                 }

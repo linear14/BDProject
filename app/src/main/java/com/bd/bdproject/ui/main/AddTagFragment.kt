@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.NavDirections
@@ -25,6 +24,7 @@ import com.bd.bdproject.databinding.FragmentAddTagBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
+import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.TagViewModel
@@ -67,7 +67,8 @@ class AddTagFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddTagBinding.inflate(inflater, container, false).apply {
             inputTag.addTextChangedListener(InputTagWatcher())
-            btnEnroll.setOnClickListener {
+            actionNext.setOnClickListener {
+                saveTags()
                 goToFragmentAddMemo(it)
             }
         }
@@ -100,9 +101,11 @@ class AddTagFragment: BaseFragment() {
             override fun onBackPressed(): Boolean {
                 binding.apply {
                     return if (isKeyboardShowing) {
-                        false
+                        KeyboardUtil.keyBoardHide(binding.inputTag)
+                        true
                     } else {
                         if(!isChangingFragment) {
+                            saveTags()
                             isChangingFragment = true
                             rvTagEnrolled.animateTransparency(0.0f, 2000)
                             layoutInput.animateTransparency(0.0f, 2000)
@@ -110,6 +113,7 @@ class AddTagFragment: BaseFragment() {
                                 .setListener(object : AnimatorListenerAdapter() {
                                     override fun onAnimationEnd(animation: Animator?) {
                                         super.onAnimationEnd(animation)
+                                        KeyboardUtil.keyBoardHide(binding.inputTag)
                                         (activity as MainActivity).onBackPressed(true)
                                     }
                                 })
@@ -239,7 +243,13 @@ class AddTagFragment: BaseFragment() {
     }
 
     private fun initBackground() {
+        (activity as MainActivity).binding.btnDrawer.visibility = View.GONE
+        (activity as MainActivity).binding.btnBack.visibility = View.VISIBLE
+
         val brightness = sharedViewModel.brightness.value?:0
+        val tags = sharedViewModel.tags.value?.toMutableList()?: mutableListOf()
+
+        tagViewModel.candidateTags.value = tags
         gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
         binding.layoutAddTag.background = gradientDrawable
         binding.tvBrightness.text = brightness.toString()
@@ -248,8 +258,19 @@ class AddTagFragment: BaseFragment() {
     private fun showUi() {
         CoroutineScope(Dispatchers.Main).launch {
             binding.rvTagEnrolled.animateTransparency(1.0f, 2000)
+                .setListener(object: AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator?) {
+                        binding.rvTagEnrolled.alpha = 0f
+                    }
+                })
             binding.layoutInput.animateTransparency(1.0f, 2000)
+            binding.layoutTagRecommend.animateTransparency(1.0f, 2000)
+
         }
+    }
+
+    private fun saveTags() {
+        sharedViewModel.tags.value = tagViewModel.candidateTags.value
     }
 
     private fun goToFragmentAddMemo(view: View) {
@@ -257,6 +278,8 @@ class AddTagFragment: BaseFragment() {
         binding.layoutTagRecommend.animateTransparency(0.0f, 2000)
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    KeyboardUtil.keyBoardHide(binding.inputTag)
                     val navDirection: NavDirections = AddTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
                     Navigation.findNavController(view).navigate(navDirection)
                 }

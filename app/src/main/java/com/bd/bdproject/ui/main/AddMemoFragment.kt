@@ -18,6 +18,7 @@ import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddMemoBinding
 import com.bd.bdproject.ui.BaseFragment
+import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
@@ -119,6 +120,9 @@ class AddMemoFragment: BaseFragment() {
     }
 
     private fun initBackground() {
+        (activity as MainActivity).binding.btnDrawer.visibility = View.GONE
+        (activity as MainActivity).binding.btnBack.visibility = View.VISIBLE
+
         val brightness = sharedViewModel.brightness.value?:0
         val tags = sharedViewModel.tags.value?: mutableListOf()
 

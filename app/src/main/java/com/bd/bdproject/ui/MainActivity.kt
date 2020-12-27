@@ -25,14 +25,14 @@ class MainActivity : AppCompatActivity() {
             btnDrawer.setOnClickListener {
                 drawer.openDrawer(GravityCompat.START)
             }
+
+            btnBack.setOnClickListener {
+                onBackPressed()
+            }
         }
     }
 
     private fun setFragmentByEnrolledState(isEnrolled: Boolean) {
-        /*** TEST MEMO ***/
-        /*supportFragmentManager.beginTransaction().replace(R.id.layout_frame, AddMemoFragment()).commit()
-        return*/
-
         when(isEnrolled) {
             false -> {
                 val navDirection: NavDirections = MainNavigationDirections.actionGlobalAddLightFragment()
@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity() {
                 if (!popInFragment) {
                     super.onBackPressed()
                 }
-            }?:super.onBackPressed()
+            }
+                ?:super.onBackPressed()
         } else {
             super.onBackPressed()
         }
