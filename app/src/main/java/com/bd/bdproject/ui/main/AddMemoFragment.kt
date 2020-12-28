@@ -211,7 +211,7 @@ class AddMemoFragment: BaseFragment() {
             gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
             layoutAddMemo.background = gradientDrawable
             tvBrightness.text = brightness.toString()
-            tagEnrolledAdapter.submitList(tags.toMutableList())
+            tagEnrolledAdapter.submitList(tags.toMutableList(), brightness)
             inputMemo.setText(memo)
         }
     }

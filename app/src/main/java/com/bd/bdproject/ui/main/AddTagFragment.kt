@@ -187,14 +187,18 @@ class AddTagFragment: BaseFragment() {
                 } else {
                     binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
                 }
-                submitList(enrolled.toMutableList())
+                submitList(enrolled.toMutableList(), sharedViewModel.brightness.value?:0)
             }
         }
     }
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(requireActivity()) { searchedResult ->
-            tagRecommendAdapter.submitList(searchedResult.map{ Tag(it) } )
+            tagRecommendAdapter.submitList(
+                searchedResult.map{ Tag(it) }.toMutableList(),
+                sharedViewModel.brightness.value?:0,
+                true
+            )
         }
     }
 

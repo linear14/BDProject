@@ -17,6 +17,7 @@ import com.bd.bdproject.databinding.ItemTagBinding
 class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
 
     var brightness: Int? = null
+    var isFilled: Boolean = false
 
     // 태그 변경 시 필요한 flag 및 temp 스트링 프로퍼티
     var isEditMode: Boolean = false
@@ -31,7 +32,7 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
 
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
         holder.bind(getItem(position))
-        holder.setBackground(brightness)
+        holder.setBackground(brightness, isFilled)
         holder.setTextColor(brightness)
     }
 
@@ -58,10 +59,14 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
             }
         }
 
-        fun setBackground(brightness: Int?) {
-            when(brightness) {
-                in 0 until 80 -> { binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_white)}
-                else -> { binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_black)}
+        fun setBackground(brightness: Int?, isFilled: Boolean) {
+            if(isFilled) {
+                binding.tvTag.setBackgroundResource(R.drawable.deco_tag_default_or_selected)
+            } else {
+                when(brightness) {
+                    in 0 until 80 -> { binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_white)}
+                    else -> { binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_black)}
+                }
             }
         }
 
@@ -81,13 +86,13 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
 
     }
 
-    fun submitList(list: MutableList<Tag>?, brightness: Int) {
+    fun submitList(list: MutableList<Tag>?, brightness: Int, isFilled: Boolean = false) {
         super.submitList(list)
 
-        if(this.brightness != brightness) {
-            this.brightness = brightness
-            notifyDataSetChanged()
-        }
+        this.brightness = brightness
+        this.isFilled = isFilled
+
+        notifyDataSetChanged()
     }
 
 }
