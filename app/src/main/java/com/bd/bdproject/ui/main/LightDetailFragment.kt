@@ -5,17 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
-import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.ui.BaseFragment
-import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
+import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
@@ -42,8 +37,8 @@ class LightDetailFragment: BaseFragment() {
             fabMore.setOnClickListener { controlBackgroundByFabState() }
             viewFilter.setOnClickListener { controlBackgroundByFabState() }
 
-            (activity as MainActivity).binding.btnDrawer.visibility = View.VISIBLE
-            (activity as MainActivity).binding.btnBack.visibility = View.GONE
+            mainActivity.binding.btnDrawer.visibility = View.VISIBLE
+            mainActivity.binding.btnBack.visibility = View.GONE
         }
 
         return binding.root
@@ -68,10 +63,7 @@ class LightDetailFragment: BaseFragment() {
                 val memo = it.light.memo
                 val tags = it.tags
 
-                when(brightness) {
-                    in 0 until 80 -> { setEntireTextColor(R.color.white, tvDate, tvBrightness, tvMemo) }
-                    else -> { setEntireTextColor(R.color.black, tvDate, tvBrightness, tvMemo) }
-                }
+                setEntireDetailFragmentColor(brightness)
 
                 tvDate.text = dateCode.toBitDamDateFormat()
                 tvBrightness.text = brightness.toString()
@@ -81,12 +73,6 @@ class LightDetailFragment: BaseFragment() {
 
                 tagAdapter?.submitList(tags.toMutableList(), brightness)
             }
-        }
-    }
-
-    private fun setEntireTextColor(color: Int, vararg view: TextView) {
-        for(item in view) {
-            item.setTextColor(ContextCompat.getColor(requireActivity(), color))
         }
     }
 
@@ -108,7 +94,7 @@ class LightDetailFragment: BaseFragment() {
                 View.GONE -> {
                     viewFilter.visibility = View.VISIBLE
                     layoutMore.visibility = View.VISIBLE
-                    (activity as MainActivity).binding.apply {
+                    mainActivity.binding.apply {
                         btnDrawer.visibility = View.GONE
                         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                     }
@@ -117,12 +103,26 @@ class LightDetailFragment: BaseFragment() {
                 View.VISIBLE -> {
                     viewFilter.visibility = View.GONE
                     layoutMore.visibility = View.GONE
-                    (activity as MainActivity).binding.apply {
+                    mainActivity.binding.apply {
                         btnDrawer.visibility = View.VISIBLE
                         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                     }
                 }
             }
+        }
+    }
+
+    private fun setEntireDetailFragmentColor(brightness: Int) {
+        binding.apply {
+            setEntireViewColor(
+                brightness,
+                tvBrightness,
+                tvDate,
+                tvMemo,
+                btnSpreadUpDown,
+                mainActivity.binding.btnDrawer,
+                mainActivity.binding.btnBack
+            )
         }
     }
 

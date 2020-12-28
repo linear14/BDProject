@@ -18,6 +18,7 @@ import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.ADD_LIGHT
+import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.main.AddViewModel
@@ -48,8 +49,8 @@ class AddLightFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
-            (activity as MainActivity).binding.btnDrawer.visibility = View.VISIBLE
-            (activity as MainActivity).binding.btnBack.visibility = View.GONE
+            mainActivity.binding.btnDrawer.visibility = View.VISIBLE
+            mainActivity.binding.btnBack.visibility = View.GONE
         }
         if(sharedViewModel.brightness.value == null) {
             showUiWithDelay()
@@ -109,6 +110,7 @@ class AddLightFragment: BaseFragment() {
     private fun showUi() {
         binding.apply {
             val brightness = sharedViewModel.brightness.value?:0
+            setEntireLightFragmentColor(brightness)
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
             layoutAddLight.background = gradientDrawable
             tvBrightness.text = brightness.toString()
@@ -137,7 +139,10 @@ class AddLightFragment: BaseFragment() {
         binding.apply {
             sbLight.setOnProgressChangeListener { progress ->
                 if(!isChangingFragment) {
-                    tvBrightness.text = getBrightness(progress).toString()
+                    val brightness = getBrightness(progress)
+                    setEntireLightFragmentColor(brightness)
+
+                    tvBrightness.text = brightness.toString()
 
                     gradientDrawable.colors = getDiagonalLight(progress)
                     layoutAddLight.background = gradientDrawable
@@ -174,11 +179,17 @@ class AddLightFragment: BaseFragment() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
                     sharedViewModel.previousPage.value = ADD_LIGHT
-                    (activity as MainActivity).binding.drawer.closeDrawer(GravityCompat.START)
+                    mainActivity.binding.drawer.closeDrawer(GravityCompat.START)
                     val navDirection: NavDirections = AddLightFragmentDirections.actionAddLightFragmentToAddTagFragment()
                     findNavController(binding.sbLight).navigate(navDirection)
                 }
             })
+    }
+
+    private fun setEntireLightFragmentColor(brightness: Int) {
+        binding.apply {
+            setEntireViewColor(brightness, tvBrightness, tvAskCondition, mainActivity.binding.btnDrawer)
+        }
     }
 
     /***

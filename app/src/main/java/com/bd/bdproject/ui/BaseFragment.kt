@@ -5,5 +5,9 @@ import com.bd.bdproject.`interface`.OnBackPressedInFragment
 
 open class BaseFragment: Fragment() {
 
+    val mainActivity by lazy {
+        activity as MainActivity
+    }
+
     var onBackPressedListener: OnBackPressedInFragment? = null
 }

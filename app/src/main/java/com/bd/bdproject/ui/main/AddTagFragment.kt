@@ -25,6 +25,7 @@ import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.ADD_MEMO
 import com.bd.bdproject.ui.main.adapter.TagAdapter
+import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
@@ -119,7 +120,7 @@ class AddTagFragment: BaseFragment() {
                                         super.onAnimationEnd(animation)
                                         sharedViewModel.previousPage.value = MainActivity.ADD_TAG
                                         KeyboardUtil.keyBoardHide(binding.inputTag)
-                                        (activity as MainActivity).onBackPressed(true)
+                                        mainActivity.onBackPressed(true)
                                     }
                                 })
                             true
@@ -252,12 +253,13 @@ class AddTagFragment: BaseFragment() {
     }
 
     private fun initBackground() {
-        (activity as MainActivity).binding.btnDrawer.visibility = View.GONE
-        (activity as MainActivity).binding.btnBack.visibility = View.VISIBLE
+        mainActivity.binding.btnDrawer.visibility = View.GONE
+        mainActivity.binding.btnBack.visibility = View.VISIBLE
 
         val brightness = sharedViewModel.brightness.value?:0
         val tags = sharedViewModel.tags.value?.toMutableList()?: mutableListOf()
 
+        setEntireTagFragmentColor(brightness)
         tagViewModel.candidateTags.value = tags
         gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
         binding.layoutAddTag.background = gradientDrawable
@@ -302,6 +304,21 @@ class AddTagFragment: BaseFragment() {
     private fun observeKeyboard() {
         TedKeyboardObserver(requireActivity()).listen { isShow ->
             isKeyboardShowing = isShow
+        }
+    }
+
+    private fun setEntireTagFragmentColor(brightness: Int) {
+        binding.apply {
+            ColorUtil.setEntireViewColor(
+                brightness,
+                tvBrightness,
+                actionNext,
+                tvHash,
+                inputTag,
+                separator1,
+                tvTagRecommend,
+                mainActivity.binding.btnBack
+            )
         }
     }
 

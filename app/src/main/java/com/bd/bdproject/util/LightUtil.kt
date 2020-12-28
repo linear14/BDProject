@@ -38,7 +38,7 @@ object LightUtil {
             )
         } else {
             val lightMaxStart = levelMap[20]!!.first
-            val lightMaxEnd = levelMap[20]!!.first
+            val lightMaxEnd = levelMap[20]!!.second
 
             intArrayOf(
                 Color.rgb(lightMaxStart.r, lightMaxStart.g, lightMaxStart.b),

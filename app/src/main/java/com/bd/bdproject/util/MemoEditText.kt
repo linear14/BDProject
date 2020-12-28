@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.TypedValue
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 
 class MemoEditText: AppCompatEditText {
 
@@ -24,7 +25,7 @@ class MemoEditText: AppCompatEditText {
         setBackgroundResource(android.R.color.transparent)
         setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8.0f,  resources.displayMetrics), 1.0f)
         paint.style = Paint.Style.STROKE
-        paint.color = Color.parseColor("#979797")
+        paint.color = ContextCompat.getColor(rootView.context, android.R.color.black)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -44,4 +45,10 @@ class MemoEditText: AppCompatEditText {
 
         super.onDraw(canvas)
     }
+
+    fun setLineColor(color: Int) {
+        paint.color = color
+    }
+
+
 }

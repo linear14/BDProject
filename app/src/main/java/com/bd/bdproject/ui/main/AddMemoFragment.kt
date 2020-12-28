@@ -15,6 +15,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.BitDamApplication
+import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
@@ -22,10 +23,7 @@ import com.bd.bdproject.databinding.FragmentAddMemoBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.main.adapter.TagAdapter
-import com.bd.bdproject.util.KeyboardUtil
-import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.*
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
@@ -200,18 +198,22 @@ class AddMemoFragment: BaseFragment() {
     }
 
     private fun initBackground() {
-        (activity as MainActivity).binding.btnDrawer.visibility = View.GONE
-        (activity as MainActivity).binding.btnBack.visibility = View.VISIBLE
+        binding.apply {
+            mainActivity.binding.btnDrawer.visibility = View.GONE
+            mainActivity.binding.btnBack.visibility = View.VISIBLE
 
-        val brightness = sharedViewModel.brightness.value?:0
-        val tags = sharedViewModel.tags.value?: mutableListOf()
-        val memo = sharedViewModel.memo.value
+            val brightness = sharedViewModel.brightness.value?:0
+            val tags = sharedViewModel.tags.value?: mutableListOf()
+            val memo = sharedViewModel.memo.value
 
-        gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-        binding.layoutAddMemo.background = gradientDrawable
-        binding.tvBrightness.text = brightness.toString()
-        tagEnrolledAdapter.submitList(tags.toMutableList())
-        binding.inputMemo.setText(memo)
+            setEntireMemoFragmentColor(brightness)
+
+            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+            layoutAddMemo.background = gradientDrawable
+            tvBrightness.text = brightness.toString()
+            tagEnrolledAdapter.submitList(tags.toMutableList())
+            inputMemo.setText(memo)
+        }
     }
 
     private fun showUi() {
@@ -222,6 +224,19 @@ class AddMemoFragment: BaseFragment() {
 
     private fun saveMemo() {
         sharedViewModel.memo.value = binding.inputMemo.text.toString()
+    }
+
+    private fun setEntireMemoFragmentColor(brightness: Int) {
+        binding.apply {
+            ColorUtil.setEntireViewColor(
+                brightness,
+                tvBrightness,
+                actionEnroll,
+                inputMemo,
+                tvTextCount,
+                mainActivity.binding.btnBack
+            )
+        }
     }
 
     inner class InputMemoWatcher: TextWatcher {
