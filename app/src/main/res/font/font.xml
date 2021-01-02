@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <font
-        android:font="@font/noto_regular"
+        android:font="@font/noto_light"
         android:fontStyle="normal"
-        android:fontWeight="400"
-        app:font ="@font/noto_regular"
+        android:fontWeight="250"
+        app:font ="@font/noto_light"
         app:fontStyle="normal"
-        app:fontWeight="400"/>
+        app:fontWeight="250"/>
 
     <font
         android:font="@font/noto_bold"

@@ -1,7 +1,7 @@
-noto_regular : 기본
+noto_light : 기본
 noto_bold : bold (text size bold)
 
-noto_light : fontfamily noto_light
+noto_regular : fontfamily noto_regular
 noto_medium : fontfamily noto_medium
 
 굵기 : light < regular < medium < bold

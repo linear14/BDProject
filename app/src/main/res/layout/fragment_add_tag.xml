@@ -12,7 +12,6 @@
         android:id="@+id/action_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/noto_light"
         android:padding="24dp"
         android:text="다음"
         android:textColor="@color/white"
