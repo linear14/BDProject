@@ -7,6 +7,7 @@ import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
+import com.bd.bdproject.viewmodel.collection.CalendarViewModel
 import com.bd.bdproject.viewmodel.splash.SplashViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -25,4 +26,5 @@ val appModule = module {
     viewModel { TagViewModel(get()) }
     viewModel { LightTagRelationViewModel(get()) }
     viewModel { SplashViewModel(get()) }
+    viewModel { CalendarViewModel(get()) }
 }

@@ -21,4 +21,6 @@ interface LightDao {
     @Query("SELECT * FROM light WHERE dateCode = :dateCode")
     fun selectLightsWithTagsByDateCode(dateCode: String): LightWithTags
 
+    @Query("SELECT * FROM light WHERE dateCode IN (:dateCodes)")
+    fun selectLightForSpecificDays(dateCodes: List<String>): List<Light>
 }

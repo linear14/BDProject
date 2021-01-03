@@ -20,7 +20,6 @@ fun bindBrightness(view: View, brightness: Int) {
     }
     gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
 
-    if(view is ConstraintLayout) {
-        view.background = gradientDrawable
-    }
+    view.background = gradientDrawable
+
 }
