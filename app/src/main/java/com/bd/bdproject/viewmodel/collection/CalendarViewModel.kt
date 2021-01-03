@@ -15,9 +15,10 @@ class CalendarViewModel(private val lightRepo: LightRepository) : ViewModel() {
 
     val lightLiveData: MutableLiveData<List<Light>> = MutableLiveData()
 
-    fun getDateCode(year: Int, realMonth: Int): MutableList<String> {
+    val calendarCurrentState = GregorianCalendar()
 
-        val month = realMonth - 1
+    fun getDateCode(year: Int, month: Int): MutableList<String> {
+
         val dateCodeList = mutableListOf<String>()
 
         val calendarStart = GregorianCalendar(year, month, 1)
@@ -33,9 +34,11 @@ class CalendarViewModel(private val lightRepo: LightRepository) : ViewModel() {
             calendarStart.add(Calendar.DATE, 1)
         }
 
-        /*for(i in dateCodeList) {
+        /*Log.d("DATE_CODE_TEST", "*********start**********")
+        for(i in dateCodeList) {
             Log.d("DATE_CODE_TEST", i)
-        }*/
+        }
+        Log.d("DATE_CODE_TEST", "*********end**********")*/
 
         return dateCodeList
     }
