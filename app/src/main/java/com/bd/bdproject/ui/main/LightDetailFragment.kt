@@ -6,15 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
+import androidx.navigation.NavDirections
+import androidx.navigation.Navigation
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.ui.BaseFragment
+import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.viewmodel.LightViewModel
+import com.bd.bdproject.viewmodel.main.AddViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import org.koin.android.ext.android.inject
@@ -24,6 +29,7 @@ class LightDetailFragment: BaseFragment() {
     private var _binding: FragmentLightDetailBinding? = null
     private val binding get() = _binding!!
 
+    private val sharedViewModel: AddViewModel by activityViewModels()
     private val lightViewModel: LightViewModel by inject()
     private var tagAdapter: TagAdapter? = null
 
@@ -39,6 +45,22 @@ class LightDetailFragment: BaseFragment() {
 
             mainActivity.binding.btnDrawer.visibility = View.VISIBLE
             mainActivity.binding.btnBack.visibility = View.GONE
+
+            actionEditBrightness.setOnClickListener {
+                sharedViewModel.previousPage.value = LIGHT_DETAIL
+                val navDirection: NavDirections = LightDetailFragmentDirections.actionLightDetailFragmentToAddLightFragment()
+                Navigation.findNavController(it).navigate(navDirection)
+            }
+            actionEditTag.setOnClickListener {
+                sharedViewModel.previousPage.value = LIGHT_DETAIL
+                val navDirection: NavDirections = LightDetailFragmentDirections.actionLightDetailFragmentToAddTagFragment()
+                Navigation.findNavController(it).navigate(navDirection)
+            }
+            actionEditMemo.setOnClickListener {
+                sharedViewModel.previousPage.value = LIGHT_DETAIL
+                val navDirection: NavDirections = LightDetailFragmentDirections.actionLightDetailFragmentToAddMemoFragment()
+                Navigation.findNavController(it).navigate(navDirection)
+            }
         }
 
         return binding.root

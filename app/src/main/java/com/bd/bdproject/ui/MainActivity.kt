@@ -1,5 +1,6 @@
 package com.bd.bdproject.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -9,6 +10,7 @@ import com.bd.bdproject.MainNavigationDirections
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.ActivityMainBinding
+import com.bd.bdproject.ui.collection.CollectionMainActivity
 import com.bd.bdproject.ui.main.AddTagFragment
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +26,11 @@ class MainActivity : AppCompatActivity() {
 
             btnDrawer.setOnClickListener {
                 drawer.openDrawer(GravityCompat.START)
+            }
+
+            navigationDrawer.actionMyLight.setOnClickListener {
+                startActivity(Intent(this@MainActivity, CollectionMainActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
             }
 
             btnBack.setOnClickListener {
