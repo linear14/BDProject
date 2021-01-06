@@ -72,21 +72,38 @@
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_left" />
+            app:popExitAnim="@anim/slide_out_left">
+            <argument
+                android:name="brightness"
+                app:argType="integer"
+                android:defaultValue="0"/>
+        </action>
         <action
             android:id="@+id/action_lightDetailFragment_to_addTagFragment"
             app:destination="@id/addTagFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_left" />
+            app:popExitAnim="@anim/slide_out_left">
+            <argument
+                android:name="tags"
+                app:argType="com.bd.bdproject.data.model.Tags"
+                android:defaultValue="@null"
+                app:nullable="true"/>
+        </action>
         <action
             android:id="@+id/action_lightDetailFragment_to_addMemoFragment"
             app:destination="@id/addMemoFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_left" />
+            app:popExitAnim="@anim/slide_out_left">
+            <argument
+                android:name="memo"
+                app:argType="string"
+                android:defaultValue="@null"
+                app:nullable="true"/>
+        </action>
     </fragment>
 
     <action
