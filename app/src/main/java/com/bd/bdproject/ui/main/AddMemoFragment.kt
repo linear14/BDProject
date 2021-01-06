@@ -22,6 +22,7 @@ import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddMemoBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
+import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.*
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
@@ -45,7 +46,7 @@ class AddMemoFragment: BaseFragment() {
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
 
-    private var tagEnrolledAdapter = TagAdapter()
+    private val tagEnrolledAdapter by lazy { TagAdapter() }
 
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
@@ -75,11 +76,15 @@ class AddMemoFragment: BaseFragment() {
             }
         }
 
-        initBackground()
-        showUi()
-        setTagRecyclerView()
+
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setTagRecyclerView()
     }
 
     override fun onResume() {
@@ -90,6 +95,9 @@ class AddMemoFragment: BaseFragment() {
 
         observeKeyboard()
         setOnBackPressed()
+
+        initBackground()
+        showUi()
     }
 
     override fun onDestroyView() {
@@ -217,8 +225,10 @@ class AddMemoFragment: BaseFragment() {
     }
 
     private fun showUi() {
-        CoroutineScope(Dispatchers.Main).launch {
-            binding.layoutMemo.animateTransparency(1.0f, 2000)
+        if (sharedViewModel.previousPage.value != LIGHT_DETAIL) {
+            CoroutineScope(Dispatchers.Main).launch {
+                binding.layoutMemo.animateTransparency(1.0f, 2000)
+            }
         }
     }
 

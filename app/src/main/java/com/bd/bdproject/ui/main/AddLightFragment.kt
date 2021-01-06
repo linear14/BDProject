@@ -18,6 +18,7 @@ import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.ADD_LIGHT
+import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
@@ -48,21 +49,24 @@ class AddLightFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
+
+        }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
             mainActivity.binding.btnDrawer.visibility = View.VISIBLE
             mainActivity.binding.btnBack.visibility = View.GONE
-        }
-        if(sharedViewModel.brightness.value == null) {
-            showUiWithDelay()
-        } else {
-            showUi()
+
+            setSeekBarPressListener()
+            setSeekBarProgressChangedListener()
+            setSeekBarReleaseListener()
         }
 
-        setSeekBarPressListener()
-        setSeekBarProgressChangedListener()
-        setSeekBarReleaseListener()
-
-        return binding.root
     }
 
     override fun onResume() {
@@ -70,7 +74,11 @@ class AddLightFragment: BaseFragment() {
         isFirstPressed = true
         isChangingFragment = false
 
-        Log.d("FLAG_STATE", "isFirstPressed: $isFirstPressed, isChangingView: $isChangingFragment")
+        if(sharedViewModel.brightness.value == null) {
+            showUiWithDelay()
+        } else {
+            showUi()
+        }
     }
 
     override fun onDestroyView() {
@@ -79,29 +87,38 @@ class AddLightFragment: BaseFragment() {
     }
 
     private fun showUiWithDelay() {
-        GlobalScope.launch {
+        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
             binding.apply {
                 tvAskCondition.visibility = View.GONE
-                tvAskCondition.clearAnimation()
-                sbLight.clearAnimation()
+                tvBrightness.visibility = View.VISIBLE
+                sbLight.alpha = 1.0f
+                sbLight.barWidth = 4
+            }
+        } else {
+            GlobalScope.launch {
+                binding.apply {
+                    tvAskCondition.visibility = View.GONE
+                    tvAskCondition.clearAnimation()
+                    sbLight.clearAnimation()
 
-                delay(1000)
+                    delay(1000)
 
-                withContext(Dispatchers.Main) {
-                    tvAskCondition.animateTransparency(1.0f, 2000)
-                        .setListener(object: AnimatorListenerAdapter() {
-                            override fun onAnimationStart(animation: Animator?) {
-                                super.onAnimationStart(animation)
-                                tvAskCondition.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                if(!isChangingFragment) {
-                                    sbLight.animateTransparency(1.0f, 2000)
+                    withContext(Dispatchers.Main) {
+                        tvAskCondition.animateTransparency(1.0f, 2000)
+                            .setListener(object: AnimatorListenerAdapter() {
+                                override fun onAnimationStart(animation: Animator?) {
+                                    super.onAnimationStart(animation)
+                                    tvAskCondition.visibility = View.VISIBLE
                                 }
-                            }
-                        })
+
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    super.onAnimationEnd(animation)
+                                    if(!isChangingFragment) {
+                                        sbLight.animateTransparency(1.0f, 2000)
+                                    }
+                                }
+                            })
+                    }
                 }
             }
         }
@@ -155,7 +172,7 @@ class AddLightFragment: BaseFragment() {
     private fun setSeekBarReleaseListener() {
         binding.apply {
             sbLight.setOnReleaseListener { progress ->
-                if(!isFirstPressed && !isChangingFragment) {
+                if(sharedViewModel.previousPage.value != LIGHT_DETAIL && !isFirstPressed && !isChangingFragment) {
                     isChangingFragment = true
                     saveBrightness()
                     goToFragmentAddLight()

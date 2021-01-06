@@ -39,12 +39,6 @@ class LightDetailFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentLightDetailBinding.inflate(inflater, container, false).apply {
-            observeLight()
-            fabMore.setOnClickListener { controlBackgroundByFabState() }
-            viewFilter.setOnClickListener { controlBackgroundByFabState() }
-
-            mainActivity.binding.btnDrawer.visibility = View.VISIBLE
-            mainActivity.binding.btnBack.visibility = View.GONE
 
             actionEditBrightness.setOnClickListener {
                 sharedViewModel.previousPage.value = LIGHT_DETAIL
@@ -62,14 +56,28 @@ class LightDetailFragment: BaseFragment() {
                 Navigation.findNavController(it).navigate(navDirection)
             }
         }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
+
+        mainActivity.binding.btnDrawer.visibility = View.VISIBLE
+        mainActivity.binding.btnBack.visibility = View.GONE
+
+        binding.apply {
+            fabMore.setOnClickListener { controlBackgroundByFabState() }
+            viewFilter.setOnClickListener { controlBackgroundByFabState() }
+        }
+
         setTagRecyclerView()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        observeLight()
+        lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
     }
 
     override fun onDestroyView() {

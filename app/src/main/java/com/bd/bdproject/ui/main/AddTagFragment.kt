@@ -24,6 +24,7 @@ import com.bd.bdproject.databinding.FragmentAddTagBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.ADD_MEMO
+import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.KeyboardUtil
@@ -46,8 +47,42 @@ class AddTagFragment: BaseFragment() {
     private val tagViewModel: TagViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
 
-    private var tagEnrolledAdapter = TagAdapter()
-    private var tagRecommendAdapter = TagAdapter()
+    private val tagEnrolledAdapter by lazy { TagAdapter().also {
+        it.onTagClickListener = object: OnTagClickListener {
+            override fun onClick(tagName: String) {
+                if(!isChangingFragment) {
+                    binding.inputTag.setText(tagName)
+                    binding.inputTag.setSelection(binding.inputTag.text.length)
+                    it.isEditMode = true
+                    it.editModeTag = tagName
+                    it.notifyDataSetChanged()
+                }
+            }
+        }
+        it.onTagDeleteButtonClickListener = object: OnTagDeleteButtonClickListener {
+            override fun onClick(tagName: String) {
+                if(!isChangingFragment) {
+                    deleteTag(tagName)
+                }
+            }
+        }
+    } }
+
+    private val tagRecommendAdapter by lazy { TagAdapter().also {
+        it.onTagClickListener = object: OnTagClickListener {
+            override fun onClick(tagName: String) {
+                if(checkIsValidTag(tagName)) {
+                    if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
+                        editTag(tagEnrolledAdapter.editModeTag!!, tagName)
+                    }
+                    else {
+                        if(!isChangingFragment) { enrollTagToCandidate(tagName) }
+                    }
+                }
+            }
+
+        }
+    } }
 
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
@@ -77,11 +112,14 @@ class AddTagFragment: BaseFragment() {
                 }
             }
         }
-        initBackground()
-        showUi()
-        setTagRecyclerView()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setTagRecyclerView()
     }
 
     override fun onResume() {
@@ -94,6 +132,9 @@ class AddTagFragment: BaseFragment() {
         observeTagSearched()
         observeKeyboard()
         setOnBackPressed()
+
+        initBackground()
+        showUi()
     }
 
     override fun onDestroyView() {
@@ -217,42 +258,8 @@ class AddTagFragment: BaseFragment() {
             rvTagEnrolled.layoutManager = layoutManagerEnrolled
             rvTagRecommend.layoutManager = layoutManagerRecommend
 
-            rvTagEnrolled.adapter = tagEnrolledAdapter.also {
-                it.onTagClickListener = object: OnTagClickListener {
-                    override fun onClick(tagName: String) {
-                        if(!isChangingFragment) {
-                            inputTag.setText(tagName)
-                            inputTag.setSelection(inputTag.text.length)
-                            it.isEditMode = true
-                            it.editModeTag = tagName
-                            it.notifyDataSetChanged()
-                        }
-                    }
-                }
-                it.onTagDeleteButtonClickListener = object: OnTagDeleteButtonClickListener {
-                    override fun onClick(tagName: String) {
-                        if(!isChangingFragment) {
-                            deleteTag(tagName)
-                        }
-                    }
-                }
-            }
-
-            rvTagRecommend.adapter = tagRecommendAdapter.also {
-                it.onTagClickListener = object: OnTagClickListener {
-                    override fun onClick(tagName: String) {
-                        if(checkIsValidTag(tagName)) {
-                            if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
-                                editTag(tagEnrolledAdapter.editModeTag!!, tagName)
-                            }
-                            else {
-                                if(!isChangingFragment) { enrollTagToCandidate(tagName) }
-                            }
-                        }
-                    }
-
-                }
-            }
+            rvTagEnrolled.adapter = tagEnrolledAdapter
+            rvTagRecommend.adapter = tagRecommendAdapter
         }
     }
 
@@ -271,19 +278,32 @@ class AddTagFragment: BaseFragment() {
     }
 
     private fun showUi() {
-        if(sharedViewModel.previousPage.value == ADD_MEMO) {
-            binding.rvTagEnrolled.alpha = 1.0f
-        } else {
-            binding.rvTagEnrolled.animateTransparency(1.0f, 2000)
-                .setListener(object: AnimatorListenerAdapter() {
-                    override fun onAnimationStart(animation: Animator?) {
-                        binding.rvTagEnrolled.alpha = 0f
-                    }
-                })
-        }
+        binding.apply {
+            when (sharedViewModel.previousPage.value) {
+                ADD_MEMO -> {
+                    rvTagEnrolled.alpha = 1.0f
+                    layoutInput.animateTransparency(1.0f, 2000)
+                    layoutTagRecommend.animateTransparency(1.0f, 2000)
+                }
+                LIGHT_DETAIL -> {
 
-        binding.layoutInput.animateTransparency(1.0f, 2000)
-        binding.layoutTagRecommend.animateTransparency(1.0f, 2000)
+                    rvTagEnrolled.alpha = 1.0f
+                    layoutInput.alpha = 1.0f
+                    rvTagRecommend.alpha = 1.0f
+
+                }
+                else -> {
+                    rvTagEnrolled.animateTransparency(1.0f, 2000)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationStart(animation: Animator?) {
+                                rvTagEnrolled.alpha = 0f
+                            }
+                        })
+                    layoutInput.animateTransparency(1.0f, 2000)
+                    layoutTagRecommend.animateTransparency(1.0f, 2000)
+                }
+            }
+        }
     }
 
     private fun saveTags() {
