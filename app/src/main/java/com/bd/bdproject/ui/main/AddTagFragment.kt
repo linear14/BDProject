@@ -150,6 +150,9 @@ class AddTagFragment: BaseFragment() {
                         KeyboardUtil.keyBoardHide(binding.inputTag)
                         true
                     } else {
+                        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                            return false
+                        }
                         if(!isChangingFragment) {
                             saveTags()
                             isChangingFragment = true
@@ -286,7 +289,8 @@ class AddTagFragment: BaseFragment() {
                     layoutTagRecommend.animateTransparency(1.0f, 2000)
                 }
                 LIGHT_DETAIL -> {
-
+                    actionNext.visibility = View.GONE
+                    actionEnroll.visibility = View.VISIBLE
                     rvTagEnrolled.alpha = 1.0f
                     layoutInput.alpha = 1.0f
                     rvTagRecommend.alpha = 1.0f
@@ -337,6 +341,7 @@ class AddTagFragment: BaseFragment() {
                 brightness,
                 tvBrightness,
                 actionNext,
+                actionEnroll,
                 tvHash,
                 inputTag,
                 separator1,

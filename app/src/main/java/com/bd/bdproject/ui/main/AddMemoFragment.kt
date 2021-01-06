@@ -113,6 +113,9 @@ class AddMemoFragment: BaseFragment() {
                         KeyboardUtil.keyBoardHide(binding.inputMemo)
                         true
                     } else {
+                        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                            return false
+                        }
                         if(!isChangingFragment) {
                             saveMemo()
                             isChangingFragment = true
@@ -229,6 +232,8 @@ class AddMemoFragment: BaseFragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 binding.layoutMemo.animateTransparency(1.0f, 2000)
             }
+        } else {
+            binding.layoutMemo.alpha = 1.0f
         }
     }
 

@@ -1,5 +1,7 @@
 package com.bd.bdproject.ui.main
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,14 +12,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
 import com.bd.bdproject.ui.BaseFragment
+import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.ui.main.adapter.TagAdapter
+import com.bd.bdproject.util.*
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
-import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.main.AddViewModel
 import com.google.android.flexbox.FlexDirection
@@ -76,6 +78,8 @@ class LightDetailFragment: BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+
+        setOnBackPressed()
         observeLight()
         lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
     }
@@ -153,6 +157,19 @@ class LightDetailFragment: BaseFragment() {
                 mainActivity.binding.btnDrawer,
                 mainActivity.binding.btnBack
             )
+        }
+    }
+
+    private fun setOnBackPressed() {
+        onBackPressedListener = object: OnBackPressedInFragment {
+            override fun onBackPressed(): Boolean {
+                return if(binding.viewFilter.visibility == View.VISIBLE) {
+                    controlBackgroundByFabState()
+                    true
+                } else {
+                    false
+                }
+            }
         }
     }
 

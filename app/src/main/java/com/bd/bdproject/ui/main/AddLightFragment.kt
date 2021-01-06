@@ -74,7 +74,7 @@ class AddLightFragment: BaseFragment() {
         isFirstPressed = true
         isChangingFragment = false
 
-        if(sharedViewModel.brightness.value == null) {
+        if(sharedViewModel.previousPage.value != LIGHT_DETAIL && sharedViewModel.brightness.value == null) {
             showUiWithDelay()
         } else {
             showUi()
@@ -87,14 +87,7 @@ class AddLightFragment: BaseFragment() {
     }
 
     private fun showUiWithDelay() {
-        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
-            binding.apply {
-                tvAskCondition.visibility = View.GONE
-                tvBrightness.visibility = View.VISIBLE
-                sbLight.alpha = 1.0f
-                sbLight.barWidth = 4
-            }
-        } else {
+
             GlobalScope.launch {
                 binding.apply {
                     tvAskCondition.visibility = View.GONE
@@ -121,7 +114,7 @@ class AddLightFragment: BaseFragment() {
                     }
                 }
             }
-        }
+
     }
 
     private fun showUi() {
@@ -135,7 +128,15 @@ class AddLightFragment: BaseFragment() {
             tvBrightness.visibility = View.VISIBLE
             sbLight.barWidth = 4
             sbLight.progress = brightness * 2
-            sbLight.animateTransparency(1.0f, 2000)
+
+            if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                mainActivity.binding.btnDrawer.visibility = View.GONE
+                mainActivity.binding.btnBack.visibility = View.VISIBLE
+                sbLight.alpha = 1.0f
+                actionEnroll.visibility = View.VISIBLE
+            } else {
+                sbLight.animateTransparency(1.0f, 2000)
+            }
         }
     }
 
@@ -205,7 +206,14 @@ class AddLightFragment: BaseFragment() {
 
     private fun setEntireLightFragmentColor(brightness: Int) {
         binding.apply {
-            setEntireViewColor(brightness, tvBrightness, tvAskCondition, mainActivity.binding.btnDrawer)
+            setEntireViewColor(
+                brightness,
+                tvBrightness,
+                tvAskCondition,
+                actionEnroll,
+                mainActivity.binding.btnDrawer,
+                mainActivity.binding.btnBack
+            )
         }
     }
 
