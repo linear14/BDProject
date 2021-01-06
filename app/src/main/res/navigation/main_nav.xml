@@ -14,10 +14,12 @@
         <action
             android:id="@+id/action_addLightFragment_to_lightDetailFragment"
             app:destination="@id/lightDetailFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/addLightFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -30,10 +32,12 @@
         <action
             android:id="@+id/action_addLightFragment_to_lightDetailFragment"
             app:destination="@id/lightDetailFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/addTagFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -43,15 +47,17 @@
         <action
             android:id="@+id/action_addMemoFragment_to_lightDetailFragment"
             app:destination="@id/lightDetailFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
             app:popUpTo="@id/addLightFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_addMemoFragment_to_lightDetailFragment_edit"
             app:destination="@id/lightDetailFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/addMemoFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -63,23 +69,29 @@
         <action
             android:id="@+id/action_lightDetailFragment_to_addLightFragment"
             app:destination="@id/addLightFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_lightDetailFragment_to_addTagFragment"
             app:destination="@id/addTagFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_lightDetailFragment_to_addMemoFragment"
             app:destination="@id/addMemoFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
 
     <action
         android:id="@+id/action_global_addLightFragment"
         app:destination="@id/addLightFragment"
         app:popUpTo="@id/lightDetailFragment"
-        app:popUpToInclusive="true"/>
+        app:popUpToInclusive="true" />
 </navigation>
