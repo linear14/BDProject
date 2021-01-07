@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.BitDamApplication
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
@@ -24,12 +26,15 @@ import com.bd.bdproject.databinding.FragmentAddTagBinding
 import com.bd.bdproject.ui.BaseFragment
 import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.ADD_MEMO
+import com.bd.bdproject.ui.MainActivity.Companion.ADD_TAG
 import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.viewmodel.LightTagRelationViewModel
+import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
 import com.bd.bdproject.viewmodel.main.AddViewModel
 import com.google.android.flexbox.FlexDirection
@@ -45,7 +50,10 @@ class AddTagFragment: BaseFragment() {
     private val binding get() = _binding!!
 
     private val tagViewModel: TagViewModel by inject()
+    private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
+
+    private val args: AddTagFragmentArgs by navArgs()
 
     private val tagEnrolledAdapter by lazy { TagAdapter().also {
         it.onTagClickListener = object: OnTagClickListener {
@@ -110,6 +118,32 @@ class AddTagFragment: BaseFragment() {
                     saveTags()
                     goToFragmentAddMemo(it)
                 }
+            }
+
+            actionEnroll.setOnClickListener {
+                KeyboardUtil.keyBoardHide(binding.inputTag)
+                runBlocking {
+                    val tagList = GlobalScope.async { tagViewModel.asyncInsertTag(tagViewModel.candidateTags.value) }
+                    val job = GlobalScope.launch {
+                        args.light?.let {
+                            lightTagRelationViewModel.updateRelationsAll(it.dateCode, tagList.await())
+                        } }
+
+                    job.join()
+
+                    if(job.isCancelled) {
+                        Toast.makeText(BitDamApplication.applicationContext(), "태그 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            sharedViewModel.previousPage.value = ADD_TAG
+                            Toast.makeText(BitDamApplication.applicationContext(), "태그 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+                            val navDirection: NavDirections = AddTagFragmentDirections.actionAddTagFragmentToLightDetailFragment()
+                            Navigation.findNavController(binding.root).navigate(navDirection)
+                        }
+                    }
+                }
+
             }
         }
 
@@ -231,16 +265,20 @@ class AddTagFragment: BaseFragment() {
                 } else {
                     binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
                 }
-                submitList(enrolled.toMutableList(), sharedViewModel.brightness.value?:0)
+
+                val brightness = if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else sharedViewModel.brightness.value
+                submitList(enrolled.toMutableList(), brightness?:0)
             }
         }
     }
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(requireActivity()) { searchedResult ->
+            val brightness = if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else sharedViewModel.brightness.value
+
             tagRecommendAdapter.submitList(
                 searchedResult.map{ Tag(it) }.toMutableList(),
-                sharedViewModel.brightness.value?:0,
+                brightness?:0,
                 true
             )
         }
@@ -270,13 +308,22 @@ class AddTagFragment: BaseFragment() {
         mainActivity.binding.btnDrawer.visibility = View.GONE
         mainActivity.binding.btnBack.visibility = View.VISIBLE
 
-        val brightness = sharedViewModel.brightness.value?:0
-        val tags = sharedViewModel.tags.value?.toMutableList()?: mutableListOf()
+        var brightness: Int? = null
+        var tags: List<Tag>? = null
+
+        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+            brightness = args.light?.bright?:0
+            tags = args.tags
+        } else {
+            brightness = sharedViewModel.brightness.value ?: 0
+            tags = sharedViewModel.tags.value
+        }
 
         setEntireTagFragmentColor(brightness)
-        tagViewModel.candidateTags.value = tags
         gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+
         binding.layoutAddTag.background = gradientDrawable
+        tagViewModel.candidateTags.value = tags?.toMutableList()?: mutableListOf()
         binding.tvBrightness.text = brightness.toString()
     }
 
@@ -293,7 +340,7 @@ class AddTagFragment: BaseFragment() {
                     actionEnroll.visibility = View.VISIBLE
                     rvTagEnrolled.alpha = 1.0f
                     layoutInput.alpha = 1.0f
-                    rvTagRecommend.alpha = 1.0f
+                    layoutTagRecommend.alpha = 1.0f
 
                 }
                 else -> {

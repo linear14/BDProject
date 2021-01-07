@@ -8,7 +8,11 @@ interface LightTagRelationDao {
 
     // CREATE
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRelation(relation: List<LightTagRelation>)
+    fun insertRelation(relation: List<LightTagRelation>)
+
+    // DELETE
+    @Query("DELETE FROM LightTagRelation WHERE dateCode=:dateCode")
+    suspend fun deleteRelationsAll(dateCode: String)
     
     /*// TODO 세 가지 방법중 어떤 방식으로 사용할건지 확실히 정하는게 좋을듯
     @Delete

@@ -1,5 +1,6 @@
 package com.bd.bdproject.viewmodel
 
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext
@@ -13,13 +14,19 @@ class LightTagRelationViewModel(private val lightTagRelationRepository: LightTag
 
     fun insertRelation(dateCode: String, tagList: List<Tag>?) {
         tagList?.let {
-            GlobalScope.launch {
-                val relationList = mutableListOf<LightTagRelation>()
-                for(i in tagList) {
-                    relationList.add(LightTagRelation(dateCode, i.name))
-                }
-                lightTagRelationRepository.insertRelation(relationList)
+            val relationList = mutableListOf<LightTagRelation>()
+            for (i in tagList) {
+                relationList.add(LightTagRelation(dateCode, i.name))
             }
+            lightTagRelationRepository.insertRelation(relationList)
+
         } ?: Toast.makeText(applicationContext(), "태그 리스트 오류 발생", Toast.LENGTH_SHORT).show()
+    }
+
+    fun updateRelationsAll(dateCode: String, tagList: List<Tag>?) {
+        GlobalScope.launch {
+            lightTagRelationRepository.deleteRelationsAll(dateCode)
+            insertRelation(dateCode, tagList)
+        }
     }
 }

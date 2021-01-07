@@ -35,7 +35,7 @@
             android:id="@+id/action_addTagFragment_to_addMemoFragment"
             app:destination="@id/addMemoFragment" />
         <action
-            android:id="@+id/action_addLightFragment_to_lightDetailFragment"
+            android:id="@+id/action_addTagFragment_to_lightDetailFragment"
             app:destination="@id/lightDetailFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
