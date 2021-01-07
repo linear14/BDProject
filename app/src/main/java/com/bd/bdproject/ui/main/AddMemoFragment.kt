@@ -12,10 +12,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
-import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.BitDamApplication
-import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
@@ -35,6 +34,7 @@ import com.google.android.flexbox.JustifyContent
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 
 class AddMemoFragment: BaseFragment() {
 
@@ -45,6 +45,8 @@ class AddMemoFragment: BaseFragment() {
     private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
+
+    private val args: AddMemoFragmentArgs by navArgs()
 
     private val tagEnrolledAdapter by lazy { TagAdapter() }
 
@@ -69,10 +71,15 @@ class AddMemoFragment: BaseFragment() {
         _binding = FragmentAddMemoBinding.inflate(inflater, container, false).apply {
             inputMemo.addTextChangedListener(InputMemoWatcher())
             actionEnroll.setOnClickListener {
-                if(!isChangingFragment) {
-                    isChangingFragment = true
-                    insertLightWithTag()
+                if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                    editMemo()
+                } else {
+                    if(!isChangingFragment) {
+                        isChangingFragment = true
+                        insertLightWithTag()
+                    }
                 }
+
             }
         }
 
@@ -208,22 +215,63 @@ class AddMemoFragment: BaseFragment() {
         lightTagRelationViewModel.insertRelation(dateCode, tagList)
     }
 
+    private fun editMemo() {
+        KeyboardUtil.keyBoardHide(binding.inputMemo)
+        runBlocking {
+            val job = GlobalScope.launch {
+                args.light?.let {
+                    lightViewModel.editMemo(binding.inputMemo.text.toString(), it.dateCode)
+                }
+            }
+
+            job.join()
+
+            if(job.isCancelled) {
+                Toast.makeText(BitDamApplication.applicationContext(), "메모 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
+                    Toast.makeText(BitDamApplication.applicationContext(), "메모 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+                    val navDirection: NavDirections = AddMemoFragmentDirections.actionAddMemoFragmentToLightDetailFragmentEdit()
+                    findNavController(binding.root).navigate(navDirection)
+                }
+            }
+        }
+
+
+    }
+
     private fun initBackground() {
         binding.apply {
             mainActivity.binding.btnDrawer.visibility = View.GONE
             mainActivity.binding.btnBack.visibility = View.VISIBLE
 
-            val brightness = sharedViewModel.brightness.value?:0
-            val tags = sharedViewModel.tags.value?: mutableListOf()
-            val memo = sharedViewModel.memo.value
+            var brightness: Int? = null
+            var tags: List<Tag>? = null
+            var memo: String? = null
+
+            if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                brightness = args.light?.bright?:0
+                memo = args.light?.memo
+            } else {
+                brightness = sharedViewModel.brightness.value?:0
+                tags = sharedViewModel.tags.value?: mutableListOf()
+                memo = sharedViewModel.memo.value
+            }
+
 
             setEntireMemoFragmentColor(brightness)
 
             gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
             layoutAddMemo.background = gradientDrawable
-            tvBrightness.text = brightness.toString()
-            tagEnrolledAdapter.submitList(tags.toMutableList(), brightness)
             inputMemo.setText(memo)
+
+            if(sharedViewModel.previousPage.value != LIGHT_DETAIL) {
+                tvBrightness.text = brightness.toString()
+                tagEnrolledAdapter.submitList(tags?.toMutableList(), brightness)
+            }
+
         }
     }
 
@@ -234,6 +282,7 @@ class AddMemoFragment: BaseFragment() {
             }
         } else {
             binding.layoutMemo.alpha = 1.0f
+            binding.tvBrightness.visibility = View.GONE
         }
     }
 

@@ -23,4 +23,8 @@ interface LightDao {
 
     @Query("SELECT * FROM light WHERE dateCode IN (:dateCodes)")
     fun selectLightForSpecificDays(dateCodes: List<String>): List<Light>
+
+    // UPDATE
+    @Query("UPDATE light SET memo = :memo WHERE dateCode = :dateCode")
+    fun updateMemo(memo: String, dateCode: String)
 }

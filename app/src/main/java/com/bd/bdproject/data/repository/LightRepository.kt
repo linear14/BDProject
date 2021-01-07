@@ -26,4 +26,8 @@ class LightRepository(private val lightDao: LightDao) {
     fun selectLightForSpecificDays(dateCodes: List<String>): List<Light> {
         return lightDao.selectLightForSpecificDays(dateCodes)
     }
+
+    fun updateMemo(memo: String?, dateCode: String) {
+        lightDao.updateMemo(memo?:"", dateCode)
+    }
 }

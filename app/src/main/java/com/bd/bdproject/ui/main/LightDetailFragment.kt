@@ -43,25 +43,31 @@ class LightDetailFragment: BaseFragment() {
         _binding = FragmentLightDetailBinding.inflate(inflater, container, false).apply {
 
             actionEditBrightness.setOnClickListener {
+                val light = lightViewModel.lightWithTags.value?.light
                 sharedViewModel.previousPage.value = LIGHT_DETAIL
+
                 val navDirection: NavDirections = LightDetailFragmentDirections
-                    .actionLightDetailFragmentToAddLightFragment(lightViewModel.lightWithTags.value?.light?.bright?:0)
+                    .actionLightDetailFragmentToAddLightFragment(light)
                 Navigation.findNavController(it).navigate(navDirection)
             }
             actionEditTag.setOnClickListener {
+                val light = lightViewModel.lightWithTags.value?.light
                 val tags = Tags()
                 for(i in lightViewModel.lightWithTags.value?.tags?: mutableListOf()) {
                     tags.add(i)
                 }
                 sharedViewModel.previousPage.value = LIGHT_DETAIL
+
                 val navDirection: NavDirections = LightDetailFragmentDirections
-                    .actionLightDetailFragmentToAddTagFragment(tags)
+                    .actionLightDetailFragmentToAddTagFragment(light, tags)
                 Navigation.findNavController(it).navigate(navDirection)
             }
             actionEditMemo.setOnClickListener {
+                val light = lightViewModel.lightWithTags.value?.light
                 sharedViewModel.previousPage.value = LIGHT_DETAIL
+
                 val navDirection: NavDirections = LightDetailFragmentDirections
-                    .actionLightDetailFragmentToAddMemoFragment(lightViewModel.lightWithTags.value?.light?.memo)
+                    .actionLightDetailFragmentToAddMemoFragment(light)
                 Navigation.findNavController(it).navigate(navDirection)
             }
         }

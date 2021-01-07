@@ -18,8 +18,13 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/addLightFragment"
+            app:popUpTo="@id/lightDetailFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="light"
+            app:argType="com.bd.bdproject.data.model.Light"
+            android:defaultValue="@null"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
@@ -36,8 +41,18 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/addTagFragment"
+            app:popUpTo="@id/lightDetailFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="light"
+            app:argType="com.bd.bdproject.data.model.Light"
+            android:defaultValue="@null"
+            app:nullable="true"/>
+        <argument
+            android:name="tags"
+            app:argType="com.bd.bdproject.data.model.Tags"
+            android:defaultValue="@null"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
@@ -58,8 +73,13 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/addMemoFragment"
+            app:popUpTo="@id/lightDetailFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="light"
+            app:argType="com.bd.bdproject.data.model.Light"
+            android:defaultValue="@null"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
@@ -73,10 +93,6 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left">
-            <argument
-                android:name="brightness"
-                app:argType="integer"
-                android:defaultValue="0"/>
         </action>
         <action
             android:id="@+id/action_lightDetailFragment_to_addTagFragment"
@@ -85,11 +101,6 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left">
-            <argument
-                android:name="tags"
-                app:argType="com.bd.bdproject.data.model.Tags"
-                android:defaultValue="@null"
-                app:nullable="true"/>
         </action>
         <action
             android:id="@+id/action_lightDetailFragment_to_addMemoFragment"
@@ -98,11 +109,6 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left">
-            <argument
-                android:name="memo"
-                app:argType="string"
-                android:defaultValue="@null"
-                app:nullable="true"/>
         </action>
     </fragment>
 
