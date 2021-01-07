@@ -4,33 +4,39 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import com.bd.bdproject.BitDamApplication
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentAddLightBinding
 import com.bd.bdproject.ui.BaseFragment
-import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.MainActivity.Companion.ADD_LIGHT
 import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.main.AddViewModel
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.inject
 
 class AddLightFragment: BaseFragment() {
 
     private var _binding: FragmentAddLightBinding? = null
     private val binding get() = _binding!!
 
+    private val lightViewModel: LightViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
+
+    private val args: AddLightFragmentArgs by navArgs()
 
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
@@ -61,6 +67,8 @@ class AddLightFragment: BaseFragment() {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
             mainActivity.binding.btnDrawer.visibility = View.VISIBLE
             mainActivity.binding.btnBack.visibility = View.GONE
+
+            actionEnroll.setOnClickListener { editBrightness() }
 
             setSeekBarPressListener()
             setSeekBarProgressChangedListener()
@@ -119,7 +127,10 @@ class AddLightFragment: BaseFragment() {
 
     private fun showUi() {
         binding.apply {
-            val brightness = sharedViewModel.brightness.value?:0
+            val brightness = if(sharedViewModel.previousPage.value == LIGHT_DETAIL)
+                args.light?.bright?:0
+            else sharedViewModel.brightness.value?:0
+
             setEntireLightFragmentColor(brightness)
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
             layoutAddLight.background = gradientDrawable
@@ -202,6 +213,32 @@ class AddLightFragment: BaseFragment() {
                     findNavController(binding.sbLight).navigate(navDirection)
                 }
             })
+    }
+
+    private fun editBrightness() {
+        runBlocking {
+            val job = GlobalScope.launch {
+                args.light?.let {
+                    lightViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), it.dateCode)
+                }
+            }
+
+            job.join()
+
+            if(job.isCancelled) {
+                Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    sharedViewModel.previousPage.value = ADD_LIGHT
+                    Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+                    val navDirection: NavDirections = AddLightFragmentDirections.actionAddLightFragmentToLightDetailFragment()
+                    findNavController(binding.root).navigate(navDirection)
+                }
+            }
+        }
+
+
     }
 
     private fun setEntireLightFragmentColor(brightness: Int) {

@@ -1,6 +1,5 @@
 package com.bd.bdproject.viewmodel
 
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.BitDamApplication.Companion.applicationContext

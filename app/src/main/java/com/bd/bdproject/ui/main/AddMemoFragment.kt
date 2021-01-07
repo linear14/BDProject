@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -35,7 +34,6 @@ import com.google.android.flexbox.JustifyContent
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
-import java.lang.Exception
 
 class AddMemoFragment: BaseFragment() {
 
@@ -83,8 +81,6 @@ class AddMemoFragment: BaseFragment() {
 
             }
         }
-
-
 
         return binding.root
     }

@@ -1,7 +1,5 @@
 package com.bd.bdproject.data.dao
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.LightWithTags
@@ -25,6 +23,9 @@ interface LightDao {
     fun selectLightForSpecificDays(dateCodes: List<String>): List<Light>
 
     // UPDATE
+    @Query("UPDATE light SET bright = :brightness WHERE dateCode = :dateCode")
+    fun updateBrightness(brightness: Int, dateCode: String)
+
     @Query("UPDATE light SET memo = :memo WHERE dateCode = :dateCode")
     fun updateMemo(memo: String, dateCode: String)
 }
