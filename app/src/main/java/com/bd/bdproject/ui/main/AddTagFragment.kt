@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +33,6 @@ import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.viewmodel.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.LightViewModel
 import com.bd.bdproject.viewmodel.TagViewModel
 import com.bd.bdproject.viewmodel.main.AddViewModel
 import com.google.android.flexbox.FlexDirection
@@ -59,10 +57,17 @@ class AddTagFragment: BaseFragment() {
         it.onTagClickListener = object: OnTagClickListener {
             override fun onClick(tagName: String) {
                 if(!isChangingFragment) {
-                    binding.inputTag.setText(tagName)
-                    binding.inputTag.setSelection(binding.inputTag.text.length)
-                    it.isEditMode = true
-                    it.editModeTag = tagName
+                    if(it.isEditMode) {
+                        binding.inputTag.setText(null)
+                        it.isEditMode = false
+                        it.editModeTag = null
+                        tagViewModel.searchTag(null)
+                    } else {
+                        binding.inputTag.setText(tagName)
+                        binding.inputTag.setSelection(binding.inputTag.text.length)
+                        it.isEditMode = true
+                        it.editModeTag = tagName
+                    }
                     it.notifyDataSetChanged()
                 }
             }
@@ -173,6 +178,11 @@ class AddTagFragment: BaseFragment() {
                         }
                     })
 
+            }
+
+            ivClearText.setOnClickListener {
+                inputTag.setText(null)
+                tagViewModel.searchTag(null)
             }
         }
 
@@ -416,6 +426,7 @@ class AddTagFragment: BaseFragment() {
             ColorUtil.setEntireViewColor(
                 brightness,
                 tvBrightness,
+                ivClearText,
                 actionNext,
                 actionEnroll,
                 tvHash,
@@ -445,6 +456,8 @@ class AddTagFragment: BaseFragment() {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             if(s.isEmpty()) {
+                binding.ivClearText.visibility = View.GONE
+
                 searchJob?.cancel()
                 searchJob = GlobalScope.launch {
                     delay(500)
@@ -452,6 +465,8 @@ class AddTagFragment: BaseFragment() {
                 }
             }
             if(s.isNotEmpty()) {
+                binding.ivClearText.visibility = View.VISIBLE
+
                 // 추천 검색어
                 if(!isLastWordBlank(s)) {
                     searchJob?.cancel()

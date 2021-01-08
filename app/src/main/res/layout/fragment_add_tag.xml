@@ -67,6 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_brightness"
+        tools:alpha="1"
         tools:visibility="visible">
 
         <TextView
@@ -97,6 +98,16 @@
             app:layout_constraintStart_toEndOf="@id/tv_hash"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/iv_clear_text"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/temp_clear_text"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_hash"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_hash" />
+
         <View
             android:id="@+id/separator1"
             android:layout_width="match_parent"
@@ -112,10 +123,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
+        android:alpha="0"
         android:background="@drawable/deco_info_layout"
         android:gravity="center"
         android:text="이미 등록된 해시태그 중 자주\n작성되었던 해시태그를 추천해드려요 :)"
-        android:alpha="0"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/layout_tag_recommend"
         app:layout_constraintEnd_toEndOf="parent"
