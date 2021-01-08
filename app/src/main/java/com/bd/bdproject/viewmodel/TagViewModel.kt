@@ -24,7 +24,7 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
             if(word == null) {
                 searchedTagNames.postValue(listOf())
             } else {
-                searchedTagNames.postValue(tagRepo.searchTag("%${word}%"))
+                searchedTagNames.postValue(tagRepo.searchTagOrderByUsedCount("%${word}%"))
             }
         }
     }

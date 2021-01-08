@@ -22,6 +22,10 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.searchTag(word)
     }
 
+    fun searchTagOrderByUsedCount(word: String): List<String> {
+        return tagDao.searchTagOrderByUsedCount(word)
+    }
+
     /*suspend fun deleteTag(tags: List<Tag>) {
         tagDao.deleteTag(tags)
     }*/
