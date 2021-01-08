@@ -145,6 +145,35 @@ class AddTagFragment: BaseFragment() {
                 }
 
             }
+
+            ivTagRecommendInfo.setOnClickListener {
+                tvTagRecommendInfo.animateTransparency(1.0f, 500)
+                    .setListener(object: AnimatorListenerAdapter() {
+                        override fun onAnimationStart(animation: Animator?) {
+                            super.onAnimationStart(animation)
+                            tvTagRecommendInfo.visibility = View.VISIBLE
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            super.onAnimationEnd(animation)
+
+                            GlobalScope.launch {
+                                delay(2000)
+
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    tvTagRecommendInfo.animateTransparency(0.0f, 500)
+                                        .setListener(object: AnimatorListenerAdapter() {
+                                            override fun onAnimationEnd(animation: Animator?) {
+                                                super.onAnimationEnd(animation)
+                                                tvTagRecommendInfo.visibility = View.GONE
+                                            }
+                                        })
+                                }
+                            }
+                        }
+                    })
+
+            }
         }
 
         return binding.root
@@ -393,6 +422,7 @@ class AddTagFragment: BaseFragment() {
                 inputTag,
                 separator1,
                 tvTagRecommend,
+                ivTagRecommendInfo,
                 mainActivity.binding.btnBack
             )
         }
