@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.ItemCalendarBinding
 
-class CalendarAdapter: ListAdapter<Light, CalendarAdapter.CalendarViewHolder>(LightDiffUtil()) {
+class CalendarAdapter(private val onClick: (String) -> Unit): ListAdapter<Light, CalendarAdapter.CalendarViewHolder>(LightDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         return CalendarViewHolder(ItemCalendarBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -23,6 +23,8 @@ class CalendarAdapter: ListAdapter<Light, CalendarAdapter.CalendarViewHolder>(Li
             binding.apply {
                 light = item
                 executePendingBindings()
+
+                itemView.setOnClickListener { onClick(item.dateCode) }
             }
         }
     }

@@ -10,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
+import com.bd.bdproject.MainNavigationDirections
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.FragmentLightDetailBinding
@@ -94,7 +96,10 @@ class LightDetailFragment: BaseFragment() {
 
         setOnBackPressed()
         observeLight()
-        lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
+
+        arguments?.getString("dateCode")?.let {
+            lightViewModel.getLightWithTags(it)
+        } ?: lightViewModel.getLightWithTags(System.currentTimeMillis().timeToString())
     }
 
     override fun onDestroyView() {

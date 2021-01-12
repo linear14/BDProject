@@ -1,9 +1,11 @@
 package com.bd.bdproject.ui.collection
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
+import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.ui.collection.adapter.CalendarAdapter
 import com.bd.bdproject.ui.collection.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.collection.CalendarViewModel
@@ -15,7 +17,11 @@ class CollectionMainActivity : AppCompatActivity() {
     lateinit var binding: ActivityCollectionMainBinding
     private val calendarViewModel: CalendarViewModel by inject()
 
-    private val calendarAdapter by lazy { CalendarAdapter() }
+    private val calendarAdapter by lazy { CalendarAdapter { dateCode ->
+        startActivity(Intent(this@CollectionMainActivity, MainActivity::class.java).apply {
+            putExtra("dateCode", dateCode)
+        })
+    } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

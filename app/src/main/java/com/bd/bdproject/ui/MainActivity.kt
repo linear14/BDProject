@@ -3,6 +3,7 @@ package com.bd.bdproject.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
@@ -44,6 +45,14 @@ class MainActivity : AppCompatActivity() {
             false -> {
                 val navDirection: NavDirections = MainNavigationDirections.actionGlobalAddLightFragment()
                 findNavController(R.id.layout_fragment).navigate(navDirection)
+            }
+            true -> {
+                val dateCode = intent.getStringExtra("dateCode")
+                if(!dateCode.isNullOrEmpty()) {
+                    // val navDirection: NavDirections = MainNavigationDirections.actionGlobalLightDetailFragment()
+                    val bundle = bundleOf("dateCode" to dateCode)
+                    findNavController(R.id.layout_fragment).navigate(R.id.action_global_lightDetailFragment, bundle)
+                }
             }
         }
     }

@@ -113,6 +113,12 @@
     </fragment>
 
     <action
+        android:id="@+id/action_global_lightDetailFragment"
+        app:destination="@id/lightDetailFragment"
+        app:popUpTo="@id/lightDetailFragment"
+        app:popUpToInclusive="true"/>
+
+    <action
         android:id="@+id/action_global_addLightFragment"
         app:destination="@id/addLightFragment"
         app:popUpTo="@id/lightDetailFragment"
