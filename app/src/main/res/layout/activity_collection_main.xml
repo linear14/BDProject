@@ -60,20 +60,30 @@
                 android:layout_height="36dp"
                 android:padding="8dp"
                 android:src="@mipmap/ic_launcher"
-                app:layout_constraintBottom_toBottomOf="@id/tv_current_calendar"
-                app:layout_constraintEnd_toStartOf="@id/tv_current_calendar"
-                app:layout_constraintTop_toTopOf="@id/tv_current_calendar" />
+                app:layout_constraintBottom_toBottomOf="@id/tv_current_month"
+                app:layout_constraintEnd_toStartOf="@id/tv_current_month"
+                app:layout_constraintTop_toTopOf="@id/tv_current_month" />
 
             <TextView
-                android:id="@+id/tv_current_calendar"
+                android:id="@+id/tv_current_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="2020년 9월"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2020" />
+
+            <TextView
+                android:id="@+id/tv_current_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/tv_current_year"
+                tools:text="9월" />
 
             <ImageView
                 android:id="@+id/btn_next_month"
@@ -81,9 +91,9 @@
                 android:layout_height="36dp"
                 android:padding="8dp"
                 android:src="@mipmap/ic_launcher"
-                app:layout_constraintBottom_toBottomOf="@id/tv_current_calendar"
-                app:layout_constraintStart_toEndOf="@id/tv_current_calendar"
-                app:layout_constraintTop_toTopOf="@id/tv_current_calendar" />
+                app:layout_constraintBottom_toBottomOf="@id/tv_current_month"
+                app:layout_constraintStart_toEndOf="@id/tv_current_month"
+                app:layout_constraintTop_toTopOf="@id/tv_current_month" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_calendar"
@@ -92,8 +102,9 @@
                 android:layout_marginTop="32dp"
                 android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/tv_current_calendar"
-                app:spanCount="5" />
+                app:layout_constraintTop_toBottomOf="@id/tv_current_month"
+                app:spanCount="5"
+                tools:listitem="@layout/item_calendar" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

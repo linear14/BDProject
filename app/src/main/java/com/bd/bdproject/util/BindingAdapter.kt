@@ -23,3 +23,15 @@ fun bindBrightness(view: View, brightness: Int) {
     view.background = gradientDrawable
 
 }
+
+@BindingAdapter("dateCode")
+fun bindDay(view: TextView, dateCode: String) {
+    val day = dateCode.substring(6, 8)
+
+    if(day[0] == '0') {
+        view.text = day[1].toString()
+    } else {
+        view.text = day
+    }
+
+}

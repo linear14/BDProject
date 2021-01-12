@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
 import com.bd.bdproject.ui.collection.adapter.CalendarAdapter
+import com.bd.bdproject.ui.collection.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.collection.CalendarViewModel
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -26,6 +27,7 @@ class CollectionMainActivity : AppCompatActivity() {
         binding.apply {
             setCurrentCalendar()
             rvCalendar.adapter = calendarAdapter
+            rvCalendar.addItemDecoration(SpacesItemDecorator())
 
             btnPreviousMonth.setOnClickListener { moveToPreviousMonth() }
             btnNextMonth.setOnClickListener { moveToNextMonth() }
@@ -42,7 +44,8 @@ class CollectionMainActivity : AppCompatActivity() {
     
     private fun setCurrentCalendar() {
         calendarViewModel.apply {
-            binding.tvCurrentCalendar.text = "${calendarCurrentState.get(Calendar.YEAR)}년 ${calendarCurrentState.get(Calendar.MONTH) + 1}월"
+            binding.tvCurrentYear.text = "${calendarCurrentState.get(Calendar.YEAR)}"
+            binding.tvCurrentMonth.text = "${calendarCurrentState.get(Calendar.MONTH) + 1}월"
             getLightsForMonth(getDateCode(calendarCurrentState.get(Calendar.YEAR), calendarCurrentState.get(Calendar.MONTH)))
         }
     }
