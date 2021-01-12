@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.BitDamApplication
+import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
@@ -230,8 +232,10 @@ class AddMemoFragment: BaseFragment() {
                     sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
                     Toast.makeText(BitDamApplication.applicationContext(), "메모 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                    val navDirection: NavDirections = AddMemoFragmentDirections.actionAddMemoFragmentToLightDetailFragmentEdit()
-                    findNavController(binding.root).navigate(navDirection)
+                    findNavController(binding.root).navigate(
+                        R.id.action_addMemoFragment_to_lightDetailFragment_edit,
+                        bundleOf("dateCode" to args.light?.dateCode)
+                    )
                 }
             }
         }

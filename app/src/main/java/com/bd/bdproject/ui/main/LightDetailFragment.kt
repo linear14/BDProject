@@ -79,8 +79,13 @@ class LightDetailFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainActivity.binding.btnDrawer.visibility = View.VISIBLE
-        mainActivity.binding.btnBack.visibility = View.GONE
+        if(arguments?.getString("dateCode").isNullOrEmpty()) {
+            mainActivity.binding.btnDrawer.visibility = View.VISIBLE
+            mainActivity.binding.btnBack.visibility = View.GONE
+        } else {
+            mainActivity.binding.btnDrawer.visibility = View.GONE
+            mainActivity.binding.btnBack.visibility = View.VISIBLE
+        }
 
         binding.apply {
             fabMore.setOnClickListener { controlBackgroundByFabState() }

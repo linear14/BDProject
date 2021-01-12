@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
@@ -232,8 +233,10 @@ class AddLightFragment: BaseFragment() {
                     sharedViewModel.previousPage.value = ADD_LIGHT
                     Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                    val navDirection: NavDirections = AddLightFragmentDirections.actionAddLightFragmentToLightDetailFragment()
-                    findNavController(binding.root).navigate(navDirection)
+                    findNavController(binding.root).navigate(
+                        R.id.action_addLightFragment_to_lightDetailFragment,
+                        bundleOf("dateCode" to args.light?.dateCode)
+                    )
                 }
             }
         }

@@ -31,7 +31,6 @@ class CollectionMainActivity : AppCompatActivity() {
         }
 
         binding.apply {
-            setCurrentCalendar()
             rvCalendar.adapter = calendarAdapter
             rvCalendar.addItemDecoration(SpacesItemDecorator())
 
@@ -40,6 +39,12 @@ class CollectionMainActivity : AppCompatActivity() {
         }
 
         observeLight()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        setCurrentCalendar()
     }
 
     private fun observeLight() {

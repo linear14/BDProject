@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.NavDirections
@@ -17,6 +18,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.BitDamApplication
+import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
@@ -143,8 +145,10 @@ class AddTagFragment: BaseFragment() {
                             sharedViewModel.previousPage.value = ADD_TAG
                             Toast.makeText(BitDamApplication.applicationContext(), "태그 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                            val navDirection: NavDirections = AddTagFragmentDirections.actionAddTagFragmentToLightDetailFragment()
-                            Navigation.findNavController(binding.root).navigate(navDirection)
+                            Navigation.findNavController(binding.root).navigate(
+                                R.id.action_addTagFragment_to_lightDetailFragment,
+                                bundleOf("dateCode" to args.light?.dateCode)
+                            )
                         }
                     }
                 }
