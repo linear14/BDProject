@@ -1,5 +1,6 @@
 package com.bd.bdproject.ui.main.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,8 +33,6 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
 
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
         holder.bind(getItem(position))
-        holder.setBackground(brightness, isFilled)
-        holder.setTextColor(brightness)
     }
 
     inner class TagViewHolder(private val binding: ItemTagBinding): RecyclerView.ViewHolder(binding.root) {
@@ -55,29 +54,79 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
                 tag = item
                 executePendingBindings()
 
+                setBackground(brightness, isFilled, item.name)
+                setTextColor(brightness, item.name)
                 setDeleteTagVisibility(item.name)
             }
         }
 
-        fun setBackground(brightness: Int?, isFilled: Boolean) {
+        private fun setBackground(brightness: Int?, isFilled: Boolean, tagName: String) {
             if(isFilled) {
                 binding.tvTag.setBackgroundResource(R.drawable.deco_tag_default_or_selected)
             } else {
                 when(brightness) {
-                    in 0 until 80 -> { binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_white)}
-                    else -> { binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_black)}
+                    in 0 until 80 -> {
+                        if(isEditMode) {
+                            binding.tvTag.setBackgroundResource(
+                                if(tagName == editModeTag) {
+                                    R.drawable.deco_tag_transparent_white
+                                } else {
+                                    R.drawable.deco_tag_transparent_white_not_edit
+                                }
+                            )
+                        } else {
+                            binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_white)
+                        }
+                    }
+                    else -> {
+                        if(isEditMode) {
+                            binding.tvTag.setBackgroundResource(
+                                if(tagName == editModeTag) {
+                                    R.drawable.deco_tag_transparent_black
+                                } else {
+                                    R.drawable.deco_tag_transparent_black_not_edit
+                                }
+                            )
+                        } else {
+                            binding.tvTag.setBackgroundResource(R.drawable.deco_tag_transparent_black)
+                        }
+                    }
                 }
             }
         }
 
-        fun setTextColor(brightness: Int?) {
+        private fun setTextColor(brightness: Int?, tagName: String) {
             when(brightness) {
-                in 0 until 80 -> { binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.white)) }
-                else -> { binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.black)) }
+                in 0 until 80 -> {
+                    if (isEditMode) {
+                        binding.tvTag.setTextColor(
+                            if (tagName == editModeTag) {
+                                ContextCompat.getColor(applicationContext(), R.color.white)
+                            } else {
+                                Color.parseColor("#60FFFFFF")
+                            }
+                        )
+                    } else {
+                        ContextCompat.getColor(applicationContext(), R.color.white)
+                    }
+                }
+                else -> {
+                    if (isEditMode) {
+                        binding.tvTag.setTextColor(
+                            if (tagName == editModeTag) {
+                                ContextCompat.getColor(applicationContext(), R.color.black)
+                            } else {
+                                Color.parseColor("#60000000")
+                            }
+                        )
+                    } else {
+                        ContextCompat.getColor(applicationContext(), R.color.black)
+                    }
+                }
             }
         }
 
-        fun setDeleteTagVisibility(tagName: String) {
+        private fun setDeleteTagVisibility(tagName: String) {
             binding.apply {
                 if(isEditMode && editModeTag == tagName) btnDeleteTag.visibility = View.VISIBLE
                 else btnDeleteTag.visibility = View.GONE
