@@ -40,10 +40,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="# 태그네임" />
 
-            <!--android:paddingHorizontal="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="6dp"-->
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView

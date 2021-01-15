@@ -107,7 +107,7 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
                             }
                         )
                     } else {
-                        ContextCompat.getColor(applicationContext(), R.color.white)
+                        binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.white))
                     }
                 }
                 else -> {
@@ -120,7 +120,7 @@ class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) 
                             }
                         )
                     } else {
-                        ContextCompat.getColor(applicationContext(), R.color.black)
+                        binding.tvTag.setTextColor(ContextCompat.getColor(applicationContext(), R.color.black))
                     }
                 }
             }
