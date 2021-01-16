@@ -1,4 +1,4 @@
-package com.bd.bdproject.ui.main
+package com.bd.bdproject.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -17,26 +17,23 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.bd.bdproject.BitDamApplication
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddTagBinding
-import com.bd.bdproject.ui.BaseFragment
-import com.bd.bdproject.ui.MainActivity
-import com.bd.bdproject.ui.MainActivity.Companion.ADD_MEMO
-import com.bd.bdproject.ui.MainActivity.Companion.ADD_TAG
-import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
-import com.bd.bdproject.ui.main.adapter.TagAdapter
-import com.bd.bdproject.util.ColorUtil
-import com.bd.bdproject.util.KeyboardUtil
-import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.viewmodel.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.TagViewModel
-import com.bd.bdproject.viewmodel.main.AddViewModel
+import com.bd.bdproject.util.*
+import com.bd.bdproject.view.activity.MainActivity
+import com.bd.bdproject.view.activity.MainActivity.Companion.ADD_MEMO
+import com.bd.bdproject.view.activity.MainActivity.Companion.ADD_TAG
+import com.bd.bdproject.view.activity.MainActivity.Companion.LIGHT_DETAIL
+import com.bd.bdproject.view.adapter.TagAdapter
+import com.bd.bdproject.view.main.AddTagFragmentArgs
+import com.bd.bdproject.view.main.AddTagFragmentDirections
+import com.bd.bdproject.viewmodel.AddViewModel
+import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
+import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -413,7 +410,8 @@ class AddTagFragment: BaseFragment() {
                     super.onAnimationEnd(animation)
                     sharedViewModel.previousPage.value = MainActivity.ADD_TAG
                     KeyboardUtil.keyBoardHide(binding.inputTag)
-                    val navDirection: NavDirections = AddTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
+                    val navDirection: NavDirections =
+                        AddTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
                     Navigation.findNavController(view).navigate(navDirection)
                 }
             })

@@ -1,4 +1,4 @@
-package com.bd.bdproject.viewmodel.main
+package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

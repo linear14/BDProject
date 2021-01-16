@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
 data class Light (
     // 201212, 210114 와 같은 방식 ("yyMMdd")
     @PrimaryKey val dateCode: String,
-    val bright: Int,
+    val bright: Int,    // todo 출시할 때 brightness로 바꾸자
     val memo: String?
 ): Parcelable {}

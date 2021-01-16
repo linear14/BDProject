@@ -1,4 +1,4 @@
-package com.bd.bdproject.ui.main
+package com.bd.bdproject.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -15,21 +15,21 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.BitDamApplication
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentAddMemoBinding
-import com.bd.bdproject.ui.BaseFragment
-import com.bd.bdproject.ui.MainActivity
-import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
-import com.bd.bdproject.ui.main.adapter.TagAdapter
 import com.bd.bdproject.util.*
-import com.bd.bdproject.viewmodel.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.LightViewModel
-import com.bd.bdproject.viewmodel.TagViewModel
-import com.bd.bdproject.viewmodel.main.AddViewModel
+import com.bd.bdproject.view.activity.MainActivity
+import com.bd.bdproject.view.activity.MainActivity.Companion.LIGHT_DETAIL
+import com.bd.bdproject.view.adapter.TagAdapter
+import com.bd.bdproject.view.main.AddMemoFragmentArgs
+import com.bd.bdproject.view.main.AddMemoFragmentDirections
+import com.bd.bdproject.viewmodel.AddViewModel
+import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
+import com.bd.bdproject.viewmodel.common.LightViewModel
+import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -180,7 +180,8 @@ class AddMemoFragment: BaseFragment() {
                         sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
                         Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                        val navDirection: NavDirections = AddMemoFragmentDirections.actionAddMemoFragmentToLightDetailFragment()
+                        val navDirection: NavDirections =
+                            AddMemoFragmentDirections.actionAddMemoFragmentToLightDetailFragment()
                         findNavController(binding.root).navigate(navDirection)
                     }
                 }

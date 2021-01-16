@@ -1,4 +1,4 @@
-package com.bd.bdproject.ui
+package com.bd.bdproject.view.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,10 +9,8 @@ import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import com.bd.bdproject.MainNavigationDirections
 import com.bd.bdproject.R
-import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.ActivityMainBinding
-import com.bd.bdproject.ui.collection.CollectionMainActivity
-import com.bd.bdproject.ui.main.AddTagFragment
+import com.bd.bdproject.view.fragment.BaseFragment
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,6 +1,5 @@
-package com.bd.bdproject.viewmodel.collection
+package com.bd.bdproject.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Light

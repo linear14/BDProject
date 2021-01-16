@@ -1,4 +1,4 @@
-package com.bd.bdproject.ui.main.adapter
+package com.bd.bdproject.view.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ItemTagBinding
+import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
 
 class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
 

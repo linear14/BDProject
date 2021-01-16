@@ -1,4 +1,4 @@
-package com.bd.bdproject
+package com.bd.bdproject.util
 
 import android.app.Application
 import android.content.Context

@@ -1,10 +1,10 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.view.adapter
 
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
+import com.bd.bdproject.util.LightUtil
 
 // todo 이 바인딩 어댑터에서, brightness도 받아서, 글자색을 밝기에 따라 바꿔도 될듯)
 @BindingAdapter("tagName")

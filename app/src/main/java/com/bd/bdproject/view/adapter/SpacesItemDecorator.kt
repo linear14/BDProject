@@ -1,4 +1,4 @@
-package com.bd.bdproject.ui.collection.adapter
+package com.bd.bdproject.view.adapter
 
 import android.graphics.Rect
 import android.view.View

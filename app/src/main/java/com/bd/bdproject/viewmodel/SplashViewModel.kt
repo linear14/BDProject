@@ -1,4 +1,4 @@
-package com.bd.bdproject.viewmodel.splash
+package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.repository.LightRepository

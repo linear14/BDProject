@@ -1,4 +1,4 @@
-package com.bd.bdproject.ui.main
+package com.bd.bdproject.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -15,17 +15,18 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.BitDamApplication
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentAddLightBinding
-import com.bd.bdproject.ui.BaseFragment
-import com.bd.bdproject.ui.MainActivity.Companion.ADD_LIGHT
-import com.bd.bdproject.ui.MainActivity.Companion.LIGHT_DETAIL
+import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.viewmodel.LightViewModel
-import com.bd.bdproject.viewmodel.main.AddViewModel
+import com.bd.bdproject.view.activity.MainActivity.Companion.ADD_LIGHT
+import com.bd.bdproject.view.activity.MainActivity.Companion.LIGHT_DETAIL
+import com.bd.bdproject.view.main.AddLightFragmentArgs
+import com.bd.bdproject.view.main.AddLightFragmentDirections
+import com.bd.bdproject.viewmodel.AddViewModel
+import com.bd.bdproject.viewmodel.common.LightViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
@@ -210,7 +211,8 @@ class AddLightFragment: BaseFragment() {
                     super.onAnimationEnd(animation)
                     sharedViewModel.previousPage.value = ADD_LIGHT
                     mainActivity.binding.drawer.closeDrawer(GravityCompat.START)
-                    val navDirection: NavDirections = AddLightFragmentDirections.actionAddLightFragmentToAddTagFragment()
+                    val navDirection: NavDirections =
+                        AddLightFragmentDirections.actionAddLightFragmentToAddTagFragment()
                     findNavController(binding.sbLight).navigate(navDirection)
                 }
             })

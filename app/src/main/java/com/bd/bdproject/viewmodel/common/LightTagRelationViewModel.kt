@@ -1,11 +1,11 @@
-package com.bd.bdproject.viewmodel
+package com.bd.bdproject.viewmodel.common
 
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.data.model.LightTagRelation
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.LightTagRelationRepository
+import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

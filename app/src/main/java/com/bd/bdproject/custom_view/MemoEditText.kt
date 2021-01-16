@@ -1,8 +1,7 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.custom_view
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet

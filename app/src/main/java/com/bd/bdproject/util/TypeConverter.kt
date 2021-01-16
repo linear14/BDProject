@@ -1,22 +1,9 @@
-package com.bd.bdproject.data
+package com.bd.bdproject.util
 
 import androidx.room.TypeConverter
 import java.text.SimpleDateFormat
-import java.util.*
 
 class TypeConverter {
-
-    /*@TypeConverter
-    fun dateToString(date: Date): String {
-        val sdf = SimpleDateFormat("yyMMdd")
-        return sdf.format(date)
-    }
-
-    @TypeConverter
-    fun stringToDate(string: String): Date {
-        val sdf = SimpleDateFormat("yyMMdd")
-        return sdf.parse(string)!!
-    }*/
 
     @TypeConverter
     fun timeToString(timeStamp: Long?): String? {

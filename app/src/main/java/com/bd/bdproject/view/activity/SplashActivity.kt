@@ -1,12 +1,11 @@
-package com.bd.bdproject.ui.splash
+package com.bd.bdproject.view.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivitySplashBinding
-import com.bd.bdproject.ui.MainActivity
 import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.viewmodel.splash.SplashViewModel
+import com.bd.bdproject.viewmodel.SplashViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 

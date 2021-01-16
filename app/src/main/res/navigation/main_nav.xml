@@ -6,7 +6,7 @@
     app:startDestination="@id/lightDetailFragment">
     <fragment
         android:id="@+id/addLightFragment"
-        android:name="com.bd.bdproject.ui.main.AddLightFragment"
+        android:name="com.bd.bdproject.view.fragment.AddLightFragment"
         tools:layout="@layout/fragment_add_light">
         <action
             android:id="@+id/action_addLightFragment_to_addTagFragment"
@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/addTagFragment"
-        android:name="com.bd.bdproject.ui.main.AddTagFragment"
+        android:name="com.bd.bdproject.view.fragment.AddTagFragment"
         tools:layout="@layout/fragment_add_tag">
         <action
             android:id="@+id/action_addTagFragment_to_addMemoFragment"
@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/addMemoFragment"
-        android:name="com.bd.bdproject.ui.main.AddMemoFragment"
+        android:name="com.bd.bdproject.view.fragment.AddMemoFragment"
         tools:layout="@layout/fragment_add_memo">
         <action
             android:id="@+id/action_addMemoFragment_to_lightDetailFragment"
@@ -84,7 +84,7 @@
 
     <fragment
         android:id="@+id/lightDetailFragment"
-        android:name="com.bd.bdproject.ui.main.LightDetailFragment"
+        android:name="com.bd.bdproject.view.fragment.LightDetailFragment"
         tools:layout="@layout/fragment_light_detail">
         <action
             android:id="@+id/action_lightDetailFragment_to_addLightFragment"

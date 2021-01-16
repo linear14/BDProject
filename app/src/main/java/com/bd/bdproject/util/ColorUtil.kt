@@ -5,8 +5,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.bd.bdproject.BitDamApplication.Companion.applicationContext
 import com.bd.bdproject.R
+import com.bd.bdproject.custom_view.MemoEditText
+import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
 
 object ColorUtil {
 

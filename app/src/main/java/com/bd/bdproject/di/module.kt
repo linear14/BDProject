@@ -4,11 +4,11 @@ import com.bd.bdproject.data.AppDatabase
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
-import com.bd.bdproject.viewmodel.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.LightViewModel
-import com.bd.bdproject.viewmodel.TagViewModel
-import com.bd.bdproject.viewmodel.collection.CalendarViewModel
-import com.bd.bdproject.viewmodel.splash.SplashViewModel
+import com.bd.bdproject.viewmodel.CalendarViewModel
+import com.bd.bdproject.viewmodel.SplashViewModel
+import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
+import com.bd.bdproject.viewmodel.common.LightViewModel
+import com.bd.bdproject.viewmodel.common.TagViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

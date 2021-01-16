@@ -2,9 +2,7 @@ package com.bd.bdproject.util
 
 import android.view.View
 import android.view.ViewPropertyAnimator
-import com.bd.bdproject.data.TypeConverter.Companion.FORMATTER
-import java.lang.Exception
-import java.lang.StringBuilder
+import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER
 
 fun View.animateTransparency(toAlpha: Float, duration: Long = 0): ViewPropertyAnimator {
     return this.animate()
