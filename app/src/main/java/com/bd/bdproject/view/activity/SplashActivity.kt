@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivitySplashBinding
+import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.util.Constant.SPLASH
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.SplashViewModel
 import kotlinx.coroutines.*
@@ -26,21 +28,21 @@ class SplashActivity : AppCompatActivity() {
                 delay(1500)
 
                 withContext(Dispatchers.Main) {
-                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                    var intent: Intent? = null
 
                     // DB 작업 실패시 --> 빛 입력 후 화면으로 이동
                     if(deferred.isCancelled) {
-                        intent.putExtra("IS_ENROLLED_TODAY", true)
+                        intent = Intent(this@SplashActivity, DetailActivity::class.java)
                     } else {
                         val isEnrolledToday = deferred.getCompleted()
 
                         if(isEnrolledToday) {
-                            intent.putExtra("IS_ENROLLED_TODAY", true)
+                            intent = Intent(this@SplashActivity, DetailActivity::class.java)
                         } else {
-                            intent.putExtra("IS_ENROLLED_TODAY", false)
+                            intent = Intent(this@SplashActivity, BitdamEnrollActivity::class.java)
                         }
                     }
-                    startActivity(intent)
+                    startActivity(intent.apply{ putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH) })
                     finish()
                 }
             }

@@ -9,36 +9,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.R
-import com.bd.bdproject.databinding.FragmentAddLightBinding
+import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
+import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.view.activity.MainActivity.Companion.ADD_LIGHT
-import com.bd.bdproject.view.activity.MainActivity.Companion.LIGHT_DETAIL
-import com.bd.bdproject.view.main.AddLightFragmentArgs
-import com.bd.bdproject.view.main.AddLightFragmentDirections
 import com.bd.bdproject.viewmodel.AddViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-class AddLightFragment: BaseFragment() {
+class ControlBrightnessFragment: BaseFragment() {
 
-    private var _binding: FragmentAddLightBinding? = null
+    private var _binding: FragmentControlBrightnessBinding? = null
     private val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
 
-    private val args: AddLightFragmentArgs by navArgs()
+    private val args: ControlBrightnessFragmentArgs by navArgs()
 
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
@@ -55,8 +51,8 @@ class AddLightFragment: BaseFragment() {
     var isFirstPressed = true
     var isChangingFragment = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentAddLightBinding.inflate(inflater, container, false).apply {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false).apply {
 
         }
         return binding.root
@@ -67,8 +63,8 @@ class AddLightFragment: BaseFragment() {
 
         binding.apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
-            mainActivity.binding.btnDrawer.visibility = View.VISIBLE
-            mainActivity.binding.btnBack.visibility = View.GONE
+            btnDrawer.visibility = View.VISIBLE
+            btnBack.visibility = View.GONE
 
             actionEnroll.setOnClickListener { editBrightness() }
 
@@ -84,10 +80,18 @@ class AddLightFragment: BaseFragment() {
         isFirstPressed = true
         isChangingFragment = false
 
-        if(sharedViewModel.previousPage.value != LIGHT_DETAIL && sharedViewModel.brightness.value == null) {
+        if(sharedViewModel.brightness.value == null) {
             showUiWithDelay()
         } else {
             showUi()
+        }
+
+        binding.btnDrawer.setOnClickListener {
+            mainActivity.binding.drawer.openDrawer(GravityCompat.START)
+        }
+
+        binding.btnBack.setOnClickListener {
+            mainActivity.onBackPressed()
         }
     }
 
@@ -129,9 +133,9 @@ class AddLightFragment: BaseFragment() {
 
     private fun showUi() {
         binding.apply {
-            val brightness = if(sharedViewModel.previousPage.value == LIGHT_DETAIL)
+            val brightness = // if(sharedViewModel.previousPage.value == LIGHT_DETAIL)
                 args.light?.bright?:0
-            else sharedViewModel.brightness.value?:0
+            // else sharedViewModel.brightness.value?:0
 
             setEntireLightFragmentColor(brightness)
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
@@ -142,14 +146,14 @@ class AddLightFragment: BaseFragment() {
             sbLight.barWidth = 4
             sbLight.progress = brightness * 2
 
-            if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+            /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
                 mainActivity.binding.btnDrawer.visibility = View.GONE
                 mainActivity.binding.btnBack.visibility = View.VISIBLE
                 sbLight.alpha = 1.0f
                 actionEnroll.visibility = View.VISIBLE
-            } else {
+            } else {*/
                 sbLight.animateTransparency(1.0f, 2000)
-            }
+            //}
         }
     }
 
@@ -186,7 +190,7 @@ class AddLightFragment: BaseFragment() {
     private fun setSeekBarReleaseListener() {
         binding.apply {
             sbLight.setOnReleaseListener { progress ->
-                if(sharedViewModel.previousPage.value != LIGHT_DETAIL && !isFirstPressed && !isChangingFragment) {
+                if(!isFirstPressed && !isChangingFragment) {
                     isChangingFragment = true
                     saveBrightness()
                     goToFragmentAddLight()
@@ -209,10 +213,10 @@ class AddLightFragment: BaseFragment() {
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
-                    sharedViewModel.previousPage.value = ADD_LIGHT
+                    sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
                     mainActivity.binding.drawer.closeDrawer(GravityCompat.START)
                     val navDirection: NavDirections =
-                        AddLightFragmentDirections.actionAddLightFragmentToAddTagFragment()
+                        ControlBrightnessFragmentDirections.actionAddLightFragmentToAddTagFragment()
                     findNavController(binding.sbLight).navigate(navDirection)
                 }
             })
@@ -232,13 +236,9 @@ class AddLightFragment: BaseFragment() {
                 Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
-                    sharedViewModel.previousPage.value = ADD_LIGHT
+                    sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
                     Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                    findNavController(binding.root).navigate(
-                        R.id.action_addLightFragment_to_lightDetailFragment,
-                        bundleOf("dateCode" to args.light?.dateCode)
-                    )
                 }
             }
         }
@@ -253,8 +253,8 @@ class AddLightFragment: BaseFragment() {
                 tvBrightness,
                 tvAskCondition,
                 actionEnroll,
-                mainActivity.binding.btnDrawer,
-                mainActivity.binding.btnBack
+                btnDrawer,
+                btnBack
             )
         }
     }

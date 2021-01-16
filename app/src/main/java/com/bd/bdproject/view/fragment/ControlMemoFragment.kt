@@ -10,22 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.databinding.FragmentAddMemoBinding
+import com.bd.bdproject.databinding.FragmentControlMemoBinding
 import com.bd.bdproject.util.*
-import com.bd.bdproject.view.activity.MainActivity
-import com.bd.bdproject.view.activity.MainActivity.Companion.LIGHT_DETAIL
+import com.bd.bdproject.util.Constant.CONTROL_MEMO
+import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.adapter.TagAdapter
-import com.bd.bdproject.view.main.AddMemoFragmentArgs
-import com.bd.bdproject.view.main.AddMemoFragmentDirections
 import com.bd.bdproject.viewmodel.AddViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
@@ -37,9 +31,9 @@ import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-class AddMemoFragment: BaseFragment() {
+class ControlMemoFragment: BaseFragment() {
 
-    private var _binding: FragmentAddMemoBinding? = null
+    private var _binding: FragmentControlMemoBinding? = null
     private val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
@@ -47,7 +41,7 @@ class AddMemoFragment: BaseFragment() {
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
 
-    private val args: AddMemoFragmentArgs by navArgs()
+    private val args: ControlMemoFragmentArgs by navArgs()
 
     private val tagEnrolledAdapter by lazy { TagAdapter() }
 
@@ -69,18 +63,21 @@ class AddMemoFragment: BaseFragment() {
     var isChangingFragment = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentAddMemoBinding.inflate(inflater, container, false).apply {
+        _binding = FragmentControlMemoBinding.inflate(inflater, container, false).apply {
             inputMemo.addTextChangedListener(InputMemoWatcher())
             actionEnroll.setOnClickListener {
-                if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
                     editMemo()
                 } else {
                     if(!isChangingFragment) {
                         isChangingFragment = true
                         insertLightWithTag()
                     }
+                }*/
+                if(!isChangingFragment) {
+                    isChangingFragment = true
+                    insertLightWithTag()
                 }
-
             }
         }
 
@@ -104,6 +101,10 @@ class AddMemoFragment: BaseFragment() {
 
         initBackground()
         showUi()
+
+        binding.btnBack.setOnClickListener {
+            mainActivity.onBackPressed()
+        }
     }
 
     override fun onDestroyView() {
@@ -119,9 +120,9 @@ class AddMemoFragment: BaseFragment() {
                         KeyboardUtil.keyBoardHide(binding.inputMemo)
                         true
                     } else {
-                        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                        /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
                             return false
-                        }
+                        }*/
                         if(!isChangingFragment) {
                             saveMemo()
                             isChangingFragment = true
@@ -129,9 +130,9 @@ class AddMemoFragment: BaseFragment() {
                                 .setListener(object : AnimatorListenerAdapter() {
                                     override fun onAnimationEnd(animation: Animator?) {
                                         super.onAnimationEnd(animation)
-                                        sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
+                                        sharedViewModel.previousPage.value = CONTROL_MEMO
                                         KeyboardUtil.keyBoardHide(binding.inputMemo)
-                                        (activity as MainActivity).onBackPressed(true)
+                                        (activity as BitdamEnrollActivity).onBackPressed(true)
                                     }
                                 })
                             true
@@ -177,12 +178,12 @@ class AddMemoFragment: BaseFragment() {
                     Toast.makeText(BitDamApplication.applicationContext(), "등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     CoroutineScope(Dispatchers.Main).launch {
-                        sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
+                        sharedViewModel.previousPage.value = CONTROL_MEMO
                         Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                        val navDirection: NavDirections =
+                        /*val navDirection: NavDirections =
                             AddMemoFragmentDirections.actionAddMemoFragmentToLightDetailFragment()
-                        findNavController(binding.root).navigate(navDirection)
+                        findNavController(binding.root).navigate(navDirection)*/
                     }
                 }
 
@@ -230,13 +231,13 @@ class AddMemoFragment: BaseFragment() {
                 Toast.makeText(BitDamApplication.applicationContext(), "메모 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
-                    sharedViewModel.previousPage.value = MainActivity.ADD_MEMO
+                    sharedViewModel.previousPage.value = CONTROL_MEMO
                     Toast.makeText(BitDamApplication.applicationContext(), "메모 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                    findNavController(binding.root).navigate(
+                    /*findNavController(binding.root).navigate(
                         R.id.action_addMemoFragment_to_lightDetailFragment_edit,
                         bundleOf("dateCode" to args.light?.dateCode)
-                    )
+                    )*/
                 }
             }
         }
@@ -246,21 +247,22 @@ class AddMemoFragment: BaseFragment() {
 
     private fun initBackground() {
         binding.apply {
-            mainActivity.binding.btnDrawer.visibility = View.GONE
-            mainActivity.binding.btnBack.visibility = View.VISIBLE
-
             var brightness: Int? = null
             var tags: List<Tag>? = null
             var memo: String? = null
 
-            if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+            /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
                 brightness = args.light?.bright?:0
                 memo = args.light?.memo
             } else {
                 brightness = sharedViewModel.brightness.value?:0
                 tags = sharedViewModel.tags.value?: mutableListOf()
                 memo = sharedViewModel.memo.value
-            }
+            }*/
+
+            brightness = sharedViewModel.brightness.value?:0
+            tags = sharedViewModel.tags.value?: mutableListOf()
+            memo = sharedViewModel.memo.value
 
 
             setEntireMemoFragmentColor(brightness)
@@ -269,22 +271,28 @@ class AddMemoFragment: BaseFragment() {
             layoutAddMemo.background = gradientDrawable
             inputMemo.setText(memo)
 
-            if(sharedViewModel.previousPage.value != LIGHT_DETAIL) {
+            /*if(sharedViewModel.previousPage.value != LIGHT_DETAIL) {
                 tvBrightness.text = brightness.toString()
                 tagEnrolledAdapter.submitList(tags?.toMutableList(), brightness)
-            }
+            }*/
+            tvBrightness.text = brightness.toString()
+            tagEnrolledAdapter.submitList(tags?.toMutableList(), brightness)
 
         }
     }
 
     private fun showUi() {
-        if (sharedViewModel.previousPage.value != LIGHT_DETAIL) {
+        /*if (sharedViewModel.previousPage.value != LIGHT_DETAIL) {
             CoroutineScope(Dispatchers.Main).launch {
                 binding.layoutMemo.animateTransparency(1.0f, 2000)
             }
         } else {
             binding.layoutMemo.alpha = 1.0f
             binding.tvBrightness.visibility = View.GONE
+        }*/
+
+        CoroutineScope(Dispatchers.Main).launch {
+            binding.layoutMemo.animateTransparency(1.0f, 2000)
         }
     }
 
@@ -300,7 +308,7 @@ class AddMemoFragment: BaseFragment() {
                 actionEnroll,
                 inputMemo,
                 tvTextCount,
-                mainActivity.binding.btnBack
+                btnBack
             )
         }
     }

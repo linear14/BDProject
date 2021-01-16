@@ -22,15 +22,11 @@ import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.databinding.FragmentAddTagBinding
+import com.bd.bdproject.databinding.FragmentControlTagBinding
 import com.bd.bdproject.util.*
-import com.bd.bdproject.view.activity.MainActivity
-import com.bd.bdproject.view.activity.MainActivity.Companion.ADD_MEMO
-import com.bd.bdproject.view.activity.MainActivity.Companion.ADD_TAG
-import com.bd.bdproject.view.activity.MainActivity.Companion.LIGHT_DETAIL
+import com.bd.bdproject.util.Constant.CONTROL_MEMO
+import com.bd.bdproject.util.Constant.CONTROL_TAG
 import com.bd.bdproject.view.adapter.TagAdapter
-import com.bd.bdproject.view.main.AddTagFragmentArgs
-import com.bd.bdproject.view.main.AddTagFragmentDirections
 import com.bd.bdproject.viewmodel.AddViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.common.TagViewModel
@@ -41,16 +37,16 @@ import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-class AddTagFragment: BaseFragment() {
+class ControlTagFragment: BaseFragment() {
 
-    private var _binding: FragmentAddTagBinding? = null
+    private var _binding: FragmentControlTagBinding? = null
     private val binding get() = _binding!!
 
     private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
 
-    private val args: AddTagFragmentArgs by navArgs()
+    private val args: ControlTagFragmentArgs by navArgs()
 
     private val tagEnrolledAdapter by lazy { TagAdapter().also {
         it.onTagClickListener = object: OnTagClickListener {
@@ -114,7 +110,7 @@ class AddTagFragment: BaseFragment() {
     var isChangingFragment = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentAddTagBinding.inflate(inflater, container, false).apply {
+        _binding = FragmentControlTagBinding.inflate(inflater, container, false).apply {
             inputTag.addTextChangedListener(InputTagWatcher())
             actionNext.setOnClickListener {
                 if(!isChangingFragment) {
@@ -139,13 +135,13 @@ class AddTagFragment: BaseFragment() {
                         Toast.makeText(BitDamApplication.applicationContext(), "태그 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     } else {
                         CoroutineScope(Dispatchers.Main).launch {
-                            sharedViewModel.previousPage.value = ADD_TAG
+                            sharedViewModel.previousPage.value = CONTROL_TAG
                             Toast.makeText(BitDamApplication.applicationContext(), "태그 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                            Navigation.findNavController(binding.root).navigate(
+                            /*Navigation.findNavController(binding.root).navigate(
                                 R.id.action_addTagFragment_to_lightDetailFragment,
                                 bundleOf("dateCode" to args.light?.dateCode)
-                            )
+                            )*/
                         }
                     }
                 }
@@ -209,6 +205,10 @@ class AddTagFragment: BaseFragment() {
 
         initBackground()
         showUi()
+
+        binding.btnBack.setOnClickListener {
+            mainActivity.onBackPressed()
+        }
     }
 
     override fun onDestroyView() {
@@ -224,9 +224,9 @@ class AddTagFragment: BaseFragment() {
                         KeyboardUtil.keyBoardHide(binding.inputTag)
                         true
                     } else {
-                        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+                        /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
                             return false
-                        }
+                        }*/
                         if(!isChangingFragment) {
                             saveTags()
                             isChangingFragment = true
@@ -236,7 +236,7 @@ class AddTagFragment: BaseFragment() {
                                 .setListener(object : AnimatorListenerAdapter() {
                                     override fun onAnimationEnd(animation: Animator?) {
                                         super.onAnimationEnd(animation)
-                                        sharedViewModel.previousPage.value = MainActivity.ADD_TAG
+                                        sharedViewModel.previousPage.value = CONTROL_TAG
                                         KeyboardUtil.keyBoardHide(binding.inputTag)
                                         mainActivity.onBackPressed(true)
                                     }
@@ -306,7 +306,7 @@ class AddTagFragment: BaseFragment() {
                     binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
                 }
 
-                val brightness = if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else sharedViewModel.brightness.value
+                val brightness = /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else*/ sharedViewModel.brightness.value
                 submitList(enrolled.toMutableList(), brightness?:0)
             }
         }
@@ -314,7 +314,7 @@ class AddTagFragment: BaseFragment() {
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(requireActivity()) { searchedResult ->
-            val brightness = if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else sharedViewModel.brightness.value
+            val brightness = /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else*/ sharedViewModel.brightness.value
 
             tagRecommendAdapter.submitList(
                 searchedResult.map{ Tag(it) }.toMutableList(),
@@ -345,19 +345,18 @@ class AddTagFragment: BaseFragment() {
     }
 
     private fun initBackground() {
-        mainActivity.binding.btnDrawer.visibility = View.GONE
-        mainActivity.binding.btnBack.visibility = View.VISIBLE
-
         var brightness: Int? = null
         var tags: List<Tag>? = null
 
-        if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
+        /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
             brightness = args.light?.bright?:0
             tags = args.tags
         } else {
             brightness = sharedViewModel.brightness.value ?: 0
             tags = sharedViewModel.tags.value
-        }
+        }*/
+        brightness = sharedViewModel.brightness.value ?: 0
+        tags = sharedViewModel.tags.value
 
         setEntireTagFragmentColor(brightness)
         gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
@@ -370,19 +369,19 @@ class AddTagFragment: BaseFragment() {
     private fun showUi() {
         binding.apply {
             when (sharedViewModel.previousPage.value) {
-                ADD_MEMO -> {
+                CONTROL_MEMO -> {
                     rvTagEnrolled.alpha = 1.0f
                     layoutInput.animateTransparency(1.0f, 2000)
                     layoutTagRecommend.animateTransparency(1.0f, 2000)
                 }
-                LIGHT_DETAIL -> {
+                /*LIGHT_DETAIL -> {
                     actionNext.visibility = View.GONE
                     actionEnroll.visibility = View.VISIBLE
                     rvTagEnrolled.alpha = 1.0f
                     layoutInput.alpha = 1.0f
                     layoutTagRecommend.alpha = 1.0f
 
-                }
+                }*/
                 else -> {
                     rvTagEnrolled.animateTransparency(1.0f, 2000)
                         .setListener(object : AnimatorListenerAdapter() {
@@ -408,10 +407,10 @@ class AddTagFragment: BaseFragment() {
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
-                    sharedViewModel.previousPage.value = MainActivity.ADD_TAG
+                    sharedViewModel.previousPage.value = CONTROL_TAG
                     KeyboardUtil.keyBoardHide(binding.inputTag)
                     val navDirection: NavDirections =
-                        AddTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
+                        ControlTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
                     Navigation.findNavController(view).navigate(navDirection)
                 }
             })
@@ -436,7 +435,7 @@ class AddTagFragment: BaseFragment() {
                 separator1,
                 tvTagRecommend,
                 ivTagRecommendInfo,
-                mainActivity.binding.btnBack
+                btnBack
             )
         }
     }
