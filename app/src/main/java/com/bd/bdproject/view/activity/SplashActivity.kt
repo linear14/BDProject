@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivitySplashBinding
+import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.util.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.util.Constant.SPLASH
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.SplashViewModel
@@ -37,7 +39,10 @@ class SplashActivity : AppCompatActivity() {
                         val isEnrolledToday = deferred.getCompleted()
 
                         if(isEnrolledToday) {
-                            intent = Intent(this@SplashActivity, DetailActivity::class.java)
+                            intent = Intent(this@SplashActivity, DetailActivity::class.java).apply {
+                                putExtra(INFO_DATE_CODE, System.currentTimeMillis().timeToString())
+                                putExtra(INFO_SHOULD_HAVE_DRAWER, true)
+                            }
                         } else {
                             intent = Intent(this@SplashActivity, BitdamEnrollActivity::class.java)
                         }

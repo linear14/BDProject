@@ -1,42 +1,22 @@
 package com.bd.bdproject.view.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
-import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
-import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
-import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.viewmodel.AddViewModel
-import com.bd.bdproject.viewmodel.common.LightViewModel
-import kotlinx.coroutines.*
-import org.koin.android.ext.android.inject
 
-class ControlBrightnessFragment: BaseFragment() {
+open class ControlBrightnessFragment: BaseFragment() {
 
     private var _binding: FragmentControlBrightnessBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
-    private val lightViewModel: LightViewModel by inject()
-    private val sharedViewModel: AddViewModel by activityViewModels()
-
-    private val args: ControlBrightnessFragmentArgs by navArgs()
-
-    private val gradientDrawable = GradientDrawable().apply {
+    val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
 
@@ -63,14 +43,9 @@ class ControlBrightnessFragment: BaseFragment() {
 
         binding.apply {
             sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
-            btnDrawer.visibility = View.VISIBLE
-            btnBack.visibility = View.GONE
-
-            actionEnroll.setOnClickListener { editBrightness() }
 
             setSeekBarPressListener()
             setSeekBarProgressChangedListener()
-            setSeekBarReleaseListener()
         }
 
     }
@@ -79,82 +54,11 @@ class ControlBrightnessFragment: BaseFragment() {
         super.onResume()
         isFirstPressed = true
         isChangingFragment = false
-
-        if(sharedViewModel.brightness.value == null) {
-            showUiWithDelay()
-        } else {
-            showUi()
-        }
-
-        binding.btnDrawer.setOnClickListener {
-            mainActivity.binding.drawer.openDrawer(GravityCompat.START)
-        }
-
-        binding.btnBack.setOnClickListener {
-            mainActivity.onBackPressed()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun showUiWithDelay() {
-
-            GlobalScope.launch {
-                binding.apply {
-                    tvAskCondition.visibility = View.GONE
-                    tvAskCondition.clearAnimation()
-                    sbLight.clearAnimation()
-
-                    delay(1000)
-
-                    withContext(Dispatchers.Main) {
-                        tvAskCondition.animateTransparency(1.0f, 2000)
-                            .setListener(object: AnimatorListenerAdapter() {
-                                override fun onAnimationStart(animation: Animator?) {
-                                    super.onAnimationStart(animation)
-                                    tvAskCondition.visibility = View.VISIBLE
-                                }
-
-                                override fun onAnimationEnd(animation: Animator?) {
-                                    super.onAnimationEnd(animation)
-                                    if(!isChangingFragment) {
-                                        sbLight.animateTransparency(1.0f, 2000)
-                                    }
-                                }
-                            })
-                    }
-                }
-            }
-
-    }
-
-    private fun showUi() {
-        binding.apply {
-            val brightness = // if(sharedViewModel.previousPage.value == LIGHT_DETAIL)
-                args.light?.bright?:0
-            // else sharedViewModel.brightness.value?:0
-
-            setEntireLightFragmentColor(brightness)
-            gradientDrawable.colors = getDiagonalLight(brightness * 2)
-            layoutAddLight.background = gradientDrawable
-            tvBrightness.text = brightness.toString()
-            tvAskCondition.visibility = View.GONE
-            tvBrightness.visibility = View.VISIBLE
-            sbLight.barWidth = 4
-            sbLight.progress = brightness * 2
-
-            /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
-                mainActivity.binding.btnDrawer.visibility = View.GONE
-                mainActivity.binding.btnBack.visibility = View.VISIBLE
-                sbLight.alpha = 1.0f
-                actionEnroll.visibility = View.VISIBLE
-            } else {*/
-                sbLight.animateTransparency(1.0f, 2000)
-            //}
-        }
     }
 
     private fun setSeekBarPressListener() {
@@ -187,66 +91,12 @@ class ControlBrightnessFragment: BaseFragment() {
         }
     }
 
-    private fun setSeekBarReleaseListener() {
-        binding.apply {
-            sbLight.setOnReleaseListener { progress ->
-                if(!isFirstPressed && !isChangingFragment) {
-                    isChangingFragment = true
-                    saveBrightness()
-                    goToFragmentAddLight()
-                }
-            }
-        }
-    }
-
     private fun getBrightness(progress: Int): Int {
         val converted = progress / 10
         return (converted * 5)
     }
 
-    private fun saveBrightness() {
-        sharedViewModel.brightness.value = binding.tvBrightness.text.toString().toInt()
-    }
-
-    private fun goToFragmentAddLight() {
-        binding.sbLight.animateTransparency(0.0f, 2000)
-            .setListener(object: AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
-                    mainActivity.binding.drawer.closeDrawer(GravityCompat.START)
-                    val navDirection: NavDirections =
-                        ControlBrightnessFragmentDirections.actionAddLightFragmentToAddTagFragment()
-                    findNavController(binding.sbLight).navigate(navDirection)
-                }
-            })
-    }
-
-    private fun editBrightness() {
-        runBlocking {
-            val job = GlobalScope.launch {
-                args.light?.let {
-                    lightViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), it.dateCode)
-                }
-            }
-
-            job.join()
-
-            if(job.isCancelled) {
-                Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
-            } else {
-                CoroutineScope(Dispatchers.Main).launch {
-                    sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
-                    Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-
-                }
-            }
-        }
-
-
-    }
-
-    private fun setEntireLightFragmentColor(brightness: Int) {
+    fun setEntireLightFragmentColor(brightness: Int) {
         binding.apply {
             setEntireViewColor(
                 brightness,
@@ -258,10 +108,4 @@ class ControlBrightnessFragment: BaseFragment() {
             )
         }
     }
-
-    /***
-     * TODO 비동기로 2~3초마다 sbLight Thumb가 visible한지 검사하는 메서드를 만들어준다.
-     * visible하면 return
-     * 아니면 보여주는 메서드
-     */
 }

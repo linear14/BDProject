@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/enrollNavigation"
+    app:startDestination="@id/enrollBrightnessFragment">
+
+    <fragment
+        android:id="@+id/enrollBrightnessFragment"
+        android:name="com.bd.bdproject.view.fragment.enroll.EnrollBrightnessFragment"
+        tools:layout="@layout/fragment_control_brightness">
+        <action
+            android:id="@+id/action_enrollBrightnessFragment_to_enrollTagFragment"
+            app:destination="@id/enrollTagFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/enrollTagFragment"
+        android:name="com.bd.bdproject.view.fragment.enroll.EnrollTagFragment"
+        tools:layout="@layout/fragment_control_tag">
+        <action
+            android:id="@+id/action_enrollTagFragment_to_enrollMemoFragment"
+            app:destination="@id/enrollMemoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/enrollMemoFragment"
+        android:name="com.bd.bdproject.view.fragment.enroll.EnrollMemoFragment"
+        tools:layout="@layout/fragment_control_memo" />
+</navigation>

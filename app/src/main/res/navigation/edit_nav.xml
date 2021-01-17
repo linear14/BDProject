@@ -2,16 +2,13 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainNavigation"
-    app:startDestination="@id/controlBrightnessFragment">
+    android:id="@+id/editNavigation"
+    app:startDestination="@id/editBrightnessFragment">
 
     <fragment
-        android:id="@+id/controlBrightnessFragment"
-        android:name="com.bd.bdproject.view.fragment.ControlBrightnessFragment"
+        android:id="@+id/editBrightnessFragment"
+        android:name="com.bd.bdproject.view.fragment.edit.EditBrightnessFragment"
         tools:layout="@layout/fragment_control_brightness">
-        <action
-            android:id="@+id/action_addLightFragment_to_addTagFragment"
-            app:destination="@id/controlTagFragment" />
         <argument
             android:name="light"
             app:argType="com.bd.bdproject.data.model.Light"
@@ -20,12 +17,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/controlTagFragment"
-        android:name="com.bd.bdproject.view.fragment.ControlTagFragment"
+        android:id="@+id/editTagFragment"
+        android:name="com.bd.bdproject.view.fragment.edit.EditTagFragment"
         tools:layout="@layout/fragment_control_tag">
-        <action
-            android:id="@+id/action_addTagFragment_to_addMemoFragment"
-            app:destination="@id/controlMemoFragment" />
         <argument
             android:name="light"
             app:argType="com.bd.bdproject.data.model.Light"
@@ -39,8 +33,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/controlMemoFragment"
-        android:name="com.bd.bdproject.view.fragment.ControlMemoFragment"
+        android:id="@+id/editMemoFragment"
+        android:name="com.bd.bdproject.view.fragment.edit.EditMemoFragment"
         tools:layout="@layout/fragment_control_memo">
         <argument
             android:name="light"
@@ -49,15 +43,22 @@
             app:nullable="true"/>
     </fragment>
 
-    <!--<action
-        android:id="@+id/action_global_lightDetailFragment"
-        app:destination="@id/lightDetailFragment"
-        app:popUpTo="@id/lightDetailFragment"
-        app:popUpToInclusive="true"/>
+    <action
+        android:id="@+id/action_global_editBrightnessFragment"
+        app:destination="@id/editBrightnessFragment"
+        app:popUpToInclusive="true"
+        app:popUpTo="@id/editBrightnessFragment"/>
 
     <action
-        android:id="@+id/action_global_addLightFragment"
-        app:destination="@id/addLightFragment"
-        app:popUpTo="@id/lightDetailFragment"
-        app:popUpToInclusive="true" />-->
+        android:id="@+id/action_global_editTagFragment"
+        app:destination="@id/editTagFragment"
+        app:popUpToInclusive="true"
+        app:popUpTo="@id/editBrightnessFragment"/>
+
+    <action
+        android:id="@+id/action_global_editMemoFragment"
+        app:destination="@id/editMemoFragment"
+        app:popUpToInclusive="true"
+        app:popUpTo="@id/editBrightnessFragment"/>
+
 </navigation>

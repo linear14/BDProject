@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
+import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.view.adapter.CalendarAdapter
@@ -20,6 +21,7 @@ class CollectionMainActivity : AppCompatActivity() {
     private val calendarAdapter by lazy { CalendarAdapter { dateCode ->
         startActivity(Intent(this@CollectionMainActivity, DetailActivity::class.java).apply {
             putExtra(INFO_DATE_CODE, dateCode)
+            putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, false)
         })
     } }
 

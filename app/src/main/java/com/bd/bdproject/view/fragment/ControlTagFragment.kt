@@ -10,22 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.bd.bdproject.R
-import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentControlTagBinding
-import com.bd.bdproject.util.*
-import com.bd.bdproject.util.Constant.CONTROL_MEMO
-import com.bd.bdproject.util.Constant.CONTROL_TAG
+import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.viewmodel.AddViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
@@ -37,18 +31,14 @@ import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-class ControlTagFragment: BaseFragment() {
+open class ControlTagFragment: BaseFragment() {
 
     private var _binding: FragmentControlTagBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val tagViewModel: TagViewModel by inject()
-    private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
-    private val sharedViewModel: AddViewModel by activityViewModels()
 
-    private val args: ControlTagFragmentArgs by navArgs()
-
-    private val tagEnrolledAdapter by lazy { TagAdapter().also {
+    val tagEnrolledAdapter by lazy { TagAdapter().also {
         it.onTagClickListener = object: OnTagClickListener {
             override fun onClick(tagName: String) {
                 if(!isChangingFragment) {
@@ -76,7 +66,7 @@ class ControlTagFragment: BaseFragment() {
         }
     } }
 
-    private val tagRecommendAdapter by lazy { TagAdapter().also {
+    val tagRecommendAdapter by lazy { TagAdapter().also {
         it.onTagClickListener = object: OnTagClickListener {
             override fun onClick(tagName: String) {
                 if(checkIsValidTag(tagName)) {
@@ -92,7 +82,7 @@ class ControlTagFragment: BaseFragment() {
         }
     } }
 
-    private val gradientDrawable = GradientDrawable().apply {
+    val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
 
@@ -112,41 +102,6 @@ class ControlTagFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentControlTagBinding.inflate(inflater, container, false).apply {
             inputTag.addTextChangedListener(InputTagWatcher())
-            actionNext.setOnClickListener {
-                if(!isChangingFragment) {
-                    isChangingFragment = true
-                    saveTags()
-                    goToFragmentAddMemo(it)
-                }
-            }
-
-            actionEnroll.setOnClickListener {
-                KeyboardUtil.keyBoardHide(binding.inputTag)
-                runBlocking {
-                    val tagList = GlobalScope.async { tagViewModel.asyncInsertTag(tagViewModel.candidateTags.value) }
-                    val job = GlobalScope.launch {
-                        args.light?.let {
-                            lightTagRelationViewModel.updateRelationsAll(it.dateCode, tagList.await())
-                        } }
-
-                    job.join()
-
-                    if(job.isCancelled) {
-                        Toast.makeText(BitDamApplication.applicationContext(), "태그 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            sharedViewModel.previousPage.value = CONTROL_TAG
-                            Toast.makeText(BitDamApplication.applicationContext(), "태그 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-
-                            /*Navigation.findNavController(binding.root).navigate(
-                                R.id.action_addTagFragment_to_lightDetailFragment,
-                                bundleOf("dateCode" to args.light?.dateCode)
-                            )*/
-                        }
-                    }
-                }
-
-            }
 
             ivTagRecommendInfo.setOnClickListener {
                 tvTagRecommendInfo.animateTransparency(1.0f, 500)
@@ -198,57 +153,12 @@ class ControlTagFragment: BaseFragment() {
         isKeyboardShowing = false
         isChangingFragment = false
 
-        observeTagEnrolled()
-        observeTagSearched()
         observeKeyboard()
-        setOnBackPressed()
-
-        initBackground()
-        showUi()
-
-        binding.btnBack.setOnClickListener {
-            mainActivity.onBackPressed()
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun setOnBackPressed() {
-        onBackPressedListener = object: OnBackPressedInFragment {
-            override fun onBackPressed(): Boolean {
-                binding.apply {
-                    return if (isKeyboardShowing) {
-                        KeyboardUtil.keyBoardHide(binding.inputTag)
-                        true
-                    } else {
-                        /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
-                            return false
-                        }*/
-                        if(!isChangingFragment) {
-                            saveTags()
-                            isChangingFragment = true
-                            rvTagEnrolled.animateTransparency(0.0f, 2000)
-                            layoutInput.animateTransparency(0.0f, 2000)
-                            layoutTagRecommend.animateTransparency(0.0f, 2000)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
-                                        super.onAnimationEnd(animation)
-                                        sharedViewModel.previousPage.value = CONTROL_TAG
-                                        KeyboardUtil.keyBoardHide(binding.inputTag)
-                                        mainActivity.onBackPressed(true)
-                                    }
-                                })
-                            true
-                        } else {
-                            true
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private fun checkIsValidTag(tagName: String): Boolean {
@@ -295,35 +205,6 @@ class ControlTagFragment: BaseFragment() {
         tagViewModel.searchTag(null)
     }
 
-    private fun observeTagEnrolled() {
-        tagViewModel.candidateTags.observe(requireActivity()) { enrolled ->
-            tagEnrolledAdapter.apply {
-                if(isEditMode) {
-                    binding.rvTagEnrolled.itemAnimator = null
-                    isEditMode = false
-                    editModeTag = null
-                } else {
-                    binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
-                }
-
-                val brightness = /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else*/ sharedViewModel.brightness.value
-                submitList(enrolled.toMutableList(), brightness?:0)
-            }
-        }
-    }
-
-    private fun observeTagSearched() {
-        tagViewModel.searchedTagNames.observe(requireActivity()) { searchedResult ->
-            val brightness = /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) args.light?.bright else*/ sharedViewModel.brightness.value
-
-            tagRecommendAdapter.submitList(
-                searchedResult.map{ Tag(it) }.toMutableList(),
-                brightness?:0,
-                true
-            )
-        }
-    }
-
     private fun setTagRecyclerView() {
         binding.apply {
             val layoutManagerEnrolled = FlexboxLayoutManager(requireActivity()).apply {
@@ -344,85 +225,13 @@ class ControlTagFragment: BaseFragment() {
         }
     }
 
-    private fun initBackground() {
-        var brightness: Int? = null
-        var tags: List<Tag>? = null
-
-        /*if(sharedViewModel.previousPage.value == LIGHT_DETAIL) {
-            brightness = args.light?.bright?:0
-            tags = args.tags
-        } else {
-            brightness = sharedViewModel.brightness.value ?: 0
-            tags = sharedViewModel.tags.value
-        }*/
-        brightness = sharedViewModel.brightness.value ?: 0
-        tags = sharedViewModel.tags.value
-
-        setEntireTagFragmentColor(brightness)
-        gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-
-        binding.layoutAddTag.background = gradientDrawable
-        tagViewModel.candidateTags.value = tags?.toMutableList()?: mutableListOf()
-        binding.tvBrightness.text = brightness.toString()
-    }
-
-    private fun showUi() {
-        binding.apply {
-            when (sharedViewModel.previousPage.value) {
-                CONTROL_MEMO -> {
-                    rvTagEnrolled.alpha = 1.0f
-                    layoutInput.animateTransparency(1.0f, 2000)
-                    layoutTagRecommend.animateTransparency(1.0f, 2000)
-                }
-                /*LIGHT_DETAIL -> {
-                    actionNext.visibility = View.GONE
-                    actionEnroll.visibility = View.VISIBLE
-                    rvTagEnrolled.alpha = 1.0f
-                    layoutInput.alpha = 1.0f
-                    layoutTagRecommend.alpha = 1.0f
-
-                }*/
-                else -> {
-                    rvTagEnrolled.animateTransparency(1.0f, 2000)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationStart(animation: Animator?) {
-                                rvTagEnrolled.alpha = 0f
-                            }
-                        })
-                    layoutInput.animateTransparency(1.0f, 2000)
-                    layoutTagRecommend.animateTransparency(1.0f, 2000)
-                }
-            }
-        }
-    }
-
-    private fun saveTags() {
-        sharedViewModel.tags.value = tagViewModel.candidateTags.value
-    }
-
-    private fun goToFragmentAddMemo(view: View) {
-        KeyboardUtil.keyBoardHide(binding.inputTag)
-        binding.layoutInput.animateTransparency(0.0f, 2000)
-        binding.layoutTagRecommend.animateTransparency(0.0f, 2000)
-            .setListener(object: AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    sharedViewModel.previousPage.value = CONTROL_TAG
-                    KeyboardUtil.keyBoardHide(binding.inputTag)
-                    val navDirection: NavDirections =
-                        ControlTagFragmentDirections.actionAddTagFragmentToAddMemoFragment()
-                    Navigation.findNavController(view).navigate(navDirection)
-                }
-            })
-    }
-
     private fun observeKeyboard() {
         TedKeyboardObserver(requireActivity()).listen { isShow ->
             isKeyboardShowing = isShow
         }
     }
 
-    private fun setEntireTagFragmentColor(brightness: Int) {
+    fun setEntireTagFragmentColor(brightness: Int) {
         binding.apply {
             ColorUtil.setEntireViewColor(
                 brightness,

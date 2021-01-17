@@ -1,17 +1,26 @@
 package com.bd.bdproject.view.activity
 
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.observe
+import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.ActivityDetailBinding
 import com.bd.bdproject.util.ColorUtil
-import com.bd.bdproject.util.Constant.COLLECTION_MAIN
-import com.bd.bdproject.util.Constant.ACTIVITY_NOT_RECOGNIZED
+import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
+import com.bd.bdproject.util.Constant.CONTROL_MEMO
+import com.bd.bdproject.util.Constant.CONTROL_TAG
+import com.bd.bdproject.util.Constant.DETAIL
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
+import com.bd.bdproject.util.Constant.INFO_DESTINATION
+import com.bd.bdproject.util.Constant.INFO_LIGHT
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.util.Constant.INFO_SHOULD_HAVE_DRAWER
+import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
@@ -47,20 +56,21 @@ class DetailActivity : AppCompatActivity() {
         initButtons()
         observeLight()
         setTagRecyclerView()
-        addWorksForEditListener()
+        setEditButtons()
     }
 
     private fun initButtons() {
-        val previousActivity = intent.getIntExtra(INFO_PREVIOUS_ACTIVITY, ACTIVITY_NOT_RECOGNIZED)
         binding.apply {
-            if (previousActivity == COLLECTION_MAIN) {
-                btnDrawer.visibility = View.GONE
-                btnBack.visibility = View.VISIBLE
-            } else {
-                btnDrawer.visibility = View.VISIBLE
-                btnBack.visibility = View.GONE
+            when(intent.getBooleanExtra(INFO_SHOULD_HAVE_DRAWER, true)) {
+                true -> {
+                    btnDrawer.visibility = View.VISIBLE
+                    btnBack.visibility = View.GONE
+                }
+                false -> {
+                    btnDrawer.visibility = View.GONE
+                    btnBack.visibility = View.VISIBLE
+                }
             }
-
             fabMore.setOnClickListener { controlBackgroundByFabState() }
             viewFilter.setOnClickListener { controlBackgroundByFabState() }
         }
@@ -137,38 +147,39 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun addWorksForEditListener() {
-        binding. apply {
-            actionEditBrightness.setOnClickListener {
-                /*val light = lightViewModel.lightWithTags.value?.light
-                // sharedViewModel.previousPage.value = LIGHT_DETAIL
-
-                val navDirection: NavDirections =
-                    LightDetailFragmentDirections.actionLightDetailFragmentToAddLightFragment(light)
-                Navigation.findNavController(it).navigate(navDirection)*/
+    private fun setEditButtons() {
+        binding.apply {
+            val intent = Intent(this@DetailActivity, BitdamEditActivity::class.java).apply {
+                putExtra(INFO_PREVIOUS_ACTIVITY, DETAIL)
             }
+
+            actionEditBrightness.setOnClickListener {
+                val light = lightViewModel.lightWithTags.value?.light
+                startActivity(intent.apply {
+                    putExtra(INFO_DESTINATION, CONTROL_BRIGHTNESS)
+                    putExtra(INFO_LIGHT, light)
+                })
+            }
+
             actionEditTag.setOnClickListener {
-                /*val light = lightViewModel.lightWithTags.value?.light
+                val light = lightViewModel.lightWithTags.value?.light
                 val tags = Tags()
                 for(i in lightViewModel.lightWithTags.value?.tags?: mutableListOf()) {
                     tags.add(i)
                 }
-                // sharedViewModel.previousPage.value = LIGHT_DETAIL
-
-                val navDirection: NavDirections =
-                    LightDetailFragmentDirections.actionLightDetailFragmentToAddTagFragment(
-                        light,
-                        tags
-                    )
-                Navigation.findNavController(it).navigate(navDirection)*/
+                startActivity(intent.apply {
+                    putExtra(INFO_DESTINATION, CONTROL_TAG)
+                    putExtra(INFO_LIGHT, light)
+                    putExtra(INFO_TAG, tags as Parcelable)
+                })
             }
-            actionEditMemo.setOnClickListener {
-                /*val light = lightViewModel.lightWithTags.value?.light
-                // sharedViewModel.previousPage.value = LIGHT_DETAIL
 
-                val navDirection: NavDirections =
-                    LightDetailFragmentDirections.actionLightDetailFragmentToAddMemoFragment(light)
-                Navigation.findNavController(it).navigate(navDirection)*/
+            actionEditMemo.setOnClickListener {
+                val light = lightViewModel.lightWithTags.value?.light
+                startActivity(intent.apply {
+                    putExtra(INFO_DESTINATION, CONTROL_MEMO)
+                    putExtra(INFO_LIGHT, light)
+                })
             }
         }
     }
