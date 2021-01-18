@@ -1,5 +1,6 @@
 package com.bd.bdproject.view.fragment.edit
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -75,8 +76,7 @@ open class EditBrightnessFragment: ControlBrightnessFragment() {
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
                     Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-
-                    // 원래 액티비티로 이동 (DetailActivity)
+                    parentActivity.returnToDetailActivity()
                 }
             }
         }

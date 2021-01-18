@@ -24,7 +24,6 @@ import org.koin.android.ext.android.inject
 
 open class EnrollTagFragment: ControlTagFragment() {
 
-    private val tagViewModel: TagViewModel by inject()
     private val sharedViewModel: AddViewModel by activityViewModels()
 
     private val parentActivity by lazy {

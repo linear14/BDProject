@@ -1,13 +1,18 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.observe
+import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.ActivityDetailBinding
 import com.bd.bdproject.util.ColorUtil
@@ -155,32 +160,42 @@ class DetailActivity : AppCompatActivity() {
 
             actionEditBrightness.setOnClickListener {
                 val light = lightViewModel.lightWithTags.value?.light
-                startActivity(intent.apply {
+                startForResult.launch(intent.apply {
                     putExtra(INFO_DESTINATION, CONTROL_BRIGHTNESS)
                     putExtra(INFO_LIGHT, light)
                 })
+                controlBackgroundByFabState()
             }
 
             actionEditTag.setOnClickListener {
                 val light = lightViewModel.lightWithTags.value?.light
-                val tags = Tags()
+                val tags = ArrayList<Tag>()
                 for(i in lightViewModel.lightWithTags.value?.tags?: mutableListOf()) {
                     tags.add(i)
                 }
-                startActivity(intent.apply {
+                startForResult.launch(intent.apply {
                     putExtra(INFO_DESTINATION, CONTROL_TAG)
                     putExtra(INFO_LIGHT, light)
-                    putExtra(INFO_TAG, tags as Parcelable)
+                    putParcelableArrayListExtra(INFO_TAG, tags)
                 })
+                controlBackgroundByFabState()
             }
 
             actionEditMemo.setOnClickListener {
                 val light = lightViewModel.lightWithTags.value?.light
-                startActivity(intent.apply {
+                startForResult.launch(intent.apply {
                     putExtra(INFO_DESTINATION, CONTROL_MEMO)
                     putExtra(INFO_LIGHT, light)
                 })
+                controlBackgroundByFabState()
             }
+        }
+    }
+
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            Log.d("INTENT_TEST", "${intent?.getStringExtra("INTENT_TEST")}에서 돌아옴")
         }
     }
 }

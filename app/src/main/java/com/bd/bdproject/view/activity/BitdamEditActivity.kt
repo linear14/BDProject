@@ -1,11 +1,15 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import com.bd.bdproject.EditNavigationDirections
 import com.bd.bdproject.R
+import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.ActivityBitdamEditBinding
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.Constant.CONTROL_MEMO
@@ -40,10 +44,15 @@ class BitdamEditActivity : AppCompatActivity() {
                 findNavController(R.id.layout_fragment).navigate(navDirection)
             }
             CONTROL_TAG -> {
+                val temp = intent.getParcelableArrayListExtra<Tag>(INFO_TAG)
+                val tags = Tags()
+                for(i in temp?: mutableListOf()) {
+                    tags.add(i)
+                }
                 val navDirection: NavDirections =
                     EditNavigationDirections.actionGlobalEditTagFragment(
                         intent.getParcelableExtra(INFO_LIGHT),
-                        intent.getParcelableExtra(INFO_TAG)
+                        tags
                     )
                 findNavController(R.id.layout_fragment).navigate(navDirection)
             }
@@ -53,5 +62,10 @@ class BitdamEditActivity : AppCompatActivity() {
                 findNavController(R.id.layout_fragment).navigate(navDirection)
             }
         }
+    }
+
+    fun returnToDetailActivity() {
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 }

@@ -36,7 +36,7 @@ open class ControlTagFragment: BaseFragment() {
     private var _binding: FragmentControlTagBinding? = null
     val binding get() = _binding!!
 
-    private val tagViewModel: TagViewModel by inject()
+    val tagViewModel: TagViewModel by inject()
 
     val tagEnrolledAdapter by lazy { TagAdapter().also {
         it.onTagClickListener = object: OnTagClickListener {

@@ -3,28 +3,21 @@ package com.bd.bdproject.view.fragment.edit
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.util.Constant.CONTROL_TAG
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.ControlTagFragment
-import com.bd.bdproject.viewmodel.AddViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.common.TagViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
 open class EditTagFragment: ControlTagFragment() {
 
-    private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
-    private val sharedViewModel: AddViewModel by activityViewModels()
 
     private val args: EditTagFragmentArgs by navArgs()
 
@@ -50,10 +43,8 @@ open class EditTagFragment: ControlTagFragment() {
                     Toast.makeText(BitDamApplication.applicationContext(), "태그 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     CoroutineScope(Dispatchers.Main).launch {
-                        sharedViewModel.previousPage.value = CONTROL_TAG
                         Toast.makeText(BitDamApplication.applicationContext(), "태그 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-
-                        // 디테일 화면으로 다시 이동
+                        parentActivity.returnToDetailActivity()
                     }
                 }
             }
@@ -77,13 +68,13 @@ open class EditTagFragment: ControlTagFragment() {
 
     private fun initBackground() {
         val brightness: Int = args.light?.bright ?: 0
-        val tags: List<Tag> = args.tags ?: mutableListOf()
+        val tags = args.tags?: mutableListOf()
 
         setEntireTagFragmentColor(brightness)
         gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
 
         binding.layoutAddTag.background = gradientDrawable
-        tagViewModel.candidateTags.value = tags.toMutableList()
+        tagViewModel.candidateTags.value = tags
         binding.tvBrightness.text = brightness.toString()
     }
 

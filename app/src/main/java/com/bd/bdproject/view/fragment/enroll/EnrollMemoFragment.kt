@@ -110,6 +110,7 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                             putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
                         }
                         startActivity(intent)
+                        parentActivity.finish()
                     }
                 }
 
