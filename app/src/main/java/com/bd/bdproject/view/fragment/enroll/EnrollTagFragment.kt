@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -18,13 +17,11 @@ import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.ControlTagFragment
-import com.bd.bdproject.viewmodel.AddViewModel
-import com.bd.bdproject.viewmodel.common.TagViewModel
-import org.koin.android.ext.android.inject
+import com.bd.bdproject.viewmodel.EnrollViewModel
 
 open class EnrollTagFragment: ControlTagFragment() {
 
-    private val sharedViewModel: AddViewModel by activityViewModels()
+    private val sharedViewModel: EnrollViewModel by activityViewModels()
 
     private val parentActivity by lazy {
         activity as BitdamEnrollActivity

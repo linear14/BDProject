@@ -16,7 +16,7 @@ import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlMemoFragment
-import com.bd.bdproject.viewmodel.AddViewModel
+import com.bd.bdproject.viewmodel.EnrollViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import com.bd.bdproject.viewmodel.common.TagViewModel
@@ -28,7 +28,7 @@ open class EnrollMemoFragment: ControlMemoFragment() {
     private val lightViewModel: LightViewModel by inject()
     private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
-    private val sharedViewModel: AddViewModel by activityViewModels()
+    private val sharedViewModel: EnrollViewModel by activityViewModels()
 
     private val parentActivity by lazy {
         activity as BitdamEnrollActivity

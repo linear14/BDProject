@@ -3,12 +3,11 @@ package com.bd.bdproject.view.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.observe
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
 import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
-import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.view.adapter.CalendarAdapter
+import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.CalendarViewModel
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -38,6 +37,7 @@ class CollectionMainActivity : AppCompatActivity() {
 
             btnPreviousMonth.setOnClickListener { moveToPreviousMonth() }
             btnNextMonth.setOnClickListener { moveToNextMonth() }
+            btnBack.setOnClickListener { onBackPressed() }
         }
 
         observeLight()

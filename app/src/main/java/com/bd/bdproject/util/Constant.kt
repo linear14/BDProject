@@ -25,4 +25,6 @@ object Constant {
     // 에러 났을경우
     const val ACTIVITY_NOT_RECOGNIZED = -1000
     const val DESTINATION_NOT_RECOGNIZED = -1000
+
+    const val MAX_MEMO_LENGTH = 50
 }

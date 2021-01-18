@@ -13,12 +13,12 @@ import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
-import com.bd.bdproject.viewmodel.AddViewModel
+import com.bd.bdproject.viewmodel.EnrollViewModel
 import kotlinx.coroutines.*
 
 open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
-    private val sharedViewModel: AddViewModel by activityViewModels()
+    private val sharedViewModel: EnrollViewModel by activityViewModels()
 
     val parentActivity by lazy {
         activity as BitdamEnrollActivity

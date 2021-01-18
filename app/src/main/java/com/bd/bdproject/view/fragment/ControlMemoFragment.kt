@@ -8,20 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.databinding.FragmentControlMemoBinding
 import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.Constant.MAX_MEMO_LENGTH
 import com.bd.bdproject.view.adapter.TagAdapter
-import com.bd.bdproject.viewmodel.AddViewModel
-import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
-import com.bd.bdproject.viewmodel.common.LightViewModel
-import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
-import org.koin.android.ext.android.inject
 
 open class ControlMemoFragment: BaseFragment() {
 
@@ -76,7 +70,6 @@ open class ControlMemoFragment: BaseFragment() {
         _binding = null
     }
 
-
     private fun observeKeyboard() {
         TedKeyboardObserver(requireActivity()).listen { isShow ->
             isKeyboardShowing = isShow
@@ -128,9 +121,4 @@ open class ControlMemoFragment: BaseFragment() {
         }
 
     }
-
-    companion object {
-        const val MAX_MEMO_LENGTH = 50
-    }
-
 }

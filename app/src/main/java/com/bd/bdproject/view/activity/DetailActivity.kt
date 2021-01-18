@@ -4,16 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.observe
 import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.ActivityDetailBinding
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
@@ -51,6 +49,17 @@ class DetailActivity : AppCompatActivity() {
 
         binding = ActivityDetailBinding.inflate(layoutInflater).apply {
             setContentView(root)
+
+            btnDrawer.setOnClickListener {
+                drawer.openDrawer(GravityCompat.START)
+            }
+
+            navigationDrawer.actionMyLight.setOnClickListener {
+                startActivity(Intent(this@DetailActivity, CollectionMainActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
+            btnBack.setOnClickListener { onBackPressed() }
         }
     }
 
@@ -82,7 +91,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun observeLight() {
-        lightViewModel.lightWithTags.observe(owner = this) {
+        lightViewModel.lightWithTags.observe(this) {
             binding.apply {
                 val dateCode = it.light.dateCode
                 val brightness = it.light.bright
@@ -121,7 +130,6 @@ class DetailActivity : AppCompatActivity() {
                     viewFilter.visibility = View.VISIBLE
                     layoutMore.visibility = View.VISIBLE
                     binding.apply {
-                        btnDrawer.visibility = View.GONE
                         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                     }
 
@@ -130,7 +138,6 @@ class DetailActivity : AppCompatActivity() {
                     viewFilter.visibility = View.GONE
                     layoutMore.visibility = View.GONE
                     binding.apply {
-                        btnDrawer.visibility = View.VISIBLE
                         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                     }
                 }
