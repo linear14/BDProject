@@ -63,34 +63,45 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/temp_arrow"
-            app:layout_constraintBottom_toTopOf="@id/rv_tag"
+            app:layout_constraintBottom_toTopOf="@id/layout_detail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_brightness" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_tag"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:overScrollMode="never"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_spread_up_down" />
+            app:layout_constraintTop_toBottomOf="@id/btn_spread_up_down">
 
-        <TextView
-            android:id="@+id/tv_memo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:gravity="center"
-            android:text="오늘의 메모\n오늘의 메모입니다"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_tag" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tag"
+                android:paddingTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:overScrollMode="never" />
+
+            <TextView
+                android:id="@+id/tv_memo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:gravity="center"
+                android:text="오늘의 메모\n오늘의 메모입니다"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_tag" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <View
             android:id="@+id/view_filter"

@@ -6,11 +6,15 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityDetailBinding
 import com.bd.bdproject.util.ColorUtil
@@ -44,6 +48,8 @@ class DetailActivity : AppCompatActivity() {
         orientation = GradientDrawable.Orientation.TL_BR
     }
 
+    var isHideDetails = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,6 +66,10 @@ class DetailActivity : AppCompatActivity() {
             }
 
             btnBack.setOnClickListener { onBackPressed() }
+
+            btnSpreadUpDown.setOnClickListener {
+                showOrHideDetails(btnSpreadUpDown)
+            }
         }
     }
 
@@ -204,5 +214,25 @@ class DetailActivity : AppCompatActivity() {
             val intent = result.data
             Log.d("INTENT_TEST", "${intent?.getStringExtra("INTENT_TEST")}에서 돌아옴")
         }
+    }
+
+    private fun showOrHideDetails(arrow: ImageView) {
+        val arrowRotation: Animation
+
+        if(isHideDetails) {
+            arrowRotation = AnimationUtils.loadAnimation(this, R.anim.animation_rotation_clockwise_half).apply{ fillAfter = true }
+            binding.apply {
+                layoutDetail.visibility = View.VISIBLE
+                layoutDetail.startAnimation(AnimationUtils.loadAnimation(this.root.context, R.anim.slide_down))
+            }
+        } else {
+            arrowRotation = AnimationUtils.loadAnimation(this, R.anim.animation_rotation_anticlockwise_half).apply{ fillAfter = true }
+            binding.apply {
+                layoutDetail.visibility = View.GONE
+                layoutDetail.startAnimation(AnimationUtils.loadAnimation(this.root.context, R.anim.slide_up))
+            }
+        }
+        arrow.startAnimation(arrowRotation)
+        isHideDetails = !isHideDetails
     }
 }
