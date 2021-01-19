@@ -10,10 +10,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BDProject">
-        <activity android:name=".view.activity.BitdamEditActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".view.activity.DetailActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".view.activity.StatisticActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.BitdamEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.DetailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.CollectionMainActivity"
             android:screenOrientation="portrait" />
