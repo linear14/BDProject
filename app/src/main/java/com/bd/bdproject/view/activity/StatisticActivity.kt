@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.android.ext.android.inject
@@ -14,7 +15,11 @@ class StatisticActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityStatisticBinding
 
-    val statisticViewModel: StatisticViewModel by inject()
+    private val statisticViewModel: StatisticViewModel by inject()
+
+    private val statisticTagAdapter by lazy {
+        StatisticTagAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,7 @@ class StatisticActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        binding.rvHashTable.adapter = statisticTagAdapter
         observeDate()
         observeLightForDuration()
 
@@ -90,7 +96,8 @@ class StatisticActivity : AppCompatActivity() {
             for(i in tagStatistic) {
                 Log.d("LIGHT_TEST", "[# ${i.name}] 사용횟수 ${i.cnt}회, 평균밝기 ${i.avg}")
             }
-            // hashTagAdapter.submitList(tagStatistic)
+
+            statisticTagAdapter.submitList(tagStatistic)
         }
     }
 

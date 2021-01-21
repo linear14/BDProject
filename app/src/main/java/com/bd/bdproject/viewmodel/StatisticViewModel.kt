@@ -2,9 +2,8 @@ package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.LightWithTags
-import com.bd.bdproject.data.model.MyHashTag
+import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.util.timeToString
 import kotlinx.coroutines.GlobalScope
@@ -56,8 +55,8 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
     }
 
     // todo 값이 일정하지가 않음. 확인하기
-    fun makeTagStatistic(list: List<LightWithTags>): MutableList<MyHashTag> {
-        val tags: MutableList<MyHashTag> = mutableListOf()
+    fun makeTagStatistic(list: List<LightWithTags>): MutableList<StatisticTagResult> {
+        val tags: MutableList<StatisticTagResult> = mutableListOf()
         val tempMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
         
         for(lightWithTags in list) {
@@ -70,7 +69,7 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
         }
 
         for(i in tempMap) {
-            tags.add(MyHashTag(i.key, (i.value.first / i.value.second), i.value.second))
+            tags.add(StatisticTagResult(i.key, (i.value.first / i.value.second), i.value.second))
         }
 
         return tags
