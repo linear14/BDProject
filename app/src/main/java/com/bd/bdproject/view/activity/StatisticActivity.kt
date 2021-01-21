@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.android.ext.android.inject
+import java.util.*
 
 class StatisticActivity : AppCompatActivity() {
 
@@ -89,13 +91,13 @@ class StatisticActivity : AppCompatActivity() {
 
     private fun observeLightForDuration() {
         statisticViewModel.lightForDuration.observe(this) {
-            val tagStatistic = statisticViewModel.makeTagStatistic(it).apply {
+            val tagStatistic: MutableList<StatisticTagResult> = statisticViewModel.makeTagStatistic(it).apply {
                 sortByDescending { tags -> tags.cnt }
             }
 
-            for(i in tagStatistic) {
+            /*for(i in tagStatistic) {
                 Log.d("LIGHT_TEST", "[# ${i.name}] 사용횟수 ${i.cnt}회, 평균밝기 ${i.avg}")
-            }
+            }*/
 
             statisticTagAdapter.submitList(tagStatistic)
         }

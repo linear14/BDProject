@@ -21,9 +21,8 @@ class StatisticTagAdapter: ListAdapter<StatisticTagResult, StatisticTagAdapter.M
     inner class MyHashViewHolder(val binding: ItemStatisticTagResultBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: StatisticTagResult) {
             binding.apply {
-                result = item
-                executePendingBindings()
 
+                tvHash.text = "# ${item.name}"
                 tvAvgBrightness.text = item.avg.toString()
                 tvCnt.text = item.cnt.toString()
             }
@@ -39,5 +38,4 @@ class StatisticTagResultDiffCallback: DiffUtil.ItemCallback<StatisticTagResult>(
     override fun areContentsTheSame(oldItem: StatisticTagResult, newItem: StatisticTagResult): Boolean {
         return oldItem == newItem
     }
-
 }
