@@ -22,6 +22,10 @@ interface LightDao {
     @Query("SELECT * FROM light WHERE dateCode IN (:dateCodes)")
     fun selectLightForSpecificDays(dateCodes: List<String>): List<Light>
 
+    @Transaction
+    @Query("SELECT * FROM light WHERE dateCode IN (:dateCodes)")
+    fun selectLightWithTagsForSpecificDays(dateCodes: List<String>): List<LightWithTags>
+
     // UPDATE
     @Query("UPDATE light SET bright = :brightness WHERE dateCode = :dateCode")
     fun updateBrightness(brightness: Int, dateCode: String)

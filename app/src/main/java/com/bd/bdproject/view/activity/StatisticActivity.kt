@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivityStatisticBinding
-import com.bd.bdproject.util.timeToLong
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -23,12 +22,15 @@ class StatisticActivity : AppCompatActivity() {
         binding = ActivityStatisticBinding.inflate(layoutInflater).apply {
             setContentView(root)
         }
+
+        binding.btnBack.setOnClickListener { onBackPressed() }
     }
 
     override fun onResume() {
         super.onResume()
 
         observeDate()
+        observeLightForDuration()
 
         binding.apply {
             btnStartDay.setOnClickListener {
@@ -70,16 +72,26 @@ class StatisticActivity : AppCompatActivity() {
     private fun observeDate() {
         statisticViewModel.startDay.observe(this) {
             binding.btnStartDay.text = it?.timeToString()
-
-            Log.d("DATE_RESULT", statisticViewModel.startDay.value.toString())
-            Log.d("DATE_RESULT", statisticViewModel.startDay.value!!.timeToString())
-            Log.d("DATE_RESULT", statisticViewModel.startDay.value!!.timeToString().timeToLong().toString())
+            statisticViewModel.getLightWithTagsForDuration()
         }
 
         statisticViewModel.endDay.observe(this) {
             binding.btnEndDay.text = it?.timeToString()
+            statisticViewModel.getLightWithTagsForDuration()
         }
+    }
 
+    private fun observeLightForDuration() {
+        statisticViewModel.lightForDuration.observe(this) {
+            val tagStatistic = statisticViewModel.makeTagStatistic(it).apply {
+                sortByDescending { tags -> tags.cnt }
+            }
+
+            for(i in tagStatistic) {
+                Log.d("LIGHT_TEST", "[# ${i.name}] 사용횟수 ${i.cnt}회, 평균밝기 ${i.avg}")
+            }
+            // hashTagAdapter.submitList(tagStatistic)
+        }
     }
 
     companion object {

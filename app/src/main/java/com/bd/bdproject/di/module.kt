@@ -28,5 +28,5 @@ val appModule = module {
     viewModel { LightTagRelationViewModel(get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { CalendarViewModel(get()) }
-    viewModel { StatisticViewModel() }
+    viewModel { StatisticViewModel(get()) }
 }

@@ -24,6 +24,10 @@ class LightRepository(private val lightDao: LightDao) {
         return lightDao.selectLightForSpecificDays(dateCodes)
     }
 
+    fun selectLightWithTagsForSpecificDays(dateCodes: List<String>): List<LightWithTags> {
+        return lightDao.selectLightWithTagsForSpecificDays(dateCodes)
+    }
+
     // UPDATE
     fun updateBrightness(brightness: Int, dateCode: String) {
         lightDao.updateBrightness(brightness, dateCode)
