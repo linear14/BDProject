@@ -1,7 +1,10 @@
 package com.bd.bdproject.data.repository
 
+import androidx.room.Query
+import androidx.room.Transaction
 import com.bd.bdproject.data.dao.TagDao
 import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.model.TagWithLights
 
 class TagRepository(private val tagDao: TagDao) {
 
@@ -21,6 +24,10 @@ class TagRepository(private val tagDao: TagDao) {
 
     fun searchTagOrderByUsedCount(word: String): List<String> {
         return tagDao.searchTagOrderByUsedCount(word)
+    }
+
+    fun selectTagWithLightsByTagName(tagName: String): TagWithLights {
+        return tagDao.selectTagWithLightsByTagName(tagName)
     }
 
     /*suspend fun deleteTag(tags: List<Tag>) {

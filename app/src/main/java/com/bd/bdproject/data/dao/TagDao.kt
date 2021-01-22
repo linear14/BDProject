@@ -1,10 +1,9 @@
 package com.bd.bdproject.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.model.TagWithLights
 
 @Dao
 interface TagDao {
@@ -29,6 +28,10 @@ interface TagDao {
             "ORDER BY Count(A.name) DESC " +
             "LIMIT 3")
     fun searchTagOrderByUsedCount(word: String): List<String>
+
+    @Transaction
+    @Query("SELECT * FROM tag WHERE name = :tagName")
+    fun selectTagWithLightsByTagName(tagName: String): TagWithLights
 
     /*@Query("UPDATE tag SET name=:name WHERE name=:name")
     suspend fun updateTag(name: String)

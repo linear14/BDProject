@@ -6,6 +6,7 @@ import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.viewmodel.CalendarViewModel
 import com.bd.bdproject.viewmodel.SplashViewModel
+import com.bd.bdproject.viewmodel.StatisticDetailViewModel
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
@@ -29,4 +30,5 @@ val appModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { CalendarViewModel(get()) }
     viewModel { StatisticViewModel(get()) }
+    viewModel { StatisticDetailViewModel(get()) }
 }

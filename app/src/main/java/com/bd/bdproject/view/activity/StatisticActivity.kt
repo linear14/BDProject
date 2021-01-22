@@ -1,11 +1,13 @@
 package com.bd.bdproject.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
+import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
@@ -20,7 +22,14 @@ class StatisticActivity : AppCompatActivity() {
     private val statisticViewModel: StatisticViewModel by inject()
 
     private val statisticTagAdapter by lazy {
-        StatisticTagAdapter()
+        StatisticTagAdapter { tagName ->
+            startActivity(
+                Intent(this, StatisticDetailActivity::class.java).apply {
+                    putExtra(INFO_TAG, tagName)
+                    putExtra("START_DAY", statisticViewModel.startDay.value?:System.currentTimeMillis())
+                    putExtra("END_DAY", statisticViewModel.endDay.value?:System.currentTimeMillis())
+                })
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
