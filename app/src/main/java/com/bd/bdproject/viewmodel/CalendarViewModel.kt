@@ -45,7 +45,7 @@ class CalendarViewModel(private val lightRepo: LightRepository) : ViewModel() {
     fun getLightsForMonth(dateCodes: MutableList<String>) {
         GlobalScope.launch {
             val list = lightRepo.selectLightForSpecificDays(dateCodes)
-            list.sortedBy { it.dateCode.timeToLong() }
+            .sortedBy { it.dateCode.timeToLong() }
 
             lightLiveData.postValue(list)
         }

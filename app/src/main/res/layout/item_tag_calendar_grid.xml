@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="vm"
+            type="com.bd.bdproject.viewmodel.StatisticDetailViewModel" />
+
         <variable
             name="light"
             type="com.bd.bdproject.data.model.Light" />
@@ -25,6 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{vm.isShowDate() ? View.VISIBLE : View.GONE}"
             app:dateCode="@{light.dateCode}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

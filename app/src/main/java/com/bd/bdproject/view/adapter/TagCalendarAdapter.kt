@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.ItemTagCalendarGridBinding
 import com.bd.bdproject.databinding.ItemTagCalendarHeaderBinding
+import com.bd.bdproject.viewmodel.StatisticDetailViewModel
 
 /***
  *  @parms [lights]
@@ -15,7 +16,7 @@ import com.bd.bdproject.databinding.ItemTagCalendarHeaderBinding
  *  202011 형태의 6자리일 경우 Header 표시로,
  *  20201119 형태의 8자리일 경우 Grid를 채우는 ViewType을 가지게 된다.
  */
-class TagCalendarAdapter(private val lights: MutableList<Light>) :
+class TagCalendarAdapter(private val lights: MutableList<Light>, val viewModel: StatisticDetailViewModel) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -88,6 +89,7 @@ class TagCalendarAdapter(private val lights: MutableList<Light>) :
         fun onBind(item: Light) {
             binding.apply {
                 light = item
+                vm = viewModel
                 executePendingBindings()
             }
         }

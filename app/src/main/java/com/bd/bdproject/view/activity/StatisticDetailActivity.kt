@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.ActivityStatisticDetailBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
+import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.view.adapter.TagCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticDetailViewModel
 import org.koin.android.ext.android.inject
-import java.util.*
+import org.koin.core.qualifier._q
 
 class StatisticDetailActivity : AppCompatActivity() {
 
@@ -28,6 +29,8 @@ class StatisticDetailActivity : AppCompatActivity() {
         }
         binding.apply {
             tvTitle.text = "# ${intent.getStringExtra(INFO_TAG)?:"null"}"
+            tvStartDay.text = "${intent.getLongExtra("START_DAY", System.currentTimeMillis()).timeToString()}"
+            tvEndDay.text = "${intent.getLongExtra("END_DAY", System.currentTimeMillis()).timeToString()}"
             rvTagCalendar.addItemDecoration(SpacesItemDecorator())
             btnBack.setOnClickListener { onBackPressed() }
         }
@@ -36,6 +39,8 @@ class StatisticDetailActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        binding.lifecycleOwner = this
+
         viewModel.getLightsForTag(
             intent.getStringExtra(INFO_TAG)?:"",
             intent.getLongExtra("START_DAY", System.currentTimeMillis()),
@@ -43,6 +48,8 @@ class StatisticDetailActivity : AppCompatActivity() {
         )
 
         observeLights()
+
+        setSwitchDateVisibility()
     }
 
     private fun observeLights() {
@@ -67,12 +74,23 @@ class StatisticDetailActivity : AppCompatActivity() {
                 calendarList.add(headerList[i].second + i, Light(headerList[i].first, -1, ""))
             }
 
-            calendarAdapter = TagCalendarAdapter(calendarList)
+            calendarAdapter = TagCalendarAdapter(calendarList, viewModel)
 
             binding.rvTagCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
             binding.rvTagCalendar.adapter = calendarAdapter
 
 
+        }
+    }
+
+    private fun setSwitchDateVisibility() {
+        binding.switchDateVisibility.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked) {
+                viewModel.setShowDate(true)
+            } else {
+                viewModel.setShowDate(false)
+            }
+            binding.rvTagCalendar.adapter?.notifyDataSetChanged()
         }
     }
 }
