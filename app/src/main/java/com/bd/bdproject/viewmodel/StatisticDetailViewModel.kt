@@ -14,11 +14,9 @@ class StatisticDetailViewModel(private val tagRepo: TagRepository): ViewModel() 
 
     fun getLightsForTag(tagName: String, startDay: Long, endDay: Long) {
         GlobalScope.launch {
-            val result = tagRepo.selectTagWithLightsByTagName(tagName).lights.apply {
-                sortedBy { it.dateCode.timeToLong() }
-            }.filter {
-                it.dateCode.timeToLong() in startDay..endDay
-            }
+            val result = tagRepo.selectTagWithLightsByTagName(tagName).lights
+                .sortedBy { it.dateCode.timeToLong() }
+                .filter { it.dateCode.timeToLong() in startDay..endDay }
 
             lights.postValue(result)
         }

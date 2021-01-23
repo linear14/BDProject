@@ -3,6 +3,7 @@ package com.bd.bdproject.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.ItemTagCalendarGridBinding
 import com.bd.bdproject.databinding.ItemTagCalendarHeaderBinding
@@ -32,13 +33,17 @@ class TagCalendarAdapter(private val lights: MutableList<Light>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TAG_CALENDAR_HEADER -> {
-                HeaderViewHolder(
-                    ItemTagCalendarHeaderBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
+                val binding = ItemTagCalendarHeaderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
+                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    isFullSpan = true
+                }
+
+                binding.root.layoutParams = params
+                HeaderViewHolder(binding)
             }
             else -> {
                 GridViewHolder(
