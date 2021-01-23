@@ -4,30 +4,36 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bd.bdproject.ViewType
 import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.data.model.TagCalendar
+import com.bd.bdproject.databinding.ItemTagCalendarDetailBinding
 import com.bd.bdproject.databinding.ItemTagCalendarGridBinding
 import com.bd.bdproject.databinding.ItemTagCalendarHeaderBinding
 import com.bd.bdproject.viewmodel.StatisticDetailViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-/***
- *  @parms [lights]
- *  기간동안의 빛이 들어있다.
- *  내부의 dateCode를 분석했을 때,
- *  202011 형태의 6자리일 경우 Header 표시로,
- *  20201119 형태의 8자리일 경우 Grid를 채우는 ViewType을 가지게 된다.
- */
-class TagCalendarAdapter(private val lights: MutableList<Light>, val viewModel: StatisticDetailViewModel) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TagCalendarAdapter(
+    private val calendarList: MutableList<TagCalendar>,
+    val viewModel: StatisticDetailViewModel,
+    val onGridClicked: (String) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val VIEW_TAG_CALENDAR_HEADER = 1
         const val VIEW_TAG_CALENDAR_GRID = 2
+        const val VIEW_TAG_DETAIL = 3
     }
 
+    // Adapter Config Start
+
     override fun getItemViewType(position: Int): Int {
-        return when (lights[position].dateCode.length) {
-            8 -> VIEW_TAG_CALENDAR_GRID
-            else -> VIEW_TAG_CALENDAR_HEADER
+        return when (calendarList[position].viewType) {
+            ViewType.CALENDAR_HEADER -> VIEW_TAG_CALENDAR_HEADER
+            ViewType.CALENDAR_GRID -> VIEW_TAG_CALENDAR_GRID
+            ViewType.CALENDAR_DETAIL -> VIEW_TAG_DETAIL
         }
     }
 
@@ -46,7 +52,7 @@ class TagCalendarAdapter(private val lights: MutableList<Light>, val viewModel: 
                 binding.root.layoutParams = params
                 HeaderViewHolder(binding)
             }
-            else -> {
+            VIEW_TAG_CALENDAR_GRID -> {
                 GridViewHolder(
                     ItemTagCalendarGridBinding.inflate(
                         LayoutInflater.from(parent.context),
@@ -55,23 +61,47 @@ class TagCalendarAdapter(private val lights: MutableList<Light>, val viewModel: 
                     )
                 )
             }
+            else -> {
+                val binding = ItemTagCalendarDetailBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+
+                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    isFullSpan = true
+                }
+                binding.root.layoutParams = params
+                DetailViewHolder(binding)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             VIEW_TAG_CALENDAR_HEADER -> {
-                (holder as HeaderViewHolder).onBind(lights[position].dateCode)
+                calendarList[position].date?.let { date ->
+                    (holder as HeaderViewHolder).onBind(date)
+                }
+            }
+            VIEW_TAG_CALENDAR_GRID -> {
+                calendarList[position].light?.let { light ->
+                    (holder as GridViewHolder).onBind(light)
+                }
             }
             else -> {
-                (holder as GridViewHolder).onBind(lights[position])
+                // (holder as DetailViewHolder).onBind(calendarList[position].dateCode)
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return lights.size
+        return calendarList.size
     }
+
+    // Adapter Config End
+
+    // ViewHolders Start
 
     inner class HeaderViewHolder(val binding: ItemTagCalendarHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -86,6 +116,15 @@ class TagCalendarAdapter(private val lights: MutableList<Light>, val viewModel: 
     inner class GridViewHolder(val binding: ItemTagCalendarGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.root.setOnClickListener {
+                calendarList[layoutPosition].light?.let { light ->
+                    onGridClicked(light.dateCode)
+
+                }
+            }
+        }
+
         fun onBind(item: Light) {
             binding.apply {
                 light = item
@@ -95,4 +134,26 @@ class TagCalendarAdapter(private val lights: MutableList<Light>, val viewModel: 
         }
 
     }
+
+    inner class DetailViewHolder(val binding: ItemTagCalendarDetailBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun onBind(dateCode: String) {
+            GlobalScope.launch {
+                viewModel.getLightWithTags(dateCode)
+                viewModel.lightWithTags.value?.let {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        binding.apply {
+                            tvDate.text = it.light.dateCode
+                            tvBrightness.text = it.light.bright.toString()
+                            tvTags.text = "태그^^"
+                            tvMemo.text = it.light.memo
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ViewHolders End
 }

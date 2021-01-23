@@ -4,17 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.data.model.LightWithTags
+import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.util.timeToLong
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class StatisticDetailViewModel(private val tagRepo: TagRepository): ViewModel() {
+class StatisticDetailViewModel(
+    private val lightRepo: LightRepository,
+    private val tagRepo: TagRepository
+    ): ViewModel() {
 
     private val _isShowDate = MutableLiveData<Boolean>(false)
     val isShowDate: LiveData<Boolean> = _isShowDate
 
     val lights: MutableLiveData<List<Light>> = MutableLiveData()
+    val lightWithTags: MutableLiveData<LightWithTags> = MutableLiveData()
 
     fun getLightsForTag(tagName: String, startDay: Long, endDay: Long) {
         GlobalScope.launch {
@@ -23,6 +29,12 @@ class StatisticDetailViewModel(private val tagRepo: TagRepository): ViewModel() 
                 .filter { it.dateCode.timeToLong() in startDay..endDay }
 
             lights.postValue(result)
+        }
+    }
+
+    fun getLightWithTags(dateCode: String) {
+        GlobalScope.launch {
+            lightWithTags.postValue(lightRepo.selectLightsWithTagsByDateCode(dateCode))
         }
     }
 

@@ -30,5 +30,5 @@ val appModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { CalendarViewModel(get()) }
     viewModel { StatisticViewModel(get()) }
-    viewModel { StatisticDetailViewModel(get()) }
+    viewModel { StatisticDetailViewModel(get(), get()) }
 }
