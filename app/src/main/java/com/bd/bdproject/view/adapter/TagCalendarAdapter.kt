@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.ViewType
+import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ItemTagCalendarDetailBinding
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 class TagCalendarAdapter(
     private var calendarList: MutableList<TagCalendar>,
     val viewModel: StatisticDetailViewModel,
-    val onGridClicked: (dateCode: String, position: Int) -> Unit
+    val onCalendarItemClickedListener: OnCalendarItemClickedListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -121,7 +122,7 @@ class TagCalendarAdapter(
         init {
             binding.root.setOnClickListener { view ->
                 calendarList[layoutPosition].light?.let { light ->
-                    onGridClicked(light.dateCode, getDetailViewPosition())
+                    onCalendarItemClickedListener.onGridClicked(light.dateCode, getDetailViewPosition())
                 }
             }
         }
@@ -170,6 +171,12 @@ class TagCalendarAdapter(
 
     inner class DetailViewHolder(val binding: ItemTagCalendarDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.btnClose.setOnClickListener {
+                onCalendarItemClickedListener.onDetailClosed(layoutPosition)
+            }
+        }
 
         fun onBind(dateCode: String) {
             GlobalScope.launch {

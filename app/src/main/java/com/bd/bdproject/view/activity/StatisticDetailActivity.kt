@@ -1,12 +1,10 @@
 package com.bd.bdproject.view.activity
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.ViewType
-import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ActivityStatisticDetailBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
@@ -15,7 +13,6 @@ import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.view.adapter.TagCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticDetailViewModel
 import org.koin.android.ext.android.inject
-import org.koin.core.qualifier._q
 
 class StatisticDetailActivity : AppCompatActivity() {
 
@@ -83,10 +80,29 @@ class StatisticDetailActivity : AppCompatActivity() {
                 )
             }
 
-            calendarAdapter = TagCalendarAdapter(calendarList, viewModel) { dateCode, position ->
-                calendarList.add(position, TagCalendar(ViewType.CALENDAR_DETAIL, date = dateCode))
-                calendarAdapter?.notifyDataSetChanged()
-            }
+            calendarAdapter = TagCalendarAdapter(calendarList, viewModel, object: OnCalendarItemClickedListener {
+                override fun onGridClicked(dateCode: String, wantedPosition: Int) {
+                    var newPosition = wantedPosition
+
+                    viewModel.isActivatedDetailPosition.value?.let { oldPosition ->
+                        calendarList.removeAt(oldPosition)
+                        if(oldPosition < wantedPosition) {
+                            newPosition = wantedPosition - 1
+                        }
+                        calendarAdapter?.notifyItemRemoved(oldPosition)
+                    }
+
+                    viewModel.isActivatedDetailPosition.value = newPosition
+                    calendarList.add(newPosition, TagCalendar(ViewType.CALENDAR_DETAIL, date = dateCode))
+                    calendarAdapter?.notifyItemInserted(newPosition)
+                }
+
+                override fun onDetailClosed(position: Int) {
+                    viewModel.isActivatedDetailPosition.value = null
+                    calendarList.removeAt(position)
+                    calendarAdapter?.notifyItemRemoved(position)
+                }
+            })
 
             binding.rvTagCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
             binding.rvTagCalendar.adapter = calendarAdapter
