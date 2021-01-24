@@ -8,7 +8,9 @@ import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.util.timeToLong
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class StatisticDetailViewModel(
@@ -34,9 +36,9 @@ class StatisticDetailViewModel(
         }
     }
 
-    fun getLightWithTags(dateCode: String) {
-        GlobalScope.launch {
-            lightWithTags.postValue(lightRepo.selectLightsWithTagsByDateCode(dateCode))
+    fun getLightWithTags(dateCode: String): Deferred<LightWithTags> {
+        return GlobalScope.async {
+            lightRepo.selectLightsWithTagsByDateCode(dateCode)
         }
     }
 

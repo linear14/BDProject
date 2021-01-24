@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.ViewType
 import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ItemTagCalendarDetailBinding
 import com.bd.bdproject.databinding.ItemTagCalendarGridBinding
 import com.bd.bdproject.databinding.ItemTagCalendarHeaderBinding
 import com.bd.bdproject.viewmodel.StatisticDetailViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.lang.StringBuilder
 
 class TagCalendarAdapter(
     private var calendarList: MutableList<TagCalendar>,
@@ -179,19 +179,44 @@ class TagCalendarAdapter(
         }
 
         fun onBind(dateCode: String) {
-            GlobalScope.launch {
-                viewModel.getLightWithTags(dateCode)
-                viewModel.lightWithTags.value?.let {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        binding.apply {
-                            tvDate.text = it.light.dateCode
-                            tvBrightness.text = it.light.bright.toString()
-                            tvTags.text = "태그^^"
-                            tvMemo.text = it.light.memo
-                        }
-                    }
+            runBlocking {
+                val deferred = viewModel.getLightWithTags(dateCode)
+                deferred.await()
+
+                val lwt = deferred.getCompleted()
+                binding.apply {
+                    tvDate.text = makeDateText(lwt.light.dateCode)
+                    tvBrightness.text = lwt.light.bright.toString()
+                    tvTags.text = makeTagText(lwt.tags)
+                    tvMemo.text = lwt.light.memo
                 }
             }
+        }
+
+        private fun makeDateText(dateCode: String): String {
+            val year = dateCode.substring(0, 4)
+            var month = dateCode.substring(4, 6)
+            var day = dateCode.substring(6, 8)
+
+            if(month[0] == '0') {
+                month = month[1].toString()
+            }
+
+            if(day[0] == '0') {
+                day = day[1].toString()
+            }
+
+            return "${year}년 ${month}월 ${day}일"
+        }
+
+        private fun makeTagText(tags: List<Tag>): String {
+            val sb = StringBuilder()
+
+            tags.forEach {
+                sb.append("#${it.name}  ")
+            }
+
+            return sb.toString()
         }
     }
 
