@@ -21,7 +21,8 @@ class StatisticDetailViewModel(
     private val _isShowDate = MutableLiveData<Boolean>(false)
     val isShowDate: LiveData<Boolean> = _isShowDate
 
-    val isActivatedDetailPosition = MutableLiveData<Int?>(null)
+    val activatedGridPosition = MutableLiveData<Int?>(null)
+    val activatedDetailPosition = MutableLiveData<Int?>(null)
 
     val lights: MutableLiveData<List<Light>> = MutableLiveData()
     val lightWithTags: MutableLiveData<LightWithTags> = MutableLiveData()

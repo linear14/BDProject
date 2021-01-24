@@ -84,23 +84,26 @@ class StatisticDetailActivity : AppCompatActivity() {
                 override fun onGridClicked(dateCode: String, wantedPosition: Int) {
                     var newPosition = wantedPosition
 
-                    viewModel.isActivatedDetailPosition.value?.let { oldPosition ->
+                    viewModel.activatedDetailPosition.value?.let { oldPosition ->
                         calendarList.removeAt(oldPosition)
                         if(oldPosition < wantedPosition) {
                             newPosition = wantedPosition - 1
                         }
-                        calendarAdapter?.notifyItemRemoved(oldPosition)
+                        //calendarAdapter?.notifyItemRemoved(oldPosition)
+                        calendarAdapter?.notifyDataSetChanged()
                     }
 
-                    viewModel.isActivatedDetailPosition.value = newPosition
+                    viewModel.activatedDetailPosition.value = newPosition
                     calendarList.add(newPosition, TagCalendar(ViewType.CALENDAR_DETAIL, date = dateCode))
-                    calendarAdapter?.notifyItemInserted(newPosition)
+                    //calendarAdapter?.notifyItemInserted(newPosition)
+                    calendarAdapter?.notifyDataSetChanged()
                 }
 
                 override fun onDetailClosed(position: Int) {
-                    viewModel.isActivatedDetailPosition.value = null
+                    viewModel.activatedDetailPosition.value = null
                     calendarList.removeAt(position)
-                    calendarAdapter?.notifyItemRemoved(position)
+                    //calendarAdapter?.notifyItemRemoved(position)
+                    calendarAdapter?.notifyDataSetChanged()
                 }
             })
 

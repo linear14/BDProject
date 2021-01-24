@@ -1,6 +1,7 @@
 package com.bd.bdproject.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -121,6 +122,16 @@ class TagCalendarAdapter(
 
         init {
             binding.root.setOnClickListener { view ->
+                when(viewModel.activatedDetailPosition.value) {
+                    null -> viewModel.activatedGridPosition.value = layoutPosition
+
+                    // layoutPosition이 activatedDetailPosition보다 큰 경우
+                    in 0 until layoutPosition -> viewModel.activatedGridPosition.value = layoutPosition - 1
+
+                    // layoutPosition이 activatedDetailPosition보다 작은 경우
+                    else -> viewModel.activatedGridPosition.value = layoutPosition
+                }
+
                 calendarList[layoutPosition].light?.let { light ->
                     onCalendarItemClickedListener.onGridClicked(light.dateCode, getDetailViewPosition())
                 }
@@ -128,6 +139,7 @@ class TagCalendarAdapter(
         }
 
         fun onBind(item: Light) {
+            setBackgroundFilter()
             binding.apply {
                 light = item
                 vm = viewModel
@@ -167,6 +179,14 @@ class TagCalendarAdapter(
             return detailPosition
         }
 
+        private fun setBackgroundFilter() {
+            when(viewModel.activatedGridPosition.value) {
+                null -> binding.viewFilter.visibility = View.GONE
+                layoutPosition -> binding.viewFilter.visibility = View.GONE
+                else -> binding.viewFilter.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     inner class DetailViewHolder(val binding: ItemTagCalendarDetailBinding) :
@@ -174,6 +194,7 @@ class TagCalendarAdapter(
 
         init {
             binding.btnClose.setOnClickListener {
+                viewModel.activatedGridPosition.value = null
                 onCalendarItemClickedListener.onDetailClosed(layoutPosition)
             }
         }

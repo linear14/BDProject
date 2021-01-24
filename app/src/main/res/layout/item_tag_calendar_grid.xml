@@ -21,6 +21,7 @@
         tools:background="#FFC7C7">
 
         <View
+            android:id="@+id/view_grid"
             brightness="@{light.bright}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -38,6 +39,17 @@
             android:textColor="@android:color/white"
             android:textSize="12sp"
             android:layout_margin="8dp"/>
+
+        <View
+            android:id="@+id/view_filter"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/view_grid"
+            app:layout_constraintEnd_toEndOf="@id/view_grid"
+            app:layout_constraintTop_toTopOf="@id/view_grid"
+            app:layout_constraintBottom_toBottomOf="@id/view_grid"
+            android:visibility="gone"
+            android:background="#80ffffff" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
