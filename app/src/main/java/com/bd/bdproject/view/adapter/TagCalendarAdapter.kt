@@ -16,9 +16,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class TagCalendarAdapter(
-    private val calendarList: MutableList<TagCalendar>,
+    private var calendarList: MutableList<TagCalendar>,
     val viewModel: StatisticDetailViewModel,
-    val onGridClicked: (String) -> Unit
+    val onGridClicked: (dateCode: String, position: Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -90,7 +90,9 @@ class TagCalendarAdapter(
                 }
             }
             else -> {
-                // (holder as DetailViewHolder).onBind(calendarList[position].dateCode)
+                calendarList[position].date?.let { date ->
+                    (holder as DetailViewHolder).onBind(date)
+                }
             }
         }
     }
@@ -117,10 +119,9 @@ class TagCalendarAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener {
+            binding.root.setOnClickListener { view ->
                 calendarList[layoutPosition].light?.let { light ->
-                    onGridClicked(light.dateCode)
-
+                    onGridClicked(light.dateCode, getDetailViewPosition())
                 }
             }
         }
@@ -131,6 +132,38 @@ class TagCalendarAdapter(
                 vm = viewModel
                 executePendingBindings()
             }
+        }
+
+        private fun getDetailViewPosition(): Int {
+            var notGridPositionFirst = layoutPosition
+            var notGridPositionEnd = layoutPosition
+
+            while(calendarList[notGridPositionFirst].viewType == ViewType.CALENDAR_GRID) {
+                notGridPositionFirst--
+            }
+            while(notGridPositionEnd < calendarList.size && calendarList[notGridPositionEnd].viewType == ViewType.CALENDAR_GRID) {
+                notGridPositionEnd++
+            }
+
+            val seventhPosition = notGridPositionEnd - 1 - ((notGridPositionEnd - 1 - notGridPositionFirst) % 7)
+            val dif = if(seventhPosition - layoutPosition >= 0) {
+                seventhPosition - layoutPosition
+            } else {
+                7 + seventhPosition - layoutPosition
+            }
+
+            val isOverSingleLine = notGridPositionEnd - notGridPositionFirst > 7
+            val detailPosition = if(!isOverSingleLine) {
+                notGridPositionEnd
+            } else {
+                if(layoutPosition + dif >= notGridPositionEnd) {
+                    notGridPositionEnd
+                } else {
+                    layoutPosition + 1 + dif
+                }
+            }
+
+            return detailPosition
         }
 
     }

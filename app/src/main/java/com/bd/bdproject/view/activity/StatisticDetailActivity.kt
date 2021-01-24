@@ -83,8 +83,9 @@ class StatisticDetailActivity : AppCompatActivity() {
                 )
             }
 
-            calendarAdapter = TagCalendarAdapter(calendarList, viewModel) {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            calendarAdapter = TagCalendarAdapter(calendarList, viewModel) { dateCode, position ->
+                calendarList.add(position, TagCalendar(ViewType.CALENDAR_DETAIL, date = dateCode))
+                calendarAdapter?.notifyDataSetChanged()
             }
 
             binding.rvTagCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
