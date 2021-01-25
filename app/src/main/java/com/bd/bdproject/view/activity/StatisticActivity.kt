@@ -66,21 +66,26 @@ class StatisticActivity : AppCompatActivity() {
         } else {
             statisticViewModel.endDay.value
         }
-        val builder = MaterialDatePicker.Builder.datePicker().setSelection(previousTime)
+
+        // 이 달력에서 선택된 millisecond 값이 32400000 만큼 크다.
+        val builder = MaterialDatePicker.Builder.datePicker().setSelection(
+            (previousTime?:System.currentTimeMillis()) + 32_400_000L
+        )
         val picker = builder.build()
         picker.show(supportFragmentManager, picker.toString())
         picker.addOnPositiveButtonClickListener {
+            val realTime = it - 32_400_000
             if(options == START_DAY) {
                 if(it > statisticViewModel.endDay.value!!) {
                     Toast.makeText(this, "기간 범위가 잘못되었습니다. 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
                 } else {
-                    statisticViewModel.startDay.value = it
+                    statisticViewModel.startDay.value = realTime
                 }
             } else {
                 if(it < statisticViewModel.startDay.value!!) {
                     Toast.makeText(this, "기간 범위가 잘못되었습니다. 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
                 } else {
-                    statisticViewModel.endDay.value = it
+                    statisticViewModel.endDay.value = realTime
                 }
             }
         }

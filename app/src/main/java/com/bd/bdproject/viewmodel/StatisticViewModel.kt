@@ -21,16 +21,16 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
 
     init {
         calendarCurrentState.also {
-            startDay.value = GregorianCalendar(it.get(Calendar.YEAR), it.get(Calendar.MONTH), it.get(Calendar.DAY_OF_MONTH))
-                .apply { add(Calendar.MONTH, -1) }.timeInMillis + 32_400_000
+            startDay.value = it.timeInMillis - (30L * 86400L * 1000L)
             endDay.value = it.timeInMillis
+
+            // Log.d("DATE_CODE_TEST", "sd: ${startDay.value} ____ ed: ${endDay.value}")
         }
     }
 
     private fun getDateCode(): MutableList<String> {
         val dateCodeList = mutableListOf<String>()
 
-        // TODO 최초 처음 지정 날짜 STRING CODE가 들어오지 않음
         val calendarStart = GregorianCalendar.getInstance().apply {
             timeInMillis = startDay.value?:System.currentTimeMillis()
         }
