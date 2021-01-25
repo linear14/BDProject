@@ -125,13 +125,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separator1" />
 
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/chart_light"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_my_light" />
+
             <View
                 android:id="@+id/separator2"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="38dp"
                 android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/tv_my_light" />
+                app:layout_constraintTop_toBottomOf="@id/chart_light" />
 
             <TextView
                 android:id="@+id/tv_my_hash"
@@ -155,9 +164,9 @@
                     android:id="@+id/tv_hash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="해시태그"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    android:text="해시태그"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -166,25 +175,25 @@
                     android:id="@+id/tv_avg_brightness"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="평균 밝기"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/guideline2"
                     app:layout_constraintStart_toStartOf="@id/guideline1"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="평균 밝기" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_cnt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="사용 횟수"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/guideline2"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="사용 횟수" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline1"
@@ -206,9 +215,9 @@
                 android:id="@+id/rv_hash_table"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical"
+                android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/layout_header" />
 
