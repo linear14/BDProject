@@ -1,8 +1,8 @@
 package com.bd.bdproject.view.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.data.model.StatisticTagResult
@@ -11,9 +11,16 @@ import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
+import com.github.mikephil.charting.data.ChartData
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.model.GradientColor
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.android.ext.android.inject
 import java.util.*
+
 
 class StatisticActivity : AppCompatActivity() {
 
@@ -26,8 +33,14 @@ class StatisticActivity : AppCompatActivity() {
             startActivity(
                 Intent(this, StatisticDetailActivity::class.java).apply {
                     putExtra(INFO_TAG, tagName)
-                    putExtra("START_DAY", statisticViewModel.startDay.value?:System.currentTimeMillis())
-                    putExtra("END_DAY", statisticViewModel.endDay.value?:System.currentTimeMillis())
+                    putExtra(
+                        "START_DAY",
+                        statisticViewModel.startDay.value ?: System.currentTimeMillis()
+                    )
+                    putExtra(
+                        "END_DAY",
+                        statisticViewModel.endDay.value ?: System.currentTimeMillis()
+                    )
                 })
         }
     }
@@ -69,7 +82,7 @@ class StatisticActivity : AppCompatActivity() {
 
         // 이 달력에서 선택된 millisecond 값이 32400000 만큼 크다.
         val builder = MaterialDatePicker.Builder.datePicker().setSelection(
-            (previousTime?:System.currentTimeMillis()) + 32_400_000L
+            (previousTime ?: System.currentTimeMillis()) + 32_400_000L
         )
         val picker = builder.build()
         picker.show(supportFragmentManager, picker.toString())
@@ -105,16 +118,63 @@ class StatisticActivity : AppCompatActivity() {
 
     private fun observeLightForDuration() {
         statisticViewModel.lightForDuration.observe(this) {
-            val tagStatistic: MutableList<StatisticTagResult> = statisticViewModel.makeTagStatistic(it).apply {
+            val entry = statisticViewModel.makePieChartEntry(it)
+            showPieChart(entry)
+
+            val tagStatistic: MutableList<StatisticTagResult> =
+                statisticViewModel.makeTagStatistic(it).apply {
                 sortByDescending { tags -> tags.cnt }
             }
 
-            /*for(i in tagStatistic) {
-                Log.d("LIGHT_TEST", "[# ${i.name}] 사용횟수 ${i.cnt}회, 평균밝기 ${i.avg}")
-            }*/
-
             statisticTagAdapter.submitList(tagStatistic)
         }
+    }
+
+    private fun showPieChart(entry: MutableList<PieEntry>) {
+        val gradientColors = insertColorGradient(entry)
+
+        val dataSet = PieDataSet(entry, "label").apply {
+            this.gradientColors = gradientColors
+            valueTextSize = 12f
+        }
+
+        val data = PieData(dataSet).apply {
+            setDrawValues(true)
+        }
+
+        binding.chartLight.apply {
+            isDrawHoleEnabled = true
+            setHoleColor(android.R.color.transparent)
+            this.data = data
+            invalidate()
+        }
+    }
+
+    private fun insertColorGradient(entryList: MutableList<PieEntry>): MutableList<GradientColor> {
+        val gradientColors = mutableListOf<GradientColor>()
+        val labelList = entryList.map { it.label }
+
+        if("0" in labelList) {
+            gradientColors.add(GradientColor(Color.rgb(0, 0, 0), Color.rgb(135, 87, 76)))
+        }
+
+        if("1" in labelList) {
+            gradientColors.add(GradientColor(Color.rgb(135, 87, 76), Color.rgb(108, 43, 22)))
+        }
+
+        if("2" in labelList) {
+            gradientColors.add(GradientColor(Color.rgb(108, 43, 22), Color.rgb(223, 80, 19)))
+        }
+
+        if("3" in labelList) {
+            gradientColors.add(GradientColor(Color.rgb(223, 80, 19), Color.rgb(255, 138, 0)))
+        }
+
+        if("4" in labelList) {
+            gradientColors.add(GradientColor(Color.rgb(255, 138, 0), Color.rgb(255, 205, 77)))
+        }
+
+        return gradientColors
     }
 
     companion object {

@@ -6,6 +6,7 @@ import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.util.timeToString
+import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -73,5 +74,43 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
         }
 
         return tags
+    }
+
+    fun makePieChartEntry(list: List<LightWithTags>): MutableList<PieEntry> {
+        val pieEntry = mutableListOf<PieEntry>()
+        val tempMap: HashMap<Int, Int> = hashMapOf()
+
+        for(lwt in list) {
+            val key = when(lwt.light.bright) {
+                in 0..20 -> 0
+                in 21..40 -> 1
+                in 41..60 -> 2
+                in 61..80 -> 3
+                in 81..100 -> 4
+                else -> -1
+            }
+
+            if(tempMap.containsKey(key)) {
+                val previousValue = tempMap[key]?:0
+                tempMap[key] = previousValue + 1
+            } else {
+                tempMap[key] = 1
+            }
+        }
+
+
+        pieEntry.apply {
+            for(i in -1..4) {
+                addPieEntry(tempMap, pieEntry, i)
+            }
+        }
+
+        return pieEntry
+    }
+
+    private fun addPieEntry(map: HashMap<Int, Int>, entry: MutableList<PieEntry>, i: Int) {
+        if(map.containsKey(i)) {
+            entry.add(PieEntry(map[i]?.toFloat()?:0f, i.toString()))
+        }
     }
 }
