@@ -51,3 +51,9 @@ fun String.toBitDamDateFormat(): String {
 
     return stringBuilder.toString()
 }
+
+fun Int.toLightLabel(): String {
+    val start = if(this == 0) 0 else this * 20 + 1
+    val end = this * 20 + 20
+    return "$start ~ $end"
+}

@@ -9,9 +9,9 @@ import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.toLightLabel
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
-import com.github.mikephil.charting.data.ChartData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -19,7 +19,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.model.GradientColor
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.android.ext.android.inject
-import java.util.*
 
 
 class StatisticActivity : AppCompatActivity() {
@@ -132,18 +131,26 @@ class StatisticActivity : AppCompatActivity() {
 
     private fun showPieChart(entry: MutableList<PieEntry>) {
         val gradientColors = insertColorGradient(entry)
+        //val colors = insertColors(entry)
 
-        val dataSet = PieDataSet(entry, "label").apply {
+        val dataSet = PieDataSet(entry,"").apply {
             this.gradientColors = gradientColors
+            //this.colors = colors
             valueTextSize = 12f
+            valueTextColor = Color.WHITE
         }
 
         val data = PieData(dataSet).apply {
             setDrawValues(true)
+            setValueFormatter(PercentFormatter(binding.chartLight))
         }
 
         binding.chartLight.apply {
             isDrawHoleEnabled = true
+            isRotationEnabled = false
+            legend.isEnabled = false
+            setDrawEntryLabels(false)
+            setUsePercentValues(true)
             setHoleColor(android.R.color.transparent)
             this.data = data
             invalidate()
@@ -176,6 +183,33 @@ class StatisticActivity : AppCompatActivity() {
 
         return gradientColors
     }
+
+    /*private fun insertColors(entryList: MutableList<PieEntry>): MutableList<Int> {
+        val colors = mutableListOf<Int>()
+        val labelList = entryList.map { it.label }
+
+        if (0.toLightLabel() in labelList) {
+            colors.add(Color.rgb(0, 0, 0))
+        }
+
+        if (1.toLightLabel() in labelList) {
+            colors.add(Color.rgb(135, 87, 76))
+        }
+
+        if (2.toLightLabel() in labelList) {
+            colors.add(Color.rgb(108, 43, 22))
+        }
+
+        if (3.toLightLabel() in labelList) {
+            colors.add(Color.rgb(255, 138, 0))
+        }
+
+        if (4.toLightLabel() in labelList) {
+            colors.add(Color.rgb(255, 205, 77))
+        }
+
+        return colors
+    }*/
 
     companion object {
         const val START_DAY = 0

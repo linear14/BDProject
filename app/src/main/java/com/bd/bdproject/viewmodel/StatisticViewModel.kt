@@ -6,6 +6,7 @@ import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.toLightLabel
 import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -110,7 +111,7 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
 
     private fun addPieEntry(map: HashMap<Int, Int>, entry: MutableList<PieEntry>, i: Int) {
         if(map.containsKey(i)) {
-            entry.add(PieEntry(map[i]?.toFloat()?:0f, i.toString()))
+            entry.add(PieEntry(map[i]?.toFloat()?:0f, i.toLightLabel()))
         }
     }
 }
