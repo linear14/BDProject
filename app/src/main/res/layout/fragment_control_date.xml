@@ -9,18 +9,6 @@
     tools:background="@color/black">
 
     <TextView
-        android:id="@+id/action_enroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:text="완료"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/tv_ask_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,20 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_brightness"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="20"
-        tools:visibility="visible" />
-
     <com.lukelorusso.verticalseekbar.VerticalSeekBar
         android:id="@+id/sb_light"
         android:layout_width="match_parent"
@@ -55,14 +29,19 @@
         android:alpha="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:vsb_bar_background="@android:color/white"
-        app:vsb_bar_progress_gradient_end="@android:color/white"
-        app:vsb_bar_progress_gradient_start="@android:color/white"
         app:vsb_bar_width="0dp"
         app:vsb_max_value="200"
         app:vsb_progress="0"
-        app:vsb_show_thumb="true"
         app:vsb_thumb_container_corner_radius="90dp" />
+
+    <View
+        android:id="@+id/view_thumb"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:background="@drawable/deco_seekbar_thumb"
+        app:layout_constraintBottom_toBottomOf="@id/sb_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/btn_drawer"
@@ -74,14 +53,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/btn_back"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/temp_back_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/action_date_pick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:padding="16dp"
+        android:text="기록 못한 날 추가하기"
+        android:textColor="#bfbfbf"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

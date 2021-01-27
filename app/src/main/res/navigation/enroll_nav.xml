@@ -3,7 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/enrollNavigation"
-    app:startDestination="@id/enrollBrightnessFragment">
+    app:startDestination="@id/controlDateFragment">
+
+    <fragment
+        android:id="@+id/controlDateFragment"
+        android:name="com.bd.bdproject.view.fragment.ControlDateFragment"
+        tools:layout="@layout/fragment_control_date">
+        <action
+            android:id="@+id/action_controlDateFragment_to_enrollBrightnessFragment"
+            app:destination="@id/enrollBrightnessFragment" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/enrollBrightnessFragment"
