@@ -36,5 +36,11 @@
     <fragment
         android:id="@+id/enrollMemoFragment"
         android:name="com.bd.bdproject.view.fragment.enroll.EnrollMemoFragment"
-        tools:layout="@layout/fragment_control_memo" />
+        tools:layout="@layout/fragment_control_memo">
+        <action
+            android:id="@+id/action_enrollMemoFragment_to_controlDateFragment"
+            app:destination="@id/controlDateFragment"
+            app:popUpTo="@id/controlDateFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 </navigation>

@@ -65,7 +65,6 @@ open class ControlBrightnessFragment: BaseFragment() {
         binding.apply {
             sbLight.setOnPressListener { progress ->
                 if(isFirstPressed) {
-                    tvAskCondition.visibility = View.GONE
                     tvBrightness.visibility = View.VISIBLE
                     tvBrightness.text = getBrightness(progress).toString()
                     sbLight.barWidth = 4
@@ -101,9 +100,7 @@ open class ControlBrightnessFragment: BaseFragment() {
             setEntireViewColor(
                 brightness,
                 tvBrightness,
-                tvAskCondition,
                 actionEnroll,
-                btnDrawer,
                 btnBack
             )
         }

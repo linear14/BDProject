@@ -9,14 +9,14 @@ import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.util.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.util.Constant.SPLASH
 import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.viewmodel.SplashViewModel
+import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
 class SplashActivity : AppCompatActivity() {
 
     private var binding: ActivitySplashBinding? = null
-    private val splashViewModel: SplashViewModel by inject()
+    private val splashViewModel: CheckEnrollStateViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

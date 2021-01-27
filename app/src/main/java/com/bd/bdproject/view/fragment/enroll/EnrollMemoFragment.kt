@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavDirections
+import androidx.navigation.Navigation
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
@@ -15,6 +17,7 @@ import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
+import com.bd.bdproject.view.fragment.ControlDateFragmentDirections
 import com.bd.bdproject.view.fragment.ControlMemoFragment
 import com.bd.bdproject.viewmodel.EnrollViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
@@ -104,13 +107,21 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                         sharedViewModel.previousPage.value = CONTROL_MEMO
                         Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                        val intent = Intent(activity, DetailActivity::class.java).apply {
-                            putExtra(INFO_PREVIOUS_ACTIVITY, BITDAM_ENROLL)
-                            putExtra(INFO_DATE_CODE, System.currentTimeMillis().timeToString())
-                            putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
+                        if(sharedViewModel.dateCode.value == System.currentTimeMillis().timeToString()) {
+                            val intent = Intent(activity, DetailActivity::class.java).apply {
+                                putExtra(INFO_PREVIOUS_ACTIVITY, BITDAM_ENROLL)
+                                putExtra(INFO_DATE_CODE, sharedViewModel.dateCode.value?:System.currentTimeMillis().timeToString())
+                                putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
+                            }
+                            startActivity(intent)
+                            parentActivity.finish()
+                        } else {
+                            sharedViewModel.init()
+                            val navDirection: NavDirections =
+                                EnrollMemoFragmentDirections.actionEnrollMemoFragmentToControlDateFragment()
+                            Navigation.findNavController(binding.root).navigate(navDirection)
                         }
-                        startActivity(intent)
-                        parentActivity.finish()
+
                     }
                 }
 
@@ -123,14 +134,14 @@ open class EnrollMemoFragment: ControlMemoFragment() {
 
     private fun insertLight(): String {
         binding.apply {
-            val currentTime = System.currentTimeMillis().timeToString()
+            val dateCode = sharedViewModel.dateCode.value?:System.currentTimeMillis().timeToString()
             val light = Light(
-                currentTime,
+                dateCode,
                 tvBrightness.text.toString().toInt(),
                 inputMemo.text.toString()
             )
             lightViewModel.asyncInsertLight(light)
-            return currentTime
+            return dateCode
         }
     }
 

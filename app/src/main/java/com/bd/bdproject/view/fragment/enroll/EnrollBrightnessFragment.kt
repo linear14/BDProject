@@ -14,7 +14,6 @@ import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.EnrollViewModel
-import kotlinx.coroutines.*
 
 open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
@@ -28,9 +27,6 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            btnDrawer.visibility = View.VISIBLE
-            btnBack.visibility = View.GONE
-
             setSeekBarReleaseListener()
         }
 
@@ -39,49 +35,11 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     override fun onResume() {
         super.onResume()
 
-        if(sharedViewModel.brightness.value == null) {
-            showUiWithDelay()
-        } else {
-            showUi()
-        }
-
-        binding.btnDrawer.setOnClickListener {
-            parentActivity.binding.drawer.openDrawer(GravityCompat.START)
-        }
+        showUi()
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
         }
-    }
-
-    private fun showUiWithDelay() {
-            GlobalScope.launch {
-                binding.apply {
-                    tvAskCondition.visibility = View.GONE
-                    tvAskCondition.clearAnimation()
-                    sbLight.clearAnimation()
-
-                    delay(1000)
-
-                    withContext(Dispatchers.Main) {
-                        tvAskCondition.animateTransparency(1.0f, 2000)
-                            .setListener(object: AnimatorListenerAdapter() {
-                                override fun onAnimationStart(animation: Animator?) {
-                                    super.onAnimationStart(animation)
-                                    tvAskCondition.visibility = View.VISIBLE
-                                }
-
-                                override fun onAnimationEnd(animation: Animator?) {
-                                    super.onAnimationEnd(animation)
-                                    if(!isChangingFragment) {
-                                        sbLight.animateTransparency(1.0f, 2000)
-                                    }
-                                }
-                            })
-                    }
-                }
-            }
-
     }
 
     private fun showUi() {
@@ -92,12 +50,15 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
             layoutAddLight.background = gradientDrawable
             tvBrightness.text = brightness.toString()
-            tvAskCondition.visibility = View.GONE
             tvBrightness.visibility = View.VISIBLE
             sbLight.barWidth = 4
             sbLight.progress = brightness * 2
 
-            sbLight.animateTransparency(1.0f, 2000)
+            if(sharedViewModel.brightness.value != null) {
+                sbLight.animateTransparency(1.0f, 2000)
+            } else {
+                sbLight.alpha = 1f
+            }
         }
     }
 
@@ -130,10 +91,4 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 }
             })
     }
-
-    /***
-     * TODO 비동기로 2~3초마다 sbLight Thumb가 visible한지 검사하는 메서드를 만들어준다.
-     * visible하면 return
-     * 아니면 보여주는 메서드
-     */
 }

@@ -4,23 +4,29 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
 import com.bd.bdproject.databinding.DialogDatePickerBinding
 import java.util.*
 
-class SlideDatePicker : DialogFragment() {
+class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.OnDateSetListener) : DialogFragment() {
+
+    companion object {
+        const val MAX_YEAR = 2099
+        const val MIN_YEAR = 1980
+    }
 
     private var _binding: DialogDatePickerBinding? = null
     val binding get() = _binding!!
 
-    private var listener: DatePickerDialog.OnDateSetListener? = null
-    private val MAX_YEAR = 2099
-    private val MIN_YEAR = 1980
-    var cal = Calendar.getInstance()
+    private val cal: Calendar = Calendar.getInstance()
 
-    fun setListener(listener: DatePickerDialog.OnDateSetListener?) {
-        this.listener = listener
+    init {
+        dateBundle?.let {
+            Log.d("PICKER_TEST", "${it.getInt("YEAR")}년 ${it.getInt("MONTH")}월 ${it.getInt("DATE")}일")
+            cal.set(it.getInt("YEAR"), it.getInt("MONTH") - 1, it.getInt("DATE"))
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -44,6 +50,7 @@ class SlideDatePicker : DialogFragment() {
                 setDialogTitle()
 
                 btnConfirm.setOnClickListener {
+                    listener.onDateSet(null, pickerYear.value, pickerMonth.value, pickerDate.value)
                     dismiss()
                 }
 

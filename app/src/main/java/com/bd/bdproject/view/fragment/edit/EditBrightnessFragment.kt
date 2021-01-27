@@ -27,9 +27,6 @@ open class EditBrightnessFragment: ControlBrightnessFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            btnDrawer.visibility = View.GONE
-            btnBack.visibility = View.VISIBLE
-
             actionEnroll.setOnClickListener { editBrightness() }
         }
     }
@@ -51,7 +48,6 @@ open class EditBrightnessFragment: ControlBrightnessFragment() {
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
             layoutAddLight.background = gradientDrawable
             tvBrightness.text = brightness.toString()
-            tvAskCondition.visibility = View.GONE
             tvBrightness.visibility = View.VISIBLE
             sbLight.barWidth = 4
             sbLight.progress = brightness * 2
