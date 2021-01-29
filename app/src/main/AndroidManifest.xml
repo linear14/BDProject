@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BDProject">
-        <activity android:name=".view.activity.StatisticDetailActivity"></activity>
+        <activity android:name=".view.activity.ManageHashActivity"></activity>
+        <activity android:name=".view.activity.StatisticDetailActivity" />
         <activity
             android:name=".view.activity.StatisticActivity"
             android:screenOrientation="portrait" />

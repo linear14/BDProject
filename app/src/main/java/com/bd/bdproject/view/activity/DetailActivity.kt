@@ -70,6 +70,11 @@ class DetailActivity : AppCompatActivity() {
                 drawer.closeDrawer(GravityCompat.START)
             }
 
+            navigationDrawer.actionHash.setOnClickListener {
+                startActivity(Intent(this@DetailActivity, ManageHashActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
             btnBack.setOnClickListener { onBackPressed() }
 
             btnSpreadUpDown.setOnClickListener {
