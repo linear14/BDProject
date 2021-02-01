@@ -18,6 +18,14 @@ class TagRepository(private val tagDao: TagDao) {
     }
 
     // READ
+    fun selectAllTagsAsc(): List<Tag> {
+        return tagDao.selectAllTagsAsc()
+    }
+
+    fun selectAllTagsDesc(): List<Tag> {
+        return tagDao.selectAllTagsDesc()
+    }
+
     fun searchTag(word: String): List<String> {
         return tagDao.searchTag(word)
     }

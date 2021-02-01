@@ -6,11 +6,11 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <ImageView
+    <View
         android:id="@+id/iv_check"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@mipmap/ic_launcher"
+        android:background="#aaaaaa"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

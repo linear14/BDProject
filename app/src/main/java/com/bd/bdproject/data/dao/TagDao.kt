@@ -17,6 +17,12 @@ interface TagDao {
     suspend fun insertTag(tags: List<Tag>)
 
     // READ
+    @Query("SELECT * FROM tag ORDER BY name ASC")
+    fun selectAllTagsAsc(): List<Tag>
+
+    @Query("SELECT * FROM tag ORDER BY name DESC")
+    fun selectAllTagsDesc(): List<Tag>
+
     @Query("SELECT name FROM tag WHERE name LIKE :word")
     fun searchTag(word: String): List<String>
 
