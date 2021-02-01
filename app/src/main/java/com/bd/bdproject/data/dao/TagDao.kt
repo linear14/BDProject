@@ -26,6 +26,9 @@ interface TagDao {
     @Query("SELECT name FROM tag WHERE name LIKE :word")
     fun searchTag(word: String): List<String>
 
+    @Query("SELECT * FROM tag WHERE name LIKE :word")
+    fun searchTagReturnTag(word: String): List<Tag>
+
     @Query("SELECT A.name " +
             "FROM tag A, lightTagRelation B " +
             "WHERE A.name LIKE :word " +

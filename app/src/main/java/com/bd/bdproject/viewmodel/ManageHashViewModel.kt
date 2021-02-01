@@ -1,10 +1,12 @@
 package com.bd.bdproject.viewmodel
 
+import android.provider.Settings
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.TagRepository
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ManageHashViewModel(val tagRepository: TagRepository): ViewModel() {
@@ -30,6 +32,12 @@ class ManageHashViewModel(val tagRepository: TagRepository): ViewModel() {
                     tags.postValue(tagRepository.selectAllTagsDesc())
                 }
             }
+        }
+    }
+
+    fun searchTag(word: String) {
+        GlobalScope.launch {
+            tags.postValue(tagRepository.searchTagReturnTag("%${word}%"))
         }
     }
 

@@ -9,6 +9,7 @@ import com.bd.bdproject.databinding.ItemManageHashBinding
 
 class ManageHashAdapter(var tags: List<Tag>, val checkBoxClickedListener: (Tag) -> Unit): RecyclerView.Adapter<ManageHashAdapter.HashViewHolder>() {
 
+    // TODO viewmodel에서 받아올 수 있는 방법을 생각해봐야겠음 (같은 정보인데 두개의 set 프로퍼티를 따로 관리하는게 맘에 안든다..)
     val checkedTags = mutableSetOf<Tag>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HashViewHolder {

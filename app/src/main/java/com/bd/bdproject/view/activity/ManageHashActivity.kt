@@ -35,6 +35,14 @@ class ManageHashActivity : AppCompatActivity() {
                 manageHashViewModel.removeAllCheckedTags()
                 adapter.removeAllCheckedPosition()
             }
+
+            actionSearch.setOnClickListener {
+                manageHashViewModel.searchTag(inputSearch.text.toString())
+            }
+
+            actionReset.setOnClickListener {
+                manageHashViewModel.getAllTags(ManageHashViewModel.TYPE_ASC)
+            }
         }
     }
 

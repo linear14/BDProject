@@ -30,6 +30,10 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.searchTag(word)
     }
 
+    fun searchTagReturnTag(word: String): List<Tag> {
+        return tagDao.searchTagReturnTag(word)
+    }
+
     fun searchTagOrderByUsedCount(word: String): List<String> {
         return tagDao.searchTagOrderByUsedCount(word)
     }
