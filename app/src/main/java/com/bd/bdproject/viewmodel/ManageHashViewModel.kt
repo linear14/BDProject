@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.TagRepository
+import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
+import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_DESC
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,18 +18,18 @@ class ManageHashViewModel(val tagRepository: TagRepository): ViewModel() {
     val checkedTags: MutableLiveData<MutableSet<Tag>> = MutableLiveData(mutableSetOf())
 
     init {
-        getAllTags(TYPE_ASC)
+        getAllTags(FILTER_ASC)
     }
 
-    fun getAllTags(type: String) {
+    fun getAllTags(type: Int) {
         when(type) {
-            TYPE_ASC -> {
+            FILTER_ASC -> {
                 GlobalScope.launch {
                     tags.postValue(tagRepository.selectAllTagsAsc())
                 }
             }
 
-            TYPE_DESC -> {
+            FILTER_DESC -> {
                 GlobalScope.launch {
                     tags.postValue(tagRepository.selectAllTagsDesc())
                 }
@@ -63,9 +65,4 @@ class ManageHashViewModel(val tagRepository: TagRepository): ViewModel() {
         checkedTags.value = mutableSetOf()
     }
 
-
-    companion object {
-        const val TYPE_ASC = "TYPE_ASC"
-        const val TYPE_DESC = "TYPE_DESC"
-    }
 }

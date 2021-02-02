@@ -1,5 +1,6 @@
 package com.bd.bdproject.util
 
+import android.content.res.Resources
 import android.view.View
 import android.view.ViewPropertyAnimator
 import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER
@@ -56,4 +57,8 @@ fun Int.toLightLabel(): String {
     val start = if(this == 0) 0 else this * 20 + 1
     val end = this * 20 + 20
     return "$start ~ $end"
+}
+
+fun Int.dpToPx(): Int {
+    return (this * Resources.getSystem().displayMetrics.density).toInt()
 }

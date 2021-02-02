@@ -2,4 +2,12 @@
     <string name="app_name">빛담-빛을담다</string>
 
     <string name="ask_today_condition">오늘의 기분은 밝았나요?</string>
+
+
+
+    <string name="spinner_asc">오름차순</string>
+    <string name="spinner_desc">내림차순</string>
+
+    <string name="spinner_edit">수정하기</string>
+    <string name="spinner_delete">삭제하기</string>
 </resources>
