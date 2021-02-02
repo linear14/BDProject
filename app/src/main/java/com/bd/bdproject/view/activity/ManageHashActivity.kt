@@ -1,5 +1,6 @@
 package com.bd.bdproject.view.activity
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.ContextMenu
@@ -13,6 +14,7 @@ import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityManageHashBinding
 import com.bd.bdproject.dialog.BottomSelector
+import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.dpToPx
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
@@ -39,7 +41,10 @@ class ManageHashActivity : AppCompatActivity() {
                     override fun onEdit(tag: Tag) {
                         dismiss()
 
-                        Toast.makeText(this@ManageHashActivity, "수정, ${tag.name}", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
+                            putExtra("TYPE", ACTION_EDIT)
+                            putExtra(INFO_TAG, tag.name)
+                        })
                     }
 
                     override fun onDelete(tag: Tag) {
@@ -120,6 +125,11 @@ class ManageHashActivity : AppCompatActivity() {
                 }
             }
 
+            actionAdd.setOnClickListener {
+                startActivity(Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
+                    putExtra("TYPE", ACTION_ADD)
+                })
+            }
         }
     }
 
@@ -188,7 +198,8 @@ class ManageHashActivity : AppCompatActivity() {
         const val FILTER_ASC = 2000
         const val FILTER_DESC = 2100
 
-        const val ACTION_EDIT = 3000
-        const val ACTION_DELETE = 3100
+        const val ACTION_ADD = 3000
+        const val ACTION_EDIT = 3100
+        const val ACTION_DELETE = 3200
     }
 }
