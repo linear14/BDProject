@@ -26,8 +26,11 @@ interface TagDao {
     @Query("SELECT name FROM tag WHERE name LIKE :word")
     fun searchTag(word: String): List<String>
 
-    @Query("SELECT * FROM tag WHERE name LIKE :word")
-    fun searchTagReturnTag(word: String): List<Tag>
+    @Query("SELECT * FROM tag WHERE name LIKE :word ORDER BY name ASC")
+    fun searchTagReturnTagAsc(word: String): List<Tag>
+
+    @Query("SELECT * FROM tag WHERE name LIKE :word ORDER BY name DESC")
+    fun searchTagReturnTagDesc(word: String): List<Tag>
 
     @Query("SELECT A.name " +
             "FROM tag A, lightTagRelation B " +
@@ -42,9 +45,11 @@ interface TagDao {
     @Query("SELECT * FROM tag WHERE name = :tagName")
     fun selectTagWithLightsByTagName(tagName: String): TagWithLights
 
+    @Query("DELETE FROM tag WHERE name in (:tags)")
+    suspend fun deleteTag(tags: List<String>)
+
     /*@Query("UPDATE tag SET name=:name WHERE name=:name")
     suspend fun updateTag(name: String)
 
-    @Delete
-    suspend fun deleteTag(tags: List<Tag>)*/
+    )*/
 }

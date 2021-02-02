@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.bd.bdproject.data.model.LightTagRelation
+import com.bd.bdproject.data.model.Tag
 
 @Dao
 interface LightTagRelationDao {
@@ -16,6 +17,9 @@ interface LightTagRelationDao {
     // DELETE
     @Query("DELETE FROM LightTagRelation WHERE dateCode=:dateCode")
     suspend fun deleteRelationsAll(dateCode: String)
+
+    @Query("DELETE FROM LightTagRelation WHERE name in (:tags)")
+    suspend fun deleteRelationByTag(tags: List<String>)
 
     /*// TODO 세 가지 방법중 어떤 방식으로 사용할건지 확실히 정하는게 좋을듯
     @Delete

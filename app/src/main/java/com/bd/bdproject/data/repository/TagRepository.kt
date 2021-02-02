@@ -30,8 +30,12 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.searchTag(word)
     }
 
-    fun searchTagReturnTag(word: String): List<Tag> {
-        return tagDao.searchTagReturnTag(word)
+    fun searchTagReturnTagAsc(word: String): List<Tag> {
+        return tagDao.searchTagReturnTagAsc(word)
+    }
+
+    fun searchTagReturnTagDesc(word: String): List<Tag> {
+        return tagDao.searchTagReturnTagDesc(word)
     }
 
     fun searchTagOrderByUsedCount(word: String): List<String> {
@@ -42,7 +46,8 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.selectTagWithLightsByTagName(tagName)
     }
 
-    /*suspend fun deleteTag(tags: List<Tag>) {
-        tagDao.deleteTag(tags)
-    }*/
+    // DELETE
+    suspend fun deleteTag(tags: List<Tag>) {
+        tagDao.deleteTag(tags.map { it.name })
+    }
 }

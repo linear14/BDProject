@@ -1,47 +1,88 @@
 package com.bd.bdproject.viewmodel
 
-import android.provider.Settings
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bd.bdproject.`interface`.OnAsyncWorkFinished
 import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_DESC
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class ManageHashViewModel(val tagRepository: TagRepository): ViewModel() {
+class ManageHashViewModel(
+    val tagRepository: TagRepository,
+    val relationRepository: LightTagRelationRepository
+    ): ViewModel() {
 
     val tags: MutableLiveData<List<Tag>> = MutableLiveData()
 
     val checkedTags: MutableLiveData<MutableSet<Tag>> = MutableLiveData(mutableSetOf())
+    val searchedText: MutableLiveData<String?> = MutableLiveData(null)
+    val filter: MutableLiveData<Int> = MutableLiveData(FILTER_ASC)
+
+    private var onAsyncWorkFinished: OnAsyncWorkFinished? = null
 
     init {
-        getAllTags(FILTER_ASC)
+        searchTag(searchedText.value)
     }
 
-    fun getAllTags(type: Int) {
-        when(type) {
+    // ===========================================================================
+    // Room DB 연결 작업
+    // ===========================================================================
+
+
+    fun searchTag(word: String?) {
+        when(filter.value) {
             FILTER_ASC -> {
-                GlobalScope.launch {
-                    tags.postValue(tagRepository.selectAllTagsAsc())
+                if(word.isNullOrEmpty()) {
+                    GlobalScope.launch {
+                        tags.postValue(tagRepository.selectAllTagsAsc())
+                    }
+                } else {
+                    GlobalScope.launch {
+                        tags.postValue(tagRepository.searchTagReturnTagAsc("%${word}%"))
+                    }
                 }
             }
 
             FILTER_DESC -> {
-                GlobalScope.launch {
-                    tags.postValue(tagRepository.selectAllTagsDesc())
+                if(word.isNullOrEmpty()) {
+                    GlobalScope.launch {
+                        tags.postValue(tagRepository.selectAllTagsDesc())
+                    }
+                } else {
+                    GlobalScope.launch {
+                        tags.postValue(tagRepository.searchTagReturnTagDesc("%${word}%"))
+                    }
                 }
             }
         }
     }
 
-    fun searchTag(word: String) {
-        GlobalScope.launch {
-            tags.postValue(tagRepository.searchTagReturnTag("%${word}%"))
+    // 태그 이름 삭제, dateCode와 연결되어 있던 태그들 모두 삭제
+    fun deleteTags(tags: List<Tag>) {
+        runBlocking {
+            val job = GlobalScope.launch {
+                tagRepository.deleteTag(tags)
+                relationRepository.deleteRelationByTag(tags)
+            }
+
+            job.join()
+            if(job.isCancelled) onAsyncWorkFinished?.onFailure()
+            else if(job.isCompleted) onAsyncWorkFinished?.onSuccess()
+
+            searchTag(searchedText.value)
         }
+
     }
+
+
+    // ===========================================================================
+    // 상태 보관 작업
+    // ===========================================================================
 
     fun addOrRemoveCheckedTag(tag: Tag) {
         val temp = checkedTags.value
@@ -63,6 +104,10 @@ class ManageHashViewModel(val tagRepository: TagRepository): ViewModel() {
 
     fun removeAllCheckedTags() {
         checkedTags.value = mutableSetOf()
+    }
+
+    fun setOnAsyncWorkFinishedListener(li: OnAsyncWorkFinished) {
+        onAsyncWorkFinished = li
     }
 
 }

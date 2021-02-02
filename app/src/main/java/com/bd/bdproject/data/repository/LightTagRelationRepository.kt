@@ -2,6 +2,7 @@ package com.bd.bdproject.data.repository
 
 import com.bd.bdproject.data.dao.LightTagRelationDao
 import com.bd.bdproject.data.model.LightTagRelation
+import com.bd.bdproject.data.model.Tag
 
 class LightTagRelationRepository(private val lightTagCrossRefDao: LightTagRelationDao) {
 
@@ -13,6 +14,10 @@ class LightTagRelationRepository(private val lightTagCrossRefDao: LightTagRelati
     // DELETE
     suspend fun deleteRelationsAll(dateCode: String) {
         lightTagCrossRefDao.deleteRelationsAll(dateCode)
+    }
+
+    suspend fun deleteRelationByTag(tags: List<Tag>) {
+        lightTagCrossRefDao.deleteRelationByTag(tags.map { it.name })
     }
 
     /*suspend fun deleteRelation(relation: List<LightTagRelation>) {

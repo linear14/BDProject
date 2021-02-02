@@ -28,5 +28,5 @@ val appModule = module {
     viewModel { CalendarViewModel(get()) }
     viewModel { StatisticViewModel(get()) }
     viewModel { StatisticDetailViewModel(get(), get()) }
-    viewModel { ManageHashViewModel(get()) }
+    viewModel { ManageHashViewModel(get(), get()) }
 }
