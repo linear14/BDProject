@@ -8,7 +8,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
+import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityManageHashBinding
+import com.bd.bdproject.dialog.BottomSelector
 import com.bd.bdproject.util.dpToPx
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.adapter.ManageHashAdapter
@@ -20,11 +23,32 @@ class ManageHashActivity : AppCompatActivity() {
     lateinit var binding: ActivityManageHashBinding
 
     private val manageHashViewModel: ManageHashViewModel by inject()
-    val adapter = ManageHashAdapter(mutableListOf()) { resultTag ->
-        binding.apply {
-            manageHashViewModel.addOrRemoveCheckedTag(resultTag)
-        }
-    }
+
+    val adapter = ManageHashAdapter(
+        mutableListOf(),
+        checkBoxClickedListener = { resultTag ->
+            binding.apply {
+                manageHashViewModel.addOrRemoveCheckedTag(resultTag)
+            }},
+        bottomSelectorClickedListener = { tag ->
+            val bottomSelector = BottomSelector(tag).apply {
+                setOnSelectedListener(object: OnBottomOptionSelectedListener {
+                    override fun onEdit(tag: Tag) {
+                        dismiss()
+
+                        Toast.makeText(this@ManageHashActivity, "수정, ${tag.name}", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onDelete(tag: Tag) {
+                        dismiss()
+
+                        Toast.makeText(this@ManageHashActivity, "삭제, ${tag.name}", Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+            }
+            bottomSelector.show(supportFragmentManager, "selector")
+        })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,5 +150,8 @@ class ManageHashActivity : AppCompatActivity() {
     companion object {
         const val FILTER_ASC = 2000
         const val FILTER_DESC = 2100
+
+        const val ACTION_EDIT = 3000
+        const val ACTION_DELETE = 3100
     }
 }
