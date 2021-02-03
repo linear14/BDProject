@@ -14,6 +14,7 @@ import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityManageHashBinding
 import com.bd.bdproject.dialog.BottomSelector
+import com.bd.bdproject.dialog.TagCombiner
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.dpToPx
@@ -129,6 +130,19 @@ class ManageHashActivity : AppCompatActivity() {
                 startActivity(Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
                     putExtra("TYPE", ACTION_ADD)
                 })
+            }
+
+            actionCombine.setOnClickListener {
+                val tagNameBundle = Bundle().apply {
+                    putStringArray(INFO_TAG, manageHashViewModel.checkedTags.value?.map { it.name }?.toTypedArray())
+                }
+
+                val combiner = TagCombiner { combinedTo ->
+                    // TODO 합치기 기능 구현
+
+                }
+                combiner.arguments = tagNameBundle
+                combiner.show(supportFragmentManager, TagCombiner.TAG_COMBINER)
             }
 
             btnBack.setOnClickListener { finish() }
