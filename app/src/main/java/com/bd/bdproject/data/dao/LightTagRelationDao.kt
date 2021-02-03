@@ -14,6 +14,10 @@ interface LightTagRelationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRelation(relation: List<LightTagRelation>)
 
+    // UPDATE
+    @Query("UPDATE LightTagRelation SET name=:newTag WHERE name=:oldTag")
+    suspend fun updateRelations(oldTag: String, newTag: String)
+
     // DELETE
     @Query("DELETE FROM LightTagRelation WHERE dateCode=:dateCode")
     suspend fun deleteRelationsAll(dateCode: String)

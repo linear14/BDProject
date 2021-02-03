@@ -130,12 +130,15 @@ class ManageHashActivity : AppCompatActivity() {
                     putExtra("TYPE", ACTION_ADD)
                 })
             }
+
+            btnBack.setOnClickListener { finish() }
         }
     }
 
     override fun onResume() {
         super.onResume()
 
+        manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
     }
 
     override fun onCreateContextMenu(

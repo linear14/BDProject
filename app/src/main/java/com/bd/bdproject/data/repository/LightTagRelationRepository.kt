@@ -11,6 +11,11 @@ class LightTagRelationRepository(private val lightTagCrossRefDao: LightTagRelati
         lightTagCrossRefDao.insertRelation(relation)
     }
 
+    // UPDATE
+    suspend fun updateRelations(oldTag: String, newTag: String) {
+        lightTagCrossRefDao.updateRelations(oldTag, newTag)
+    }
+
     // DELETE
     suspend fun deleteRelationsAll(dateCode: String) {
         lightTagCrossRefDao.deleteRelationsAll(dateCode)

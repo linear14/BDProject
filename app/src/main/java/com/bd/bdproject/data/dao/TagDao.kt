@@ -45,6 +45,11 @@ interface TagDao {
     @Query("SELECT * FROM tag WHERE name = :tagName")
     fun selectTagWithLightsByTagName(tagName: String): TagWithLights
 
+    // UPDATE
+    @Query("UPDATE tag SET name=:newTag WHERE name=:oldTag")
+    suspend fun updateTag(oldTag: String, newTag: String)
+
+    // DELETE
     @Query("DELETE FROM tag WHERE name in (:tags)")
     suspend fun deleteTag(tags: List<String>)
 

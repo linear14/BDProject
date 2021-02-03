@@ -46,6 +46,11 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.selectTagWithLightsByTagName(tagName)
     }
 
+    // UPDATE
+    suspend fun updateTag(oldTag: String, newTag: String) {
+        tagDao.updateTag(oldTag, newTag)
+    }
+
     // DELETE
     suspend fun deleteTag(tags: List<Tag>) {
         tagDao.deleteTag(tags.map { it.name })

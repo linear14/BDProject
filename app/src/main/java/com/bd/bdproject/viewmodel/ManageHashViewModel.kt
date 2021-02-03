@@ -1,5 +1,6 @@
 package com.bd.bdproject.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
@@ -62,6 +63,17 @@ class ManageHashViewModel(
         }
     }
 
+    suspend fun insertTag(tagName: String) {
+        tagRepository.insertTag(listOf(Tag(tagName)))
+    }
+
+    suspend fun editTag(oldTag: String, newTag: String) {
+        GlobalScope.launch {
+            tagRepository.updateTag(oldTag, newTag)
+            relationRepository.updateRelations(oldTag, newTag)
+        }
+    }
+
     // 태그 이름 삭제, dateCode와 연결되어 있던 태그들 모두 삭제
     fun deleteTags(tags: List<Tag>) {
         runBlocking {
@@ -108,6 +120,14 @@ class ManageHashViewModel(
 
     fun setOnAsyncWorkFinishedListener(li: OnAsyncWorkFinished) {
         onAsyncWorkFinished = li
+    }
+
+    fun isAlreadyExist(tagName: String): Boolean {
+        tags.value?.let { tagList ->
+            val nameList = tagList.map { it.name }
+            return tagName in nameList
+        }
+        return true
     }
 
 }
