@@ -21,9 +21,15 @@ import com.bd.bdproject.util.dpToPx
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 import java.security.Key
 
+// TODO Database 작업 완료 후 리스너 설정을 다른 방식으로 진행하는 방안 고려
 class ManageHashActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityManageHashBinding
@@ -121,7 +127,7 @@ class ManageHashActivity : AppCompatActivity() {
 
                 })
                 manageHashViewModel.checkedTags.value?.let {
-                    manageHashViewModel.deleteTags(it.toList())
+                    manageHashViewModel.deleteTags(it.toList().map { it.tag })
                     manageHashViewModel.removeAllCheckedTags()
                 }
             }
@@ -133,13 +139,28 @@ class ManageHashActivity : AppCompatActivity() {
             }
 
             actionCombine.setOnClickListener {
+
                 val tagNameBundle = Bundle().apply {
                     putStringArray(INFO_TAG, manageHashViewModel.checkedTags.value?.map { it.name }?.toTypedArray())
                 }
 
                 val combiner = TagCombiner { combinedTo ->
-                    // TODO 합치기 기능 구현
+                    runBlocking {
+                        val job = GlobalScope.launch {
+                            manageHashViewModel.combineTags(combinedTo)
+                        }
+                        job.join()
 
+                        if(job.isCancelled) {
+                            GlobalScope.launch(Dispatchers.Main) {
+                                Toast.makeText(applicationContext, "태그 합치기에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        } else if(job.isCompleted) {
+                            GlobalScope.launch(Dispatchers.Main) {
+                                Toast.makeText(applicationContext, "태그 합치기가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
                 combiner.arguments = tagNameBundle
                 combiner.show(supportFragmentManager, TagCombiner.TAG_COMBINER)

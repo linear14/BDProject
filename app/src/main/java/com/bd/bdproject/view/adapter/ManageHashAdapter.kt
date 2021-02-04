@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.model.TagWithLights
 import com.bd.bdproject.databinding.ItemManageHashBinding
 import com.bd.bdproject.dialog.BottomSelector
 import com.bd.bdproject.view.activity.ManageHashActivity
 
 class ManageHashAdapter(
-    var tags: List<Tag>,
-    val checkBoxClickedListener: (Tag) -> Unit,
+    var tags: List<TagWithLights>,
+    val checkBoxClickedListener: (TagWithLights) -> Unit,
     val bottomSelectorClickedListener: (Tag) -> Unit
 ): RecyclerView.Adapter<ManageHashAdapter.HashViewHolder>() {
 
@@ -23,7 +24,7 @@ class ManageHashAdapter(
     }
 
     override fun onBindViewHolder(holder: HashViewHolder, position: Int) {
-        holder.onBind(tags[position])
+        holder.onBind(tags[position].tag)
     }
 
     override fun getItemCount(): Int {
@@ -37,27 +38,27 @@ class ManageHashAdapter(
 
     inner class HashViewHolder(val binding: ItemManageHashBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(tag: Tag) {
+        fun onBind(twl: TagWithLights) {
             binding.apply {
-                setCheckedState(tag)
+                setCheckedState(twl)
 
-                tvTag.text = tag.name
+                tvTag.text = twl.name
                 ivCheck.setOnClickListener {
-                    if(tag in checkedTags) {
+                    if(twl in checkedTags) {
                         // 체크가 되어있는 상태 -> 체크 없애야함
-                        checkedTags.remove(tag)
+                        checkedTags.remove(twl)
                         ivCheck.setBackgroundColor(Color.parseColor("#aaaaaa"))
                     } else {
                         // 체크가 안되어있는 상태 -> 체크 만들어줌
-                        checkedTags.add(tag)
+                        checkedTags.add(twl)
                         ivCheck.setBackgroundColor(Color.parseColor("#000000"))
                     }
 
-                    checkBoxClickedListener(tag)
+                    checkBoxClickedListener(twl)
                 }
 
                 ivMore.setOnClickListener {
-                    bottomSelectorClickedListener(tag)
+                    bottomSelectorClickedListener(twl)
                 }
             }
         }

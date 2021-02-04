@@ -12,7 +12,7 @@ class LightTagRelationRepository(private val lightTagCrossRefDao: LightTagRelati
     }
 
     // UPDATE
-    suspend fun updateRelations(oldTag: String, newTag: String) {
+    suspend fun updateRelations(oldTag: List<String>, newTag: String) {
         lightTagCrossRefDao.updateRelations(oldTag, newTag)
     }
 

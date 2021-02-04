@@ -1,9 +1,6 @@
 package com.bd.bdproject.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.bd.bdproject.data.model.LightTagRelation
 import com.bd.bdproject.data.model.Tag
 
@@ -15,8 +12,8 @@ interface LightTagRelationDao {
     fun insertRelation(relation: List<LightTagRelation>)
 
     // UPDATE
-    @Query("UPDATE LightTagRelation SET name=:newTag WHERE name=:oldTag")
-    suspend fun updateRelations(oldTag: String, newTag: String)
+    @Query("UPDATE LightTagRelation SET name=:newTag WHERE name in (:oldTag)")
+    suspend fun updateRelations(oldTag: List<String>, newTag: String)
 
     // DELETE
     @Query("DELETE FROM LightTagRelation WHERE dateCode=:dateCode")

@@ -1,7 +1,5 @@
 package com.bd.bdproject.data.repository
 
-import androidx.room.Query
-import androidx.room.Transaction
 import com.bd.bdproject.data.dao.TagDao
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.TagWithLights
@@ -18,11 +16,11 @@ class TagRepository(private val tagDao: TagDao) {
     }
 
     // READ
-    fun selectAllTagsAsc(): List<Tag> {
+    fun selectAllTagsAsc(): List<TagWithLights> {
         return tagDao.selectAllTagsAsc()
     }
 
-    fun selectAllTagsDesc(): List<Tag> {
+    fun selectAllTagsDesc(): List<TagWithLights> {
         return tagDao.selectAllTagsDesc()
     }
 
@@ -30,11 +28,11 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.searchTag(word)
     }
 
-    fun searchTagReturnTagAsc(word: String): List<Tag> {
+    fun searchTagReturnTagAsc(word: String): List<TagWithLights> {
         return tagDao.searchTagReturnTagAsc(word)
     }
 
-    fun searchTagReturnTagDesc(word: String): List<Tag> {
+    fun searchTagReturnTagDesc(word: String): List<TagWithLights> {
         return tagDao.searchTagReturnTagDesc(word)
     }
 
@@ -47,7 +45,7 @@ class TagRepository(private val tagDao: TagDao) {
     }
 
     // UPDATE
-    suspend fun updateTag(oldTag: String, newTag: String) {
+    suspend fun updateTag(oldTag: List<String>, newTag: String) {
         tagDao.updateTag(oldTag, newTag)
     }
 

@@ -1,10 +1,11 @@
 package com.bd.bdproject.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
+import com.bd.bdproject.data.model.LightTagRelation
 import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.model.TagWithLights
 import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
@@ -18,9 +19,9 @@ class ManageHashViewModel(
     val relationRepository: LightTagRelationRepository
     ): ViewModel() {
 
-    val tags: MutableLiveData<List<Tag>> = MutableLiveData()
+    val tags: MutableLiveData<List<TagWithLights>> = MutableLiveData()
 
-    val checkedTags: MutableLiveData<MutableSet<Tag>> = MutableLiveData(mutableSetOf())
+    val checkedTags: MutableLiveData<MutableSet<TagWithLights>> = MutableLiveData(mutableSetOf())
     val searchedText: MutableLiveData<String?> = MutableLiveData(null)
     val filter: MutableLiveData<Int> = MutableLiveData(FILTER_ASC)
 
@@ -69,8 +70,8 @@ class ManageHashViewModel(
 
     suspend fun editTag(oldTag: String, newTag: String) {
         GlobalScope.launch {
-            tagRepository.updateTag(oldTag, newTag)
-            relationRepository.updateRelations(oldTag, newTag)
+            tagRepository.updateTag(listOf(oldTag), newTag)
+            relationRepository.updateRelations(listOf(oldTag), newTag)
         }
     }
 
@@ -91,12 +92,41 @@ class ManageHashViewModel(
 
     }
 
+    suspend fun combineTags(combinedTo: String) {
+        GlobalScope.launch {
+            checkedTags.value?.let { tagWithLights ->
+                val combinedList = tagWithLights.toList().map { it.tag }.filter { it.name != combinedTo }
+                tagRepository.deleteTag(combinedList)
+
+                var alreadyHave = mutableListOf<String>()
+                tagWithLights.forEach {
+                    if(it.tag.name == combinedTo) {
+                        alreadyHave = it.lights.map { it.dateCode }.toMutableList()
+                        return@forEach
+                    }
+                }
+
+                val relationList = mutableListOf<LightTagRelation>()
+                tagWithLights.forEach { twl ->
+                    twl.lights.forEach { light ->
+                        if(light.dateCode !in alreadyHave) {
+                            relationList.add(LightTagRelation(light.dateCode, twl.tag.name))
+                        }
+                    }
+                }
+
+                relationRepository.deleteRelationByTag(combinedList)
+                relationRepository.insertRelation(relationList)
+            }
+        }
+    }
+
 
     // ===========================================================================
     // 상태 보관 작업
     // ===========================================================================
 
-    fun addOrRemoveCheckedTag(tag: Tag) {
+    fun addOrRemoveCheckedTag(tag: TagWithLights) {
         val temp = checkedTags.value
         temp?.let {
             if(tag in temp) {
@@ -124,7 +154,7 @@ class ManageHashViewModel(
 
     fun isAlreadyExist(tagName: String): Boolean {
         tags.value?.let { tagList ->
-            val nameList = tagList.map { it.name }
+            val nameList = tagList.map { it.tag.name }
             return tagName in nameList
         }
         return true
