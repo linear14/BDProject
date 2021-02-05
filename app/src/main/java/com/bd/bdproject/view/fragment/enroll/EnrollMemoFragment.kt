@@ -17,7 +17,6 @@ import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
-import com.bd.bdproject.view.fragment.ControlDateFragmentDirections
 import com.bd.bdproject.view.fragment.ControlMemoFragment
 import com.bd.bdproject.viewmodel.EnrollViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel

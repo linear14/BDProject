@@ -1,6 +1,5 @@
 package com.bd.bdproject.view.fragment.edit
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -48,6 +47,8 @@ open class EditBrightnessFragment: ControlBrightnessFragment() {
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
             layoutAddLight.background = gradientDrawable
             tvBrightness.text = brightness.toString()
+            btnBack.visibility = View.VISIBLE
+            btnDrawer.visibility = View.GONE
             tvBrightness.visibility = View.VISIBLE
             sbLight.barWidth = 4
             sbLight.progress = brightness * 2

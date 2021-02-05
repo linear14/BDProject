@@ -3,17 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/enrollNavigation"
-    app:startDestination="@id/controlDateFragment">
-
-    <fragment
-        android:id="@+id/controlDateFragment"
-        android:name="com.bd.bdproject.view.fragment.ControlDateFragment"
-        tools:layout="@layout/fragment_control_date">
-        <action
-            android:id="@+id/action_controlDateFragment_to_enrollBrightnessFragment"
-            app:destination="@id/enrollBrightnessFragment" />
-
-    </fragment>
+    app:startDestination="@id/enrollBrightnessFragment">
 
     <fragment
         android:id="@+id/enrollBrightnessFragment"
@@ -39,8 +29,8 @@
         tools:layout="@layout/fragment_control_memo">
         <action
             android:id="@+id/action_enrollMemoFragment_to_controlDateFragment"
-            app:destination="@id/controlDateFragment"
-            app:popUpTo="@id/controlDateFragment"
+            app:destination="@id/enrollBrightnessFragment"
+            app:popUpTo="@id/enrollBrightnessFragment"
             app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
