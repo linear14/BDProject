@@ -17,14 +17,14 @@ class ManageHashAdapter(
 ): RecyclerView.Adapter<ManageHashAdapter.HashViewHolder>() {
 
     // TODO viewmodel에서 받아올 수 있는 방법을 생각해봐야겠음 (같은 정보인데 두개의 set 프로퍼티를 따로 관리하는게 맘에 안든다..)
-    val checkedTags = mutableSetOf<Tag>()
+    val checkedTags = mutableSetOf<TagWithLights>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HashViewHolder {
         return HashViewHolder(ItemManageHashBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: HashViewHolder, position: Int) {
-        holder.onBind(tags[position].tag)
+        holder.onBind(tags[position])
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +42,7 @@ class ManageHashAdapter(
             binding.apply {
                 setCheckedState(twl)
 
-                tvTag.text = twl.name
+                tvTag.text = twl.tag.name
                 ivCheck.setOnClickListener {
                     if(twl in checkedTags) {
                         // 체크가 되어있는 상태 -> 체크 없애야함
@@ -58,12 +58,12 @@ class ManageHashAdapter(
                 }
 
                 ivMore.setOnClickListener {
-                    bottomSelectorClickedListener(twl)
+                    bottomSelectorClickedListener(twl.tag)
                 }
             }
         }
 
-        private fun setCheckedState(tag: Tag) {
+        private fun setCheckedState(tag: TagWithLights) {
             if(tag in checkedTags) {
                 binding.ivCheck.setBackgroundColor(Color.parseColor("#000000"))
             } else {

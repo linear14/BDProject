@@ -1,5 +1,6 @@
 package com.bd.bdproject.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
@@ -10,7 +11,9 @@ import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_DESC
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -93,32 +96,45 @@ class ManageHashViewModel(
     }
 
     suspend fun combineTags(combinedTo: String) {
-        GlobalScope.launch {
-            checkedTags.value?.let { tagWithLights ->
-                val combinedList = tagWithLights.toList().map { it.tag }.filter { it.name != combinedTo }
-                tagRepository.deleteTag(combinedList)
+            GlobalScope.launch {
+                checkedTags.value?.let { tagWithLights ->
+                    // 사라질 태그 관련 정보
+                    val willBeDeletedList = tagWithLights.toList().map { it.tag }.filter { it.name != combinedTo }
+                    tagRepository.deleteTag(willBeDeletedList)
 
-                var alreadyHave = mutableListOf<String>()
-                tagWithLights.forEach {
-                    if(it.tag.name == combinedTo) {
-                        alreadyHave = it.lights.map { it.dateCode }.toMutableList()
-                        return@forEach
-                    }
-                }
-
-                val relationList = mutableListOf<LightTagRelation>()
-                tagWithLights.forEach { twl ->
-                    twl.lights.forEach { light ->
-                        if(light.dateCode !in alreadyHave) {
-                            relationList.add(LightTagRelation(light.dateCode, twl.tag.name))
+                    // 합쳐질 결과 태그의 사용된 DateCode
+                    var alreadyHaveDateCode = mutableListOf<String>()
+                    tagWithLights.toList().forEach { twl ->
+                        if(twl.tag.name == combinedTo) {
+                            alreadyHaveDateCode = twl.lights.map { it.dateCode }.toMutableList()
+                            return@forEach
                         }
                     }
+
+                    // 새로운 RelationList
+                    val relationList = mutableListOf<LightTagRelation>()
+                    tagWithLights.forEach { twl ->
+                        twl.lights.forEach { light ->
+                            if(light.dateCode !in alreadyHaveDateCode) {
+                                relationList.add(LightTagRelation(light.dateCode, combinedTo))
+                            }
+                        }
+                    }
+
+                    // RelationList 로그 함 찍어보자
+                    for(i in relationList) {
+                        Log.d("RELATION_TEST", "(${i.dateCode}) - ${i.name}")
+                    }
+
+                    relationRepository.deleteRelationByTag(willBeDeletedList)
+                    relationRepository.insertRelation(relationList)
                 }
 
-                relationRepository.deleteRelationByTag(combinedList)
-                relationRepository.insertRelation(relationList)
-            }
+
         }
+
+
+
     }
 
 

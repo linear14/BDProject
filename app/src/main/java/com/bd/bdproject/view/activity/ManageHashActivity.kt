@@ -3,6 +3,7 @@ package com.bd.bdproject.view.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
@@ -139,9 +140,10 @@ class ManageHashActivity : AppCompatActivity() {
             }
 
             actionCombine.setOnClickListener {
+                //val checkedTags = manageHashViewModel.checkedTags.value
 
                 val tagNameBundle = Bundle().apply {
-                    putStringArray(INFO_TAG, manageHashViewModel.checkedTags.value?.map { it.name }?.toTypedArray())
+                    putStringArray(INFO_TAG, manageHashViewModel.checkedTags.value?.map { it.tag.name }?.toTypedArray())
                 }
 
                 val combiner = TagCombiner { combinedTo ->
@@ -158,8 +160,15 @@ class ManageHashActivity : AppCompatActivity() {
                         } else if(job.isCompleted) {
                             GlobalScope.launch(Dispatchers.Main) {
                                 Toast.makeText(applicationContext, "태그 합치기가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                             }
                         }
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            manageHashViewModel.removeAllCheckedTags()
+                            adapter.removeAllCheckedPosition()
+                        }
+
                     }
                 }
                 combiner.arguments = tagNameBundle
@@ -172,7 +181,7 @@ class ManageHashActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        Log.d("LIFECYCLE_TEST", "onResumed Clicked")
         manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
     }
 
