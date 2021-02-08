@@ -3,7 +3,7 @@ package com.bd.bdproject.view.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bd.bdproject.ViewType
+import com.bd.bdproject.TagViewType
 import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ActivityStatisticDetailBinding
@@ -70,13 +70,13 @@ class StatisticDetailActivity : AppCompatActivity() {
             }
 
             val calendarList = it.map { light ->
-                TagCalendar(ViewType.CALENDAR_GRID, light = light)
+                TagCalendar(TagViewType.CALENDAR_GRID, light = light)
             }.toMutableList()
 
             for(i in 0 until headerList.size) {
                 calendarList.add(
                     headerList[i].second + i,
-                    TagCalendar(ViewType.CALENDAR_HEADER, date = headerList[i].first)
+                    TagCalendar(TagViewType.CALENDAR_HEADER, date = headerList[i].first)
                 )
             }
 
@@ -94,7 +94,7 @@ class StatisticDetailActivity : AppCompatActivity() {
                     }
 
                     viewModel.activatedDetailPosition.value = newPosition
-                    calendarList.add(newPosition, TagCalendar(ViewType.CALENDAR_DETAIL, date = dateCode))
+                    calendarList.add(newPosition, TagCalendar(TagViewType.CALENDAR_DETAIL, date = dateCode))
                     //calendarAdapter?.notifyItemInserted(newPosition)
                     calendarAdapter?.notifyDataSetChanged()
                 }

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
 import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
-import com.bd.bdproject.view.adapter.CalendarAdapter
+import com.bd.bdproject.view.adapter.CollectionCalendarAdapter
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.CalendarViewModel
 import org.koin.android.ext.android.inject
@@ -17,7 +17,7 @@ class CollectionMainActivity : AppCompatActivity() {
     lateinit var binding: ActivityCollectionMainBinding
     private val calendarViewModel: CalendarViewModel by inject()
 
-    private val calendarAdapter by lazy { CalendarAdapter { dateCode ->
+    private val calendarAdapter by lazy { CollectionCalendarAdapter { dateCode ->
         startActivity(Intent(this@CollectionMainActivity, DetailActivity::class.java).apply {
             putExtra(INFO_DATE_CODE, dateCode)
             putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, false)

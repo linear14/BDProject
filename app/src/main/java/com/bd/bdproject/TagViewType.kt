@@ -1,6 +1,6 @@
 package com.bd.bdproject
 
-enum class ViewType {
+enum class TagViewType {
     CALENDAR_HEADER,
     CALENDAR_GRID,
     CALENDAR_DETAIL

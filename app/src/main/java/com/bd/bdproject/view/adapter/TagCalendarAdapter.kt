@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bd.bdproject.ViewType
+import com.bd.bdproject.TagViewType
 import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
@@ -33,9 +33,9 @@ class TagCalendarAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (calendarList[position].viewType) {
-            ViewType.CALENDAR_HEADER -> VIEW_TAG_CALENDAR_HEADER
-            ViewType.CALENDAR_GRID -> VIEW_TAG_CALENDAR_GRID
-            ViewType.CALENDAR_DETAIL -> VIEW_TAG_DETAIL
+            TagViewType.CALENDAR_HEADER -> VIEW_TAG_CALENDAR_HEADER
+            TagViewType.CALENDAR_GRID -> VIEW_TAG_CALENDAR_GRID
+            TagViewType.CALENDAR_DETAIL -> VIEW_TAG_DETAIL
         }
     }
 
@@ -151,10 +151,10 @@ class TagCalendarAdapter(
             var notGridPositionFirst = layoutPosition
             var notGridPositionEnd = layoutPosition
 
-            while(calendarList[notGridPositionFirst].viewType == ViewType.CALENDAR_GRID) {
+            while(calendarList[notGridPositionFirst].viewType == TagViewType.CALENDAR_GRID) {
                 notGridPositionFirst--
             }
-            while(notGridPositionEnd < calendarList.size && calendarList[notGridPositionEnd].viewType == ViewType.CALENDAR_GRID) {
+            while(notGridPositionEnd < calendarList.size && calendarList[notGridPositionEnd].viewType == TagViewType.CALENDAR_GRID) {
                 notGridPositionEnd++
             }
 

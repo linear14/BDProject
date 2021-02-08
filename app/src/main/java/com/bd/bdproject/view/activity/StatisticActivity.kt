@@ -63,16 +63,17 @@ class StatisticActivity : AppCompatActivity() {
 
         binding.apply {
             btnStartDay.setOnClickListener {
-                openDatePicker(START_DAY)
+                startActivity(Intent(it.context, CalendarActivity::class.java))
+                // openDatePicker(START_DAY)
             }
 
             btnEndDay.setOnClickListener {
-                openDatePicker(END_DAY)
+                // openDatePicker(END_DAY)
             }
         }
     }
 
-    private fun openDatePicker(options: Int) {
+    /*private fun openDatePicker(options: Int) {
         val previousTime = if(options == START_DAY) {
             statisticViewModel.startDay.value
         } else {
@@ -101,7 +102,7 @@ class StatisticActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+    }*/
 
     private fun observeDate() {
         statisticViewModel.startDay.observe(this) {
