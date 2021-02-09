@@ -1,6 +1,7 @@
 package com.bd.bdproject.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -10,6 +11,7 @@ import com.bd.bdproject.databinding.ItemStatisticCalendarDayBinding
 import com.bd.bdproject.databinding.ItemStatisticCalendarEmptyBinding
 import com.bd.bdproject.databinding.ItemStatisticCalendarHeaderBinding
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 
 class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCalendar>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -18,6 +20,8 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
         const val VIEW_TYPE_STAT_EMPTY = 2
         const val VIEW_TYPE_STAT_DAY = 3
     }
+
+    private var viewModel: StatisticCalendarViewModel? = null
 
     override fun getItemViewType(position: Int): Int {
         return when(calendarList[position].type) {
@@ -114,10 +118,67 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
             binding.apply {
                 val dateCodeString = dateCode.timeToString()
                 tvDate.text = dateCodeString.substring(6, 8)
+
+                viewModel?.let { vm ->
+                    val startDay = vm.duration.value?.first
+                    val endDay = vm.duration.value?.second
+
+                    if(endDay == null) {
+                        if(dateCode == startDay) {
+                            lineLeft.visibility = View.INVISIBLE
+                            lineRight.visibility = View.INVISIBLE
+                            circleMarker.visibility = View.VISIBLE
+                        }
+                    } else {
+                        if(startDay != null) {
+                            if(startDay == endDay && dateCode == startDay) {
+                                lineLeft.visibility = View.INVISIBLE
+                                lineRight.visibility = View.INVISIBLE
+                                circleMarker.visibility = View.VISIBLE
+                            } else if(dateCode in startDay + 1 until endDay) {
+                                lineLeft.visibility = View.VISIBLE
+                                lineRight.visibility = View.VISIBLE
+                            } else if(dateCode == startDay) {
+                                lineRight.visibility = View.VISIBLE
+                                circleMarker.visibility = View.VISIBLE
+                            } else if(dateCode == endDay) {
+                                lineLeft.visibility = View.VISIBLE
+                                circleMarker.visibility = View.VISIBLE
+                            } else {
+                                lineLeft.visibility = View.INVISIBLE
+                                lineRight.visibility = View.INVISIBLE
+                                circleMarker.visibility = View.GONE
+                            }
+                        }
+                    }
+
+                }
+
+
+                // 시작, 끝 날짜 지정 (viewmodel에 담습니다.)
+                root.setOnClickListener {
+                    viewModel?.let { vm ->
+                        vm.duration.value?.let { duration ->
+                            if(duration.first != null && duration.second != null) {
+                                vm.duration.value = Pair(dateCode, null)
+                            } else {
+                                val tempStart = duration.first
+                                vm.duration.value = Pair(tempStart, dateCode)
+                            }
+                        }
+
+                        notifyDataSetChanged()
+
+                    }
+                }
             }
         }
 
     }
 
     // ViewHolder End
+
+    fun setViewModel(vm: StatisticCalendarViewModel) {
+        this.viewModel = vm
+    }
 }

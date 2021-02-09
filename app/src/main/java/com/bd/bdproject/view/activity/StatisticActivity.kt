@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
@@ -34,14 +36,20 @@ class StatisticActivity : AppCompatActivity() {
                     putExtra(INFO_TAG, tagName)
                     putExtra(
                         "START_DAY",
-                        statisticViewModel.startDay.value ?: System.currentTimeMillis()
+                        statisticViewModel.duration.value?.first ?: System.currentTimeMillis()
                     )
                     putExtra(
                         "END_DAY",
-                        statisticViewModel.endDay.value ?: System.currentTimeMillis()
+                        statisticViewModel.duration.value?.second ?: System.currentTimeMillis()
                     )
                 })
         }
+    }
+
+    val requestActivity: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +70,18 @@ class StatisticActivity : AppCompatActivity() {
         observeLightForDuration()
 
         binding.apply {
-            btnStartDay.setOnClickListener {
-                startActivity(Intent(it.context, CalendarActivity::class.java))
-                // openDatePicker(START_DAY)
-            }
-
-            btnEndDay.setOnClickListener {
-                // openDatePicker(END_DAY)
+            btnDuration.setOnClickListener {
+                val intent = Intent(it.context, CalendarActivity::class.java).apply {
+                    putExtra(
+                        "START_DAY",
+                        statisticViewModel.duration.value?.first ?: System.currentTimeMillis()
+                    )
+                    putExtra(
+                        "END_DAY",
+                        statisticViewModel.duration.value?.second ?: System.currentTimeMillis()
+                    )
+                }
+                requestActivity.launch(intent)
             }
         }
     }
@@ -105,13 +118,11 @@ class StatisticActivity : AppCompatActivity() {
     }*/
 
     private fun observeDate() {
-        statisticViewModel.startDay.observe(this) {
-            binding.btnStartDay.text = it?.timeToString()
-            statisticViewModel.getLightWithTagsForDuration()
-        }
+        statisticViewModel.duration.observe(this) {
+            val start = it.first.timeToString()
+            val end = it.second.timeToString()
 
-        statisticViewModel.endDay.observe(this) {
-            binding.btnEndDay.text = it?.timeToString()
+            binding.btnDuration.text = "$start - $end"
             statisticViewModel.getLightWithTagsForDuration()
         }
     }

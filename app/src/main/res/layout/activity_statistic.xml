@@ -70,7 +70,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/btn_start_day"
+                android:id="@+id/btn_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -81,38 +81,13 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_for"
                 tools:text="2020.11.25" />
 
-            <TextView
-                android:id="@+id/tv1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="~"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/btn_start_day"
-                app:layout_constraintStart_toEndOf="@id/btn_start_day"
-                app:layout_constraintTop_toTopOf="@id/btn_start_day" />
-
-            <TextView
-                android:id="@+id/btn_end_day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/deco_chip_white"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@id/tv1"
-                app:layout_constraintTop_toBottomOf="@id/tv_for"
-                tools:text="2020.12.11" />
-
             <View
                 android:id="@+id/separator1"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginTop="20dp"
                 android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/btn_start_day" />
+                app:layout_constraintTop_toBottomOf="@id/btn_duration" />
 
             <TextView
                 android:id="@+id/tv_my_light"

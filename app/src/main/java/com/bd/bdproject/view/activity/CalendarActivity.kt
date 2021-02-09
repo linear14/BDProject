@@ -6,12 +6,17 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.StatisticViewType
 import com.bd.bdproject.data.model.StatisticCalendar
 import com.bd.bdproject.databinding.ActivityCalendarBinding
+import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
+import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
+import org.koin.android.ext.android.inject
+import java.lang.StringBuilder
 import java.util.*
 
 class CalendarActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityCalendarBinding
+    private val viewModel: StatisticCalendarViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,38 +24,66 @@ class CalendarActivity : AppCompatActivity() {
         binding = ActivityCalendarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.apply {
-            rvCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
-            rvCalendar.adapter = StatisticCalendarAdapter(getCalendarList())
+        initViewModel()
+
+        observeDuration()
+        observeCalendarList()
+    }
+
+    private fun getDurationText(start: Long?, end: Long?): String {
+        val sb = StringBuilder()
+
+        val newStart = start!!.timeToString()
+        sb.apply {
+            append(newStart.substring(0, 4))
+            append(".")
+            append(newStart.substring(4, 6))
+            append(".")
+            append(newStart.substring(6, 8))
+        }
+
+        if(end != null) {
+            val newEnd = end.timeToString()
+            sb.apply {
+                append(" - ")
+                append(newEnd.substring(0, 4))
+                append(".")
+                append(newEnd.substring(4, 6))
+                append(".")
+                append(newEnd.substring(6, 8))
+            }
+        }
+        return sb.toString()
+    }
+
+    private fun initViewModel() {
+        val start = intent.getLongExtra("START_DAY", System.currentTimeMillis())
+        val end = intent.getLongExtra("END_DAY", System.currentTimeMillis())
+
+        viewModel.duration.value = Pair(start, end)
+    }
+
+    private fun observeDuration() {
+        viewModel.duration.observe(this) { duration: Pair<Long?, Long?> ->
+            binding.selectorDuration.text = getDurationText(duration.first, duration.second)
         }
     }
 
+    private fun observeCalendarList() {
+        viewModel.calendarList.observe(this) { calendarList ->
+            binding.apply {
+                rvCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
+                rvCalendar.adapter = StatisticCalendarAdapter(calendarList).apply {
+                    setViewModel(viewModel)
+                }
+                viewModel.centerPosition.value?.let {
+                    if(it >= 0) {
+                        rvCalendar.scrollToPosition(it)
+                    }
+                }
 
-    private fun getCalendarList(): MutableList<StatisticCalendar> {
-        val cal = GregorianCalendar()
-        val calendarList = mutableListOf<StatisticCalendar>()
-
-        for(i in -300 .. 300) {
-            // 세팅을 매 달 1일로 맞춰둠
-            val calendar = GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + i, 1, 0, 0, 0)
-            calendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_HEADER, calendar.timeInMillis))
-
-            // 해당 월 1일의 (EX 3월 1일) 요일. 1을 뺐으므로 비어있는 칸이 어디까지인지 알 수 있음
-            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
-
-            // 해당 월의 마지막 일자
-            val maxOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-            for(j in 0 until dayOfWeek) {
-                calendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_EMPTY))
-            }
-
-            for(j in 1..maxOfMonth) {
-                calendar.set(Calendar.DAY_OF_MONTH, j)
-                calendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_DAY, calendar.timeInMillis))
             }
         }
-
-        return calendarList
     }
+
 }

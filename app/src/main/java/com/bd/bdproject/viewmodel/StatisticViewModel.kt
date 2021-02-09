@@ -14,19 +14,22 @@ import java.util.*
 
 class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
 
-    val calendarCurrentState = GregorianCalendar()
+    val calendarCurrentState = GregorianCalendar().apply {
+        set(Calendar.HOUR, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
 
-    var startDay: MutableLiveData<Long?> = MutableLiveData()
-    var endDay: MutableLiveData<Long?> = MutableLiveData()
-
+    var duration: MutableLiveData<Pair<Long, Long>> = MutableLiveData()
     val lightForDuration: MutableLiveData<List<LightWithTags>> = MutableLiveData()
 
     init {
         calendarCurrentState.also {
-            startDay.value = it.timeInMillis - (30L * 86400L * 1000L)
-            endDay.value = it.timeInMillis
+            val startDay = it.timeInMillis - (30L * 86400L * 1000L)
+            val endDay = it.timeInMillis
 
-            // Log.d("DATE_CODE_TEST", "sd: ${startDay.value} ____ ed: ${endDay.value}")
+            duration.value = Pair(startDay, endDay)
         }
     }
 
@@ -34,11 +37,11 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
         val dateCodeList = mutableListOf<String>()
 
         val calendarStart = GregorianCalendar.getInstance().apply {
-            timeInMillis = startDay.value?:System.currentTimeMillis()
+            timeInMillis = duration.value?.first ?: System.currentTimeMillis()
         }
 
         val calendarEnd = GregorianCalendar.getInstance().apply {
-            timeInMillis = endDay.value?:System.currentTimeMillis()
+            timeInMillis = duration.value?.second ?: System.currentTimeMillis()
         }
 
         while(!calendarStart.after(calendarEnd)) {
