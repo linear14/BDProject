@@ -21,7 +21,7 @@ class StatisticCalendarViewModel: ViewModel() {
         val cal = GregorianCalendar()
         val tempCalendarList = mutableListOf<StatisticCalendar>()
 
-        for(i in -300 .. 300) {
+        for(i in -120 .. 0) {
             // 세팅을 매 달 1일로 맞춰둠
             val calendar = GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + i, 1, 0, 0, 0)
             if(i == -1) {

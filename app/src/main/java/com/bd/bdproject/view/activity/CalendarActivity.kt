@@ -1,17 +1,17 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bd.bdproject.StatisticViewType
-import com.bd.bdproject.data.model.StatisticCalendar
+import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.databinding.ActivityCalendarBinding
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 import org.koin.android.ext.android.inject
 import java.lang.StringBuilder
-import java.util.*
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -28,6 +28,25 @@ class CalendarActivity : AppCompatActivity() {
 
         observeDuration()
         observeCalendarList()
+
+        binding.apply {
+            btnBack.setOnClickListener { finish() }
+            actionConfirm.setOnClickListener {
+                val resultIntent = Intent()
+
+                val startDay = viewModel.duration.value?.first
+                val endDay = viewModel.duration.value?.second
+                resultIntent.putExtra("START_DAY", startDay)
+                resultIntent.putExtra("END_DAY", endDay)
+
+                BitdamLog.titleLogger("달력에서의 ViewModel 제공 데이터 (initViewModel)")
+                BitdamLog.dateCodeLogger(startDay)
+                BitdamLog.dateCodeLogger(endDay)
+
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            }
+        }
     }
 
     private fun getDurationText(start: Long?, end: Long?): String {
@@ -57,10 +76,14 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        val start = intent.getLongExtra("START_DAY", System.currentTimeMillis())
-        val end = intent.getLongExtra("END_DAY", System.currentTimeMillis())
+        val startDay = intent.getLongExtra("START_DAY", System.currentTimeMillis())
+        val endDay = intent.getLongExtra("END_DAY", System.currentTimeMillis())
 
-        viewModel.duration.value = Pair(start, end)
+        BitdamLog.titleLogger("달력에서의 ViewModel 제공 데이터 (initViewModel)")
+        BitdamLog.dateCodeLogger(startDay)
+        BitdamLog.dateCodeLogger(endDay)
+
+        viewModel.duration.value = Pair(startDay, endDay)
     }
 
     private fun observeDuration() {
@@ -76,6 +99,7 @@ class CalendarActivity : AppCompatActivity() {
                 rvCalendar.adapter = StatisticCalendarAdapter(calendarList).apply {
                     setViewModel(viewModel)
                 }
+                rvCalendar.itemAnimator = null
                 viewModel.centerPosition.value?.let {
                     if(it >= 0) {
                         rvCalendar.scrollToPosition(it)

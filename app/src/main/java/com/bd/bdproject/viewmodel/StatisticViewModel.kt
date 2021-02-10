@@ -2,6 +2,7 @@ package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.data.repository.LightRepository
@@ -28,6 +29,10 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
         calendarCurrentState.also {
             val startDay = it.timeInMillis - (30L * 86400L * 1000L)
             val endDay = it.timeInMillis
+
+            BitdamLog.titleLogger("StatisticViewModel에 처음 들어가는 날짜정보 (init)")
+            BitdamLog.dateCodeLogger(startDay)
+            BitdamLog.dateCodeLogger(endDay)
 
             duration.value = Pair(startDay, endDay)
         }
