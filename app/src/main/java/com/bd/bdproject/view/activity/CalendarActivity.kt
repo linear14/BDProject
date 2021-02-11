@@ -84,6 +84,7 @@ class CalendarActivity : AppCompatActivity() {
         BitdamLog.dateCodeLogger(endDay)
 
         viewModel.duration.value = Pair(startDay, endDay)
+        viewModel.getCalendarList()
     }
 
     private fun observeDuration() {

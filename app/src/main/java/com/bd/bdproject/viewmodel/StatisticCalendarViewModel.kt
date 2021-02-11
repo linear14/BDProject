@@ -2,8 +2,10 @@ package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.StatisticViewType
 import com.bd.bdproject.data.model.StatisticCalendar
+import com.bd.bdproject.util.timeToString
 import java.util.*
 
 class StatisticCalendarViewModel: ViewModel() {
@@ -13,20 +15,36 @@ class StatisticCalendarViewModel: ViewModel() {
     val duration: MutableLiveData<Pair<Long?, Long?>> = MutableLiveData()
     val centerPosition: MutableLiveData<Int> = MutableLiveData()
 
-    init {
-        getCalendarList()
-    }
+    fun getCalendarList() {
+        val startDay = duration.value?.first
 
-    private fun getCalendarList() {
         val cal = GregorianCalendar()
         val tempCalendarList = mutableListOf<StatisticCalendar>()
 
         for(i in -120 .. 0) {
             // 세팅을 매 달 1일로 맞춰둠
             val calendar = GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + i, 1, 0, 0, 0)
-            if(i == -1) {
-                centerPosition.value = tempCalendarList.size    // 이전 달을 맨 위로 보이도록 설정
+
+            // 시작 월을 달력 열었을 때 보이도록 설정
+            if(startDay != null) {
+                startDay.let {
+                    val time = calendar.timeInMillis
+                    val nextMonthCalendar = GregorianCalendar().apply {
+                        timeInMillis = time
+                    }.also { newCal ->
+                        newCal.add(Calendar.MONTH, 1)
+                    }
+
+                    if(it in calendar.timeInMillis until nextMonthCalendar.timeInMillis) {
+                        centerPosition.value = tempCalendarList.size
+                    }
+                }
+            } else {
+                if(i == -1) {
+                    centerPosition.value = tempCalendarList.size
+                }
             }
+
             tempCalendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_HEADER, calendar.timeInMillis))
 
             // 해당 월 1일의 (EX 3월 1일) 요일. 1을 뺐으므로 비어있는 칸이 어디까지인지 알 수 있음
