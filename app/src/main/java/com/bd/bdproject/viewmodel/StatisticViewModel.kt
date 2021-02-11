@@ -11,12 +11,13 @@ import com.bd.bdproject.util.toLightLabel
 import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
 
-    val calendarCurrentState = GregorianCalendar().apply {
-        set(Calendar.HOUR, 0)
+    private val calendarCurrentState = GregorianCalendar().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
@@ -33,6 +34,15 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
             BitdamLog.titleLogger("StatisticViewModel에 처음 들어가는 날짜정보 (init)")
             BitdamLog.dateCodeLogger(startDay)
             BitdamLog.dateCodeLogger(endDay)
+
+            // Gregorian Calendar test
+            val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS")
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = startDay
+            BitdamLog.contentLogger(sdf.format(calendar.time))
+
+            calendar.timeInMillis = endDay
+            BitdamLog.contentLogger(sdf.format(calendar.time))
 
             duration.value = Pair(startDay, endDay)
         }

@@ -7,7 +7,11 @@ import com.bd.bdproject.util.timeToString
 object BitdamLog {
 
     fun titleLogger(msg: String) {
-        Log.d("BITDAM_LOGGER", "=============$msg=============")
+        Log.d("BITDAM_LOGGER_TITLE", "=============$msg=============")
+    }
+
+    fun contentLogger(msg: String) {
+        Log.d("BITDAM_LOGGER_CONTENT", msg)
     }
 
     fun dateCodeLogger(dateCode: Long?) {
