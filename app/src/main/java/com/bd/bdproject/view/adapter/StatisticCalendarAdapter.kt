@@ -123,13 +123,27 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
                     val startDay = vm.duration.value?.first
                     val endDay = vm.duration.value?.second
 
+                    // 하나만 찍혀있는 경우
                     if(endDay == null) {
+                        // 시작 일
                         if(dateCode == startDay) {
                             lineLeft.visibility = View.INVISIBLE
                             lineRight.visibility = View.INVISIBLE
                             circleMarker.visibility = View.VISIBLE
+                        } else {
+                            lineLeft.visibility = View.INVISIBLE
+                            lineRight.visibility = View.INVISIBLE
+                            circleMarker.visibility = View.GONE
                         }
                     } else {
+                        /*
+                            순서대로
+                            1. 두 개 모두 같은 날짜 찍혀있는 경우에는 한 날짜에만 원이 생기도록
+                            2. 시작 날과 종료 일 사이에는 선만 보이도록
+                            3. 시작 날짜일 경우에는 원과 오른쪽 선만 보이도록
+                            4. 종료 날짜일 경우에는 원과 왼쪽 선만 보이도록
+                            5. 선택 날짜에 포함되지 않는 경우에는 아무것도 보이지 않도록
+                         */
                         if(startDay != null) {
                             if(startDay == endDay && dateCode == startDay) {
                                 lineLeft.visibility = View.INVISIBLE
@@ -138,11 +152,14 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
                             } else if(dateCode in startDay + 1 until endDay) {
                                 lineLeft.visibility = View.VISIBLE
                                 lineRight.visibility = View.VISIBLE
+                                circleMarker.visibility = View.GONE
                             } else if(dateCode == startDay) {
+                                lineLeft.visibility = View.INVISIBLE
                                 lineRight.visibility = View.VISIBLE
                                 circleMarker.visibility = View.VISIBLE
                             } else if(dateCode == endDay) {
                                 lineLeft.visibility = View.VISIBLE
+                                lineRight.visibility = View.INVISIBLE
                                 circleMarker.visibility = View.VISIBLE
                             } else {
                                 lineLeft.visibility = View.INVISIBLE
