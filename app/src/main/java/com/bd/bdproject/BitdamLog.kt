@@ -14,6 +14,10 @@ object BitdamLog {
         Log.d("BITDAM_LOGGER_CONTENT", msg)
     }
 
+    fun contentLogger(msg: Number) {
+        Log.d("BITDAM_LOGGER_CONTENT", msg.toString())
+    }
+
     fun dateCodeLogger(dateCode: Long?) {
         dateCode?.let {
             Log.d("BITDAM_LOGGER_DATECODE", "Long: $dateCode, String: ${dateCode.timeToString()}, TimeReturn: ${dateCode.timeToString().timeToLong()}")

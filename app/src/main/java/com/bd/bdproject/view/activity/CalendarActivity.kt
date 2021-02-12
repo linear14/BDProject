@@ -96,17 +96,17 @@ class CalendarActivity : AppCompatActivity() {
     private fun observeCalendarList() {
         viewModel.calendarList.observe(this) { calendarList ->
             binding.apply {
-                rvCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
+                rvCalendar.layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL).apply {
+                    viewModel.centerPosition.value?.let {
+                        if(it >= 0) {
+                            scrollToPositionWithOffset(it, 0)
+                        }
+                    }
+                }
                 rvCalendar.adapter = StatisticCalendarAdapter(calendarList).apply {
                     setViewModel(viewModel)
                 }
                 rvCalendar.itemAnimator = null
-                viewModel.centerPosition.value?.let {
-                    if(it >= 0) {
-                        rvCalendar.scrollToPosition(it)
-                    }
-                }
-
             }
         }
     }

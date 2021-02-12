@@ -47,19 +47,26 @@ class StatisticCalendarViewModel: ViewModel() {
 
             tempCalendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_HEADER, calendar.timeInMillis))
 
-            // 해당 월 1일의 (EX 3월 1일) 요일. 1을 뺐으므로 비어있는 칸이 어디까지인지 알 수 있음
-            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
+            // 해당 월 1일의 (EX 3월 1일) 요일. 결과 요일 전까지는 비어있는 칸이 되지 않을까?
+            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
             // 해당 월의 마지막 일자
             val maxOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-            for(j in 0 until dayOfWeek) {
+            for(j in 1 until dayOfWeek) {
                 tempCalendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_EMPTY))
             }
 
             for(j in 1..maxOfMonth) {
                 calendar.set(Calendar.DAY_OF_MONTH, j)
                 tempCalendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_DAY, calendar.timeInMillis))
+            }
+
+            val remainedDay = 7 - ((dayOfWeek + maxOfMonth - 1) % 7)
+            if(remainedDay != 7) {
+                for(j in 1..remainedDay) {
+                    tempCalendarList.add(StatisticCalendar(StatisticViewType.CALENDAR_EMPTY))
+                }
             }
         }
 
