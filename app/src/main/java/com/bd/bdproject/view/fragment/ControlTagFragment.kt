@@ -204,6 +204,7 @@ open class ControlTagFragment: BaseFragment() {
             val layoutManagerEnrolled = FlexboxLayoutManager(requireActivity()).apply {
                 flexDirection = FlexDirection.ROW
                 justifyContent = JustifyContent.CENTER
+
             }
 
             val layoutManagerRecommend = FlexboxLayoutManager(requireActivity()).apply {
