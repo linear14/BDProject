@@ -14,6 +14,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
+import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
@@ -25,6 +26,7 @@ import com.bd.bdproject.viewmodel.EnrollViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
+// todo CollectionMainActivity 에서 넘어오는 정보들을 받아서 화면에 띄워주기
 open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
     private var _binding: FragmentControlBrightnessBinding? = null
@@ -39,6 +41,11 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sharedViewModel.previousActivity.value = parentActivity.previousActivity
+        if(sharedViewModel.previousActivity.value == COLLECTION_MAIN) {
+            sharedViewModel.dateCode.value = parentActivity.intent.getStringExtra("datecode")
+        }
+
         binding.apply {
             setSeekBarReleaseListener()
         }
@@ -48,10 +55,10 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     override fun onResume() {
         super.onResume()
 
-        if(sharedViewModel.brightness.value == null) {
-            showUiWithDelay()
-        } else {
+        if(sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
             showUi()
+        } else {
+            showUiWithDelay()
         }
 
         binding.btnBack.setOnClickListener {
@@ -161,10 +168,22 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             setEntireLightFragmentColor(brightness)
             gradientDrawable.colors = getDiagonalLight(brightness * 2)
             layoutAddLight.background = gradientDrawable
+
+            actionDatePick.visibility = View.GONE
+            tvAskCondition.visibility = View.GONE
             tvBrightness.text = brightness.toString()
             tvBrightness.visibility = View.VISIBLE
             sbLight.barWidth = 4
             sbLight.progress = brightness * 2
+            isFirstPressed = false
+
+            if(parentActivity.previousActivity == COLLECTION_MAIN) {
+                btnBack.visibility = View.VISIBLE
+                btnDrawer.visibility = View.GONE
+            } else {
+                btnBack.visibility = View.GONE
+                btnDrawer.visibility = View.VISIBLE
+            }
 
             if(sharedViewModel.brightness.value != null) {
                 sbLight.animateTransparency(1.0f, 2000)

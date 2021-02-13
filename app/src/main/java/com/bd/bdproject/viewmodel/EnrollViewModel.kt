@@ -12,6 +12,7 @@ class EnrollViewModel: ViewModel() {
     var tags: MutableLiveData<List<Tag>?> = MutableLiveData()
     var memo: MutableLiveData<String?> = MutableLiveData()
 
+    val previousActivity: MutableLiveData<Int?> = MutableLiveData()
     val previousPage: MutableLiveData<Int?> = MutableLiveData()
 
     fun init() {

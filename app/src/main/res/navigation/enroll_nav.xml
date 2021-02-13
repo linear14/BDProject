@@ -28,7 +28,7 @@
         android:name="com.bd.bdproject.view.fragment.enroll.EnrollMemoFragment"
         tools:layout="@layout/fragment_control_memo">
         <action
-            android:id="@+id/action_enrollMemoFragment_to_controlDateFragment"
+            android:id="@+id/action_enrollMemoFragment_to_enrollBrightnessFragment"
             app:destination="@id/enrollBrightnessFragment"
             app:popUpTo="@id/enrollBrightnessFragment"
             app:popUpToInclusive="true"/>

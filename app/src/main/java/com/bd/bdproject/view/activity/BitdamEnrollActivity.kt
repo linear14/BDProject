@@ -6,11 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivityBitdamEnrollBinding
+import com.bd.bdproject.util.Constant.ACTIVITY_NOT_RECOGNIZED
+import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.view.fragment.BaseFragment
 
 class BitdamEnrollActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityBitdamEnrollBinding
+    val previousActivity by lazy {
+        intent.getIntExtra(INFO_PREVIOUS_ACTIVITY, ACTIVITY_NOT_RECOGNIZED)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

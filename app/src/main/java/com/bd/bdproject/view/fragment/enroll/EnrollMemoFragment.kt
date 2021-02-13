@@ -12,6 +12,7 @@ import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.util.*
 import com.bd.bdproject.util.Constant.BITDAM_ENROLL
+import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_MEMO
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
@@ -106,6 +107,7 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                         sharedViewModel.previousPage.value = CONTROL_MEMO
                         Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
+                        // 그날의 빛을 등록한 경우 --> 그날의 디테일 정보로 이동 (DetailActivity)
                         if(sharedViewModel.dateCode.value == System.currentTimeMillis().timeToString()) {
                             val intent = Intent(activity, DetailActivity::class.java).apply {
                                 putExtra(INFO_PREVIOUS_ACTIVITY, BITDAM_ENROLL)
@@ -115,17 +117,22 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                             startActivity(intent)
                             parentActivity.finish()
                         } else {
-                            sharedViewModel.init()
-                            val navDirection: NavDirections =
-                                EnrollMemoFragmentDirections.actionEnrollMemoFragmentToControlDateFragment()
-                            Navigation.findNavController(binding.root).navigate(navDirection)
+                            // 다른 날의 빛을 CollectionActivity 에서 추가했을 경우
+                            if(sharedViewModel.previousActivity.value == COLLECTION_MAIN) {
+                                sharedViewModel.init()
+                                parentActivity.finish()
+                            } else {
+                                // 다른 날의 빛을 메인에서 추가했을 경우
+                                sharedViewModel.init()
+                                val navDirection: NavDirections =
+                                    EnrollMemoFragmentDirections.actionEnrollMemoFragmentToEnrollBrightnessFragment()
+                                Navigation.findNavController(binding.root).navigate(navDirection)
+                            }
+
                         }
 
                     }
                 }
-
-                // TODO 오늘의 빛 등록을 하지 않은 상태에서 다른 날짜를 등록했을 경우 어디로 갈려나?
-
             }
         }
 
