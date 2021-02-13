@@ -107,19 +107,19 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                         sharedViewModel.previousPage.value = CONTROL_MEMO
                         Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                        // 그날의 빛을 등록한 경우 --> 그날의 디테일 정보로 이동 (DetailActivity)
-                        if(sharedViewModel.dateCode.value == System.currentTimeMillis().timeToString()) {
-                            val intent = Intent(activity, DetailActivity::class.java).apply {
-                                putExtra(INFO_PREVIOUS_ACTIVITY, BITDAM_ENROLL)
-                                putExtra(INFO_DATE_CODE, sharedViewModel.dateCode.value?:System.currentTimeMillis().timeToString())
-                                putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
-                            }
-                            startActivity(intent)
+                        // 다른 날의 빛을 CollectionActivity 에서 추가했을 경우
+                        if(sharedViewModel.previousActivity.value == COLLECTION_MAIN) {
+                            sharedViewModel.init()
                             parentActivity.finish()
                         } else {
-                            // 다른 날의 빛을 CollectionActivity 에서 추가했을 경우
-                            if(sharedViewModel.previousActivity.value == COLLECTION_MAIN) {
-                                sharedViewModel.init()
+                            // 그날의 빛을 등록한 경우 --> 그날의 디테일 정보로 이동 (DetailActivity)
+                            if(sharedViewModel.dateCode.value == System.currentTimeMillis().timeToString()) {
+                                val intent = Intent(activity, DetailActivity::class.java).apply {
+                                    putExtra(INFO_PREVIOUS_ACTIVITY, BITDAM_ENROLL)
+                                    putExtra(INFO_DATE_CODE, sharedViewModel.dateCode.value?:System.currentTimeMillis().timeToString())
+                                    putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
+                                }
+                                startActivity(intent)
                                 parentActivity.finish()
                             } else {
                                 // 다른 날의 빛을 메인에서 추가했을 경우
@@ -128,9 +128,7 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                                     EnrollMemoFragmentDirections.actionEnrollMemoFragmentToEnrollBrightnessFragment()
                                 Navigation.findNavController(binding.root).navigate(navDirection)
                             }
-
                         }
-
                     }
                 }
             }
