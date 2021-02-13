@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/dialog_round"
     android:padding="24dp">
 
     <TextView
@@ -23,11 +24,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_picker"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:paddingVertical="24dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_current_state">
@@ -35,36 +37,33 @@
         <NumberPicker
             android:id="@+id/picker_year"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_current_state" />
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <NumberPicker
             android:id="@+id/picker_month"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_current_state" />
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@id/picker_year"
+            app:layout_constraintEnd_toStartOf="@id/picker_date"/>
 
         <NumberPicker
             android:id="@+id/picker_date"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_current_state" />
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_confirm"
-        style="@style/MyMaterialButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/deco_confirm_button"
         android:text="확인"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         app:layout_constraintTop_toBottomOf="@id/layout_picker" />
 
 

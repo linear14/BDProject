@@ -3,11 +3,15 @@ package com.bd.bdproject.dialog
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.bd.bdproject.databinding.DialogDatePickerBinding
+import com.bd.bdproject.util.dpToPx
 import java.util.*
 
 class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.OnDateSetListener) : DialogFragment() {
@@ -65,7 +69,26 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
         val builder = AlertDialog.Builder(requireActivity())
             .setView(binding.root)
 
-        return builder.create()
+        val dialog = builder.create()
+
+        dialog.window?.let {
+            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            it.requestFeature(Window.FEATURE_NO_TITLE)
+        }
+
+        return dialog
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val windowWidth = Resources.getSystem().displayMetrics.widthPixels
+
+        val params = dialog?.window?.attributes
+        params?.let {
+            it.width = (windowWidth * 0.788).toInt()
+        }
+        dialog?.window?.attributes = params as WindowManager.LayoutParams
     }
 
     override fun onDestroyView() {

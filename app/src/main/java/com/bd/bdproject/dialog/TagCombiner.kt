@@ -2,12 +2,11 @@ package com.bd.bdproject.dialog
 
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import androidx.fragment.app.DialogFragment
+import com.bd.bdproject.R
 import com.bd.bdproject.databinding.DialogTagCombinerBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.view.adapter.CombineTagAdapter
@@ -52,6 +51,11 @@ class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
 
         observeNewPosition()
 
+        dialog?.window?.let {
+            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            it.requestFeature(Window.FEATURE_NO_TITLE)
+        }
+
         return binding.root
     }
 
@@ -88,9 +92,9 @@ class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
     private fun observeNewPosition() {
         combineTagAdapter.newPos.observe(this) { newPosition ->
             if(newPosition == null) {
-                binding.btnConfirm.setBackgroundColor(Color.parseColor("#B9B9B9"))
+                binding.btnConfirm.setBackgroundResource(R.drawable.deco_confirm_button_bottom_unchecked)
             } else {
-                binding.btnConfirm.setBackgroundColor(Color.parseColor("#898989"))
+                binding.btnConfirm.setBackgroundResource(R.drawable.deco_confirm_button_bottom_checked)
             }
         }
     }
