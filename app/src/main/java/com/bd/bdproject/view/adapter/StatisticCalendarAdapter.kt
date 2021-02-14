@@ -3,8 +3,10 @@ package com.bd.bdproject.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.StatisticViewType
 import com.bd.bdproject.data.model.StatisticCalendar
 import com.bd.bdproject.databinding.ItemStatisticCalendarDayBinding
@@ -179,8 +181,12 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
                             if(duration.first != null && duration.second != null) {
                                 vm.duration.value = Pair(dateCode, null)
                             } else {
-                                val tempStart = duration.first
-                                vm.duration.value = Pair(tempStart, dateCode)
+                                if(dateCode <= duration.first!!) {
+                                    vm.duration.value = Pair(dateCode, null)
+                                } else {
+                                    val tempStart = duration.first
+                                    vm.duration.value = Pair(tempStart, dateCode)
+                                }
                             }
                         }
 
