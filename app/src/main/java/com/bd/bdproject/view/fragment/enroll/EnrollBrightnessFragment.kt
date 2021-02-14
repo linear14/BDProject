@@ -2,6 +2,7 @@ package com.bd.bdproject.view.fragment.enroll
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,12 +15,15 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
+import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.util.timeToLong
+import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
+import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
@@ -47,6 +51,16 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             showUiWithDelay()
         }
 
+        binding.btnDrawer.setOnClickListener {
+            if(!isChangingFragment) {
+                parentActivity.binding.drawer.openDrawer(GravityCompat.START)
+            }
+        }
+
+        binding.btnBack.setOnClickListener {
+            parentActivity.onBackPressed()
+        }
+
         return binding.root
     }
 
@@ -67,9 +81,26 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     override fun onResume() {
         super.onResume()
 
-        binding.btnBack.setOnClickListener {
-            parentActivity.onBackPressed()
+        // 오늘의 빛이 등록되어있는지 다시 확인 (Collection 에서 오늘의 빛을 추가했을 경우를 대비)
+        CoroutineScope(Dispatchers.IO).launch {
+            val currentDay = System.currentTimeMillis().timeToString()
+            val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(currentDay)
+            val isEnrolledToday = deferred.await()
+
+            if(isEnrolledToday) {
+                launch(Dispatchers.Main) {
+                    val intent: Intent =
+                        Intent(requireActivity(), DetailActivity::class.java).apply {
+                            putExtra(Constant.INFO_DATE_CODE, currentDay)
+                            putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
+                        }
+
+                    startActivity(intent.apply { putExtra(Constant.INFO_PREVIOUS_ACTIVITY, Constant.SPLASH) } )
+                    parentActivity.finish()
+                }
+            }
         }
+
 
         binding.actionDatePick.setOnClickListener {
             val dateBundle = Bundle().apply {
@@ -93,22 +124,21 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 if(sb.toString().timeToLong() > System.currentTimeMillis()) {
                     Toast.makeText(requireActivity(), "미래의 빛을 등록할 수 없습니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 } else {
-                    GlobalScope.launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
-                        deferred.join()
+                        val isEnrolledToday = deferred.await()
 
-                        if(deferred.getCompleted()) {
-                            withContext(Dispatchers.Main) {
+                        launch(Dispatchers.Main) {
+                            if(isEnrolledToday) {
                                 Toast.makeText(requireActivity(), "이미 빛 정보가 등록되어 있는 날입니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
+                            } else {
                                 sharedViewModel.dateCode.value = sb.toString()
                                 binding.apply {
                                     actionDatePick.visibility = View.GONE
                                     tvAskCondition.visibility = View.GONE
                                     tvBrightness.visibility = View.VISIBLE
-                                    tvBrightness.text = (sharedViewModel.brightness.value?:0).toString()
+                                    tvBrightness.text =
+                                        (sharedViewModel.brightness.value ?: 0).toString()
                                     sbLight.barWidth = 4
                                     isFirstPressed = false
                                 }
@@ -119,16 +149,10 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             }
             picker.show(requireActivity().supportFragmentManager, "SlideDatePicker")
         }
-
-        binding.btnDrawer.setOnClickListener {
-            if(!isChangingFragment) {
-                parentActivity.binding.drawer.openDrawer(GravityCompat.START)
-            }
-        }
     }
 
     private fun showUiWithDelay() {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             binding.apply {
                 tvAskCondition.visibility = View.GONE
                 tvAskCondition.clearAnimation()
@@ -136,7 +160,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
                 delay(1000)
 
-                withContext(Dispatchers.Main) {
+                launch(Dispatchers.Main) {
                     tvAskCondition.animateTransparency(1.0f, 2000)
                         .setListener(object: AnimatorListenerAdapter() {
                             override fun onAnimationStart(animation: Animator?) {
