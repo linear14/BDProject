@@ -13,7 +13,7 @@ import com.bd.bdproject.util.LightUtil.getDiagonalLight
 
 open class ControlBrightnessFragment: BaseFragment() {
 
-    private var _binding: FragmentControlBrightnessBinding? = null
+    var _binding: FragmentControlBrightnessBinding? = null
     val binding get() = _binding!!
 
     val gradientDrawable = GradientDrawable().apply {

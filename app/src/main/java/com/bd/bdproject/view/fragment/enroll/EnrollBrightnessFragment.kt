@@ -26,16 +26,28 @@ import com.bd.bdproject.viewmodel.EnrollViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
-// todo CollectionMainActivity 에서 넘어오는 정보들을 받아서 화면에 띄워주기
 open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
-    private var _binding: FragmentControlBrightnessBinding? = null
 
     private val sharedViewModel: EnrollViewModel by activityViewModels()
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
     val parentActivity by lazy {
         activity as BitdamEnrollActivity
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false).apply {
+
+        }
+
+        if(sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
+            showUi()
+        } else {
+            showUiWithDelay()
+        }
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,12 +66,6 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
     override fun onResume() {
         super.onResume()
-
-        if(sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
-            showUi()
-        } else {
-            showUiWithDelay()
-        }
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
@@ -115,7 +121,9 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
 
         binding.btnDrawer.setOnClickListener {
-            parentActivity.binding.drawer.openDrawer(GravityCompat.START)
+            if(!isChangingFragment) {
+                parentActivity.binding.drawer.openDrawer(GravityCompat.START)
+            }
         }
     }
 
