@@ -219,7 +219,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.github.mikephil.charting.charts.PieChart
+            <com.bd.bdproject.custom_view.PieChartView
                 android:id="@+id/chart_light"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

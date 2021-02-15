@@ -62,3 +62,18 @@ fun Int.toLightLabel(): String {
 fun Int.dpToPx(): Int {
     return (this * Resources.getSystem().displayMetrics.density).toInt()
 }
+
+fun String.addTransparency(transparency: String): String {
+    val oldCode = this
+
+    return if(this.startsWith("#")) {
+        val sb = StringBuilder().apply {
+            append("#")
+            append(transparency)
+            append(oldCode.substring(1, oldCode.length))
+        }
+        sb.toString()
+    } else {
+        this
+    }
+}

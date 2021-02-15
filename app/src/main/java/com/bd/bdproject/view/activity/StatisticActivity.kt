@@ -14,6 +14,7 @@ import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToLong
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.toLightLabel
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import com.github.mikephil.charting.data.PieData
@@ -102,37 +103,6 @@ class StatisticActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun openDatePicker(options: Int) {
-        val previousTime = if(options == START_DAY) {
-            statisticViewModel.startDay.value
-        } else {
-            statisticViewModel.endDay.value
-        }
-
-        // 이 달력에서 선택된 millisecond 값이 32400000 만큼 크다.
-        val builder = MaterialDatePicker.Builder.datePicker().setSelection(
-            (previousTime ?: System.currentTimeMillis()) + 32_400_000L
-        )
-        val picker = builder.build()
-        picker.show(supportFragmentManager, picker.toString())
-        picker.addOnPositiveButtonClickListener {
-            val realTime = it - 32_400_000
-            if(options == START_DAY) {
-                if(it > statisticViewModel.endDay.value!!) {
-                    Toast.makeText(this, "기간 범위가 잘못되었습니다. 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
-                } else {
-                    statisticViewModel.startDay.value = realTime
-                }
-            } else {
-                if(it < statisticViewModel.startDay.value!!) {
-                    Toast.makeText(this, "기간 범위가 잘못되었습니다. 다시 설정해주세요.", Toast.LENGTH_SHORT).show()
-                } else {
-                    statisticViewModel.endDay.value = realTime
-                }
-            }
-        }
-    }*/
-
     private fun observeDate() {
         statisticViewModel.duration.observe(this) {
             val startDay = it.first.timeToString()
@@ -150,7 +120,7 @@ class StatisticActivity : AppCompatActivity() {
     private fun observeLightForDuration() {
         statisticViewModel.lightForDuration.observe(this) {
             val entry = statisticViewModel.makePieChartEntry(it)
-            showPieChart(entry)
+            binding.chartLight.setData(entry)
 
             val tagStatistic: MutableList<StatisticTagResult> =
                 statisticViewModel.makeTagStatistic(it).apply {
@@ -161,13 +131,11 @@ class StatisticActivity : AppCompatActivity() {
         }
     }
 
-    private fun showPieChart(entry: MutableList<PieEntry>) {
-        val gradientColors = insertColorGradient(entry)
-        //val colors = insertColors(entry)
+    /*private fun showPieChart(entry: MutableList<PieEntry>) {
+        val colors = insertColors(entry)
 
         val dataSet = PieDataSet(entry,"").apply {
-            this.gradientColors = gradientColors
-            //this.colors = colors
+            this.colors = colors
             valueTextSize = 12f
             valueTextColor = Color.WHITE
         }
@@ -178,74 +146,42 @@ class StatisticActivity : AppCompatActivity() {
         }
 
         binding.chartLight.apply {
-            isDrawHoleEnabled = true
+            isDrawHoleEnabled = false
             isRotationEnabled = false
             legend.isEnabled = false
+            setTouchEnabled(false)
             setDrawEntryLabels(false)
             setUsePercentValues(true)
-            setHoleColor(android.R.color.transparent)
             this.data = data
             invalidate()
         }
-    }
+    }*/
 
-    private fun insertColorGradient(entryList: MutableList<PieEntry>): MutableList<GradientColor> {
-        val gradientColors = mutableListOf<GradientColor>()
-        val labelList = entryList.map { it.label }
-
-        if("0" in labelList) {
-            gradientColors.add(GradientColor(Color.rgb(0, 0, 0), Color.rgb(135, 87, 76)))
-        }
-
-        if("1" in labelList) {
-            gradientColors.add(GradientColor(Color.rgb(135, 87, 76), Color.rgb(108, 43, 22)))
-        }
-
-        if("2" in labelList) {
-            gradientColors.add(GradientColor(Color.rgb(108, 43, 22), Color.rgb(223, 80, 19)))
-        }
-
-        if("3" in labelList) {
-            gradientColors.add(GradientColor(Color.rgb(223, 80, 19), Color.rgb(255, 138, 0)))
-        }
-
-        if("4" in labelList) {
-            gradientColors.add(GradientColor(Color.rgb(255, 138, 0), Color.rgb(255, 205, 77)))
-        }
-
-        return gradientColors
-    }
-
-    /*private fun insertColors(entryList: MutableList<PieEntry>): MutableList<Int> {
+    private fun insertColors(entryList: MutableList<PieEntry>): MutableList<Int> {
         val colors = mutableListOf<Int>()
         val labelList = entryList.map { it.label }
 
         if (0.toLightLabel() in labelList) {
-            colors.add(Color.rgb(0, 0, 0))
+            colors.add(Color.argb(70, 0, 0, 0))
         }
 
         if (1.toLightLabel() in labelList) {
-            colors.add(Color.rgb(135, 87, 76))
+            colors.add(Color.argb(70, 135, 87, 76))
         }
 
         if (2.toLightLabel() in labelList) {
-            colors.add(Color.rgb(108, 43, 22))
+            colors.add(Color.argb(70, 108, 43, 22))
         }
 
         if (3.toLightLabel() in labelList) {
-            colors.add(Color.rgb(255, 138, 0))
+            colors.add(Color.argb(70, 255, 138, 0))
         }
 
         if (4.toLightLabel() in labelList) {
-            colors.add(Color.rgb(255, 205, 77))
+            colors.add(Color.argb(70, 255, 205, 77))
         }
 
         return colors
-    }*/
-
-    companion object {
-        const val START_DAY = 0
-        const val END_DAY = 1
     }
 
 }
