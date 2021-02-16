@@ -5,9 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import com.bd.bdproject.BitdamLog
 
 class MemoEditText: AppCompatEditText {
 
@@ -27,19 +29,24 @@ class MemoEditText: AppCompatEditText {
         paint.color = ContextCompat.getColor(rootView.context, android.R.color.black)
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        val lineCount = lineCount
+    override fun onDraw(canvas: Canvas) {
+        val count = 4
+        BitdamLog.contentLogger("height: $height, lineHeight: $lineHeight, count: $count")
 
-        for(i in 0 until lineCount) {
-            val baseline = getLineBounds(i, rect)
+        var baseline = getLineBounds(0, rect)
+        val gapBetweenLineAndText = 15
+        height = baseline + lineHeight * 3 + gapBetweenLineAndText + 2
 
-            canvas?.drawLine(
+        for(i in 0 until count) {
+            BitdamLog.contentLogger("baseLine: $baseline")
+            canvas.drawLine(
                 rect.left.toFloat(),
-                (baseline + 10).toFloat(),
+                (baseline + gapBetweenLineAndText).toFloat(),
                 rect.right.toFloat(),
-                (baseline + 10).toFloat(),
+                (baseline + gapBetweenLineAndText).toFloat(),
                 paint
             )
+            baseline += lineHeight
         }
 
         super.onDraw(canvas)
