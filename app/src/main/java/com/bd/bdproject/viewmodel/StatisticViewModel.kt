@@ -95,18 +95,18 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
         return tags
     }
 
-    fun makePieChartEntry(list: List<LightWithTags>): MutableList<Pair<Int, Int>> {
-        val data = mutableListOf<Pair<Int, Int>>()
+    fun makePieChartEntry(list: List<LightWithTags>): MutableList<PieEntry> {
+        val pieEntry = mutableListOf<PieEntry>()
         val tempMap: HashMap<Int, Int> = hashMapOf()
 
         for(lwt in list) {
             val key = when(lwt.light.bright) {
-                in 0..20 -> 1
-                in 21..40 -> 2
-                in 41..60 -> 3
-                in 61..80 -> 4
-                in 81..100 -> 5
-                else -> 0
+                in 0..20 -> 0
+                in 21..40 -> 1
+                in 41..60 -> 2
+                in 61..80 -> 3
+                in 81..100 -> 4
+                else -> -1
             }
 
             if(tempMap.containsKey(key)) {
@@ -117,16 +117,19 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
             }
         }
 
-        for(i in 1..5) {
-            if(tempMap.containsKey(i)) {
-                data.add(Pair(i, tempMap[i]?:0))
+
+        pieEntry.apply {
+            for(i in -1..4) {
+                addPieEntry(tempMap, pieEntry, i)
             }
         }
 
-        for(i in data) {
-            BitdamLog.contentLogger("단계: ${i.first}, 갯수: ${i.second}")
-        }
+        return pieEntry
+    }
 
-        return data
+    private fun addPieEntry(map: HashMap<Int, Int>, entry: MutableList<PieEntry>, i: Int) {
+        if(map.containsKey(i)) {
+            entry.add(PieEntry(map[i]?.toFloat()?:0f, i.toLightLabel()))
+        }
     }
 }
