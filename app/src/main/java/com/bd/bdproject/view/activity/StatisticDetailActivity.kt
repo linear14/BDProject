@@ -9,6 +9,7 @@ import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ActivityStatisticDetailBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.view.adapter.TagCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticDetailViewModel
@@ -29,11 +30,13 @@ class StatisticDetailActivity : AppCompatActivity() {
         }
         binding.apply {
             tvTitle.text = "# ${intent.getStringExtra(INFO_TAG)?:"null"}"
-            tvStartDay.text = "${intent.getLongExtra("START_DAY", System.currentTimeMillis()).timeToString()}"
-            tvEndDay.text = "${intent.getLongExtra("END_DAY", System.currentTimeMillis()).timeToString()}"
+            tvDuration.text =
+                "${intent.getLongExtra("START_DAY", System.currentTimeMillis()).withDateSeparator(".")} - ${intent.getLongExtra("END_DAY", System.currentTimeMillis()).withDateSeparator(".")}"
             rvTagCalendar.addItemDecoration(SpacesItemDecorator())
             btnBack.setOnClickListener { onBackPressed() }
         }
+
+        observeLights()
     }
 
     override fun onResume() {
@@ -47,16 +50,12 @@ class StatisticDetailActivity : AppCompatActivity() {
             intent.getLongExtra("END_DAY", System.currentTimeMillis())
         )
 
-        observeLights()
 
         setSwitchDateVisibility()
     }
 
     private fun observeLights() {
         viewModel.lights.observe(this) {
-            /*for(i in it){
-                Log.d("LIGHT_TEST", i.dateCode)
-            }*/
             val headerList = mutableListOf<Pair<String, Int>>()
             var monthYear = "-1"
 

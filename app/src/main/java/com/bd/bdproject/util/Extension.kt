@@ -11,11 +11,11 @@ fun View.animateTransparency(toAlpha: Float, duration: Long = 0): ViewPropertyAn
         .setDuration(duration)
 }
 
-fun Long.timeToString(): String {
+fun Long?.timeToString(): String {
     return this.let { FORMATTER.format(this) }
 }
 
-fun String.timeToLong(): Long {
+fun String?.timeToLong(): Long {
     return this.let { FORMATTER.parse(it).time }
 }
 
@@ -51,6 +51,38 @@ fun String.toBitDamDateFormat(): String {
     }
 
     return stringBuilder.toString()
+}
+
+fun String?.withDateSeparator(regex: String): String? {
+    if(this == null || this.length != 8) return this
+
+    val dateCode = this
+
+    val sb = StringBuilder().apply {
+        append(dateCode.substring(0, 4))
+        append(regex)
+        append(dateCode.substring(4, 6))
+        append(regex)
+        append(dateCode.substring(6, 8))
+    }
+
+    return sb.toString()
+}
+
+fun Long?.withDateSeparator(regex: String): String? {
+    if(this == null) return this
+
+    val dateCode = this.timeToString()
+
+    val sb = StringBuilder().apply {
+        append(dateCode.substring(0, 4))
+        append(regex)
+        append(dateCode.substring(4, 6))
+        append(regex)
+        append(dateCode.substring(6, 8))
+    }
+
+    return sb.toString()
 }
 
 fun Int.toLightLabel(): String {

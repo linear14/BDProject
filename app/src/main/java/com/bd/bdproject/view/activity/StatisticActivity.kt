@@ -15,6 +15,7 @@ import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToLong
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toLightLabel
+import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import com.github.mikephil.charting.data.PieData
@@ -112,7 +113,7 @@ class StatisticActivity : AppCompatActivity() {
             BitdamLog.dateCodeLogger(startDay)
             BitdamLog.dateCodeLogger(endDay)
 
-            binding.btnDuration.text = "$startDay - $endDay"
+            binding.btnDuration.text = "${startDay.withDateSeparator(".")} - ${endDay.withDateSeparator(".")}"
             statisticViewModel.getLightWithTagsForDuration()
         }
     }
@@ -129,59 +130,6 @@ class StatisticActivity : AppCompatActivity() {
 
             statisticTagAdapter.submitList(tagStatistic)
         }
-    }
-
-    /*private fun showPieChart(entry: MutableList<PieEntry>) {
-        val colors = insertColors(entry)
-
-        val dataSet = PieDataSet(entry,"").apply {
-            this.colors = colors
-            valueTextSize = 12f
-            valueTextColor = Color.WHITE
-        }
-
-        val data = PieData(dataSet).apply {
-            setDrawValues(true)
-            setValueFormatter(PercentFormatter(binding.chartLight))
-        }
-
-        binding.chartLight.apply {
-            isDrawHoleEnabled = false
-            isRotationEnabled = false
-            legend.isEnabled = false
-            setTouchEnabled(false)
-            setDrawEntryLabels(false)
-            setUsePercentValues(true)
-            this.data = data
-            invalidate()
-        }
-    }*/
-
-    private fun insertColors(entryList: MutableList<PieEntry>): MutableList<Int> {
-        val colors = mutableListOf<Int>()
-        val labelList = entryList.map { it.label }
-
-        if (0.toLightLabel() in labelList) {
-            colors.add(Color.argb(70, 0, 0, 0))
-        }
-
-        if (1.toLightLabel() in labelList) {
-            colors.add(Color.argb(70, 135, 87, 76))
-        }
-
-        if (2.toLightLabel() in labelList) {
-            colors.add(Color.argb(70, 108, 43, 22))
-        }
-
-        if (3.toLightLabel() in labelList) {
-            colors.add(Color.argb(70, 255, 138, 0))
-        }
-
-        if (4.toLightLabel() in labelList) {
-            colors.add(Color.argb(70, 255, 205, 77))
-        }
-
-        return colors
     }
 
 }

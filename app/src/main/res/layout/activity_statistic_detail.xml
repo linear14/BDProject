@@ -52,7 +52,7 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
         <TextView
-            android:id="@+id/tv_start_day"
+            android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -64,39 +64,15 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:text="2020.11.25" />
 
-        <TextView
-            android:id="@+id/tv1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="~"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_start_day"
-            app:layout_constraintStart_toEndOf="@id/tv_start_day"
-            app:layout_constraintTop_toTopOf="@id/tv_start_day" />
-
-        <TextView
-            android:id="@+id/tv_end_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/deco_chip_black"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/tv1"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            tools:text="2020.12.11" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_date_visibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_end_day"
+            app:layout_constraintBottom_toBottomOf="@id/tv_duration"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_end_day" />
+            app:layout_constraintTop_toTopOf="@id/tv_duration" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_tag_calendar"
@@ -106,7 +82,7 @@
             android:paddingHorizontal="20dp"
             android:overScrollMode="never"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_start_day" />
+            app:layout_constraintTop_toBottomOf="@id/tv_duration" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

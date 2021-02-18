@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.databinding.ActivityCalendarBinding
 import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 import org.koin.android.ext.android.inject
@@ -49,32 +50,6 @@ class CalendarActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDurationText(start: Long?, end: Long?): String {
-        val sb = StringBuilder()
-
-        val newStart = start!!.timeToString()
-        sb.apply {
-            append(newStart.substring(0, 4))
-            append(".")
-            append(newStart.substring(4, 6))
-            append(".")
-            append(newStart.substring(6, 8))
-        }
-
-        if(end != null) {
-            val newEnd = end.timeToString()
-            sb.apply {
-                append(" - ")
-                append(newEnd.substring(0, 4))
-                append(".")
-                append(newEnd.substring(4, 6))
-                append(".")
-                append(newEnd.substring(6, 8))
-            }
-        }
-        return sb.toString()
-    }
-
     private fun initViewModel() {
         val startDay = intent.getLongExtra("START_DAY", System.currentTimeMillis())
         val endDay = intent.getLongExtra("END_DAY", System.currentTimeMillis())
@@ -89,7 +64,7 @@ class CalendarActivity : AppCompatActivity() {
 
     private fun observeDuration() {
         viewModel.duration.observe(this) { duration: Pair<Long?, Long?> ->
-            binding.selectorDuration.text = getDurationText(duration.first, duration.second)
+            binding.selectorDuration.text = "${duration.first.withDateSeparator(".")} - ${duration.second.withDateSeparator(".")}"
         }
     }
 
