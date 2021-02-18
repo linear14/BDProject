@@ -44,13 +44,15 @@ class PieChartView: View {
     val layoutOffset = 20f
     val pieOffset = 40f
 
-    val rightEnd = width.toFloat() - pieOffset
-    val bottomEnd = height.toFloat() - pieOffset
+
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         paintOutLine.strokeWidth = width * 0.02f
+
+        val rightEnd = width.toFloat() - pieOffset
+        val bottomEnd = height.toFloat() - pieOffset
 
         rect.set(layoutOffset, layoutOffset, rightEnd + layoutOffset, bottomEnd + layoutOffset)
         drawCharts(canvas, true, paintBlur)
