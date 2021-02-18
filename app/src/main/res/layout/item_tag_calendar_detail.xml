@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/noto_regular"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,17 +24,18 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toBottomOf="@id/tv_brightness"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_brightness"
-        app:layout_constraintBottom_toBottomOf="@id/tv_brightness"/>
+        app:layout_constraintTop_toTopOf="@id/tv_brightness" />
 
     <TextView
         android:id="@+id/tv_brightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:textSize="12sp"
         android:layout_marginTop="14dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/iv_brightness"
         app:layout_constraintTop_toBottomOf="@id/tv_date"
         tools:text="60" />
@@ -42,18 +44,19 @@
         android:id="@+id/iv_tags"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_tags"
+        android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toBottomOf="@id/tv_tags"
-        android:src="@mipmap/ic_launcher"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_tags" />
 
     <TextView
         android:id="@+id/tv_tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:textSize="12sp"
         android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/iv_tags"
         app:layout_constraintTop_toBottomOf="@id/tv_brightness"
         tools:text="# 이동현  # 이보람" />
@@ -62,18 +65,19 @@
         android:id="@+id/iv_memo"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_memo"
+        android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toBottomOf="@id/tv_memo"
-        android:src="@mipmap/ic_launcher" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_memo" />
 
     <TextView
         android:id="@+id/tv_memo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:textSize="12sp"
         android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/iv_memo"
         app:layout_constraintTop_toBottomOf="@id/tv_tags"
         tools:text="오늘은 과제가 잘된다~" />
