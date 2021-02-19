@@ -7,6 +7,8 @@ import com.bd.bdproject.TagViewType
 import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ActivityStatisticDetailBinding
+import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.util.BitdamSharedPreferences
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.withDateSeparator
@@ -32,6 +34,10 @@ class StatisticDetailActivity : AppCompatActivity() {
             tvTitle.text = "# ${intent.getStringExtra(INFO_TAG)?:"null"}"
             tvDuration.text =
                 "${intent.getLongExtra("START_DAY", System.currentTimeMillis()).withDateSeparator(".")} - ${intent.getLongExtra("END_DAY", System.currentTimeMillis()).withDateSeparator(".")}"
+
+            switchDateVisibility.isChecked = BitDamApplication.pref.isShowDate
+            viewModel.setShowDate(switchDateVisibility.isChecked)
+
             rvTagCalendar.addItemDecoration(SpacesItemDecorator())
             btnBack.setOnClickListener { onBackPressed() }
         }
@@ -113,6 +119,7 @@ class StatisticDetailActivity : AppCompatActivity() {
 
     private fun setSwitchDateVisibility() {
         binding.switchDateVisibility.setOnCheckedChangeListener { _, isChecked ->
+            BitDamApplication.pref.isShowDate = isChecked
             if(isChecked) {
                 viewModel.setShowDate(true)
             } else {

@@ -1,6 +1,5 @@
 package com.bd.bdproject.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async

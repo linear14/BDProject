@@ -10,6 +10,7 @@ import org.koin.core.context.startKoin
 class BitDamApplication: Application() {
 
     companion object {
+        lateinit var pref: BitdamSharedPreferences
         private var instance: BitDamApplication? = null
 
         fun applicationContext(): Context {
@@ -20,6 +21,7 @@ class BitDamApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
+        pref = BitdamSharedPreferences(applicationContext)
         instance = this
 
         startKoin {
