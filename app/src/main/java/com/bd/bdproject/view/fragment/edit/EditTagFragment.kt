@@ -51,6 +51,9 @@ open class EditTagFragment: ControlTagFragment() {
 
         }
 
+        observeTagEnrolled()
+        observeTagSearched()
+
     }
 
     override fun onResume() {
@@ -58,8 +61,6 @@ open class EditTagFragment: ControlTagFragment() {
 
         initBackground()
         showUi()
-        observeTagEnrolled()
-        observeTagSearched()
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
@@ -89,7 +90,7 @@ open class EditTagFragment: ControlTagFragment() {
     }
 
     private fun observeTagEnrolled() {
-        tagViewModel.candidateTags.observe(requireActivity()) { enrolled ->
+        tagViewModel.candidateTags.observe(viewLifecycleOwner) { enrolled ->
             tagEnrolledAdapter.apply {
                 if(isEditMode) {
                     binding.rvTagEnrolled.itemAnimator = null
@@ -106,7 +107,7 @@ open class EditTagFragment: ControlTagFragment() {
     }
 
     private fun observeTagSearched() {
-        tagViewModel.searchedTagNames.observe(requireActivity()) { searchedResult ->
+        tagViewModel.searchedTagNames.observe(viewLifecycleOwner) { searchedResult ->
             val brightness = args.light?.bright ?: 0
 
             tagRecommendAdapter.submitList(
