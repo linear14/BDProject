@@ -36,7 +36,7 @@ class CalendarActivity : AppCompatActivity() {
                 val resultIntent = Intent()
 
                 val startDay = viewModel.duration.value?.first
-                val endDay = viewModel.duration.value?.second
+                val endDay = viewModel.duration.value?.second?:startDay
                 resultIntent.putExtra("START_DAY", startDay)
                 resultIntent.putExtra("END_DAY", endDay)
 
@@ -64,7 +64,11 @@ class CalendarActivity : AppCompatActivity() {
 
     private fun observeDuration() {
         viewModel.duration.observe(this) { duration: Pair<Long?, Long?> ->
-            binding.selectorDuration.text = "${duration.first.withDateSeparator(".")} - ${duration.second.withDateSeparator(".")}"
+            if(duration.second == null || duration.second == duration.first) {
+                binding.selectorDuration.text = "${duration.first.withDateSeparator(".")}"
+            } else {
+                binding.selectorDuration.text = "${duration.first.withDateSeparator(".")} - ${duration.second.withDateSeparator(".")}"
+            }
         }
     }
 

@@ -113,7 +113,11 @@ class StatisticActivity : AppCompatActivity() {
             BitdamLog.dateCodeLogger(startDay)
             BitdamLog.dateCodeLogger(endDay)
 
-            binding.btnDuration.text = "${startDay.withDateSeparator(".")} - ${endDay.withDateSeparator(".")}"
+            if(startDay == endDay) {
+                binding.btnDuration.text = "${startDay.withDateSeparator(".")}"
+            } else {
+                binding.btnDuration.text = "${startDay.withDateSeparator(".")} - ${endDay.withDateSeparator(".")}"
+            }
             statisticViewModel.getLightWithTagsForDuration()
         }
     }
