@@ -9,4 +9,8 @@ class BitdamSharedPreferences(context: Context) {
     var isShowDate: Boolean
         get() = pref.getBoolean("IS_SHOW_DATE", false)
         set(value) = pref.edit().putBoolean("IS_SHOW_DATE", value).apply()
+
+    var isAnimationActivate: Boolean
+        get() = pref.getBoolean("IS_ANIMATION_ACTIVATE", true)
+        set(value) = pref.edit().putBoolean("IS_ANIMATION_ACTIVATE", value).apply()
 }
