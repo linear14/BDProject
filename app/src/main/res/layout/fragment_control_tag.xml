@@ -102,7 +102,7 @@
             android:id="@+id/iv_clear_text"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:src="@drawable/temp_clear_text"
+            android:src="@drawable/ic_delete_bright"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tv_hash"
             app:layout_constraintEnd_toEndOf="parent"
@@ -161,7 +161,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginStart="8dp"
-            android:src="@drawable/temp_info"
+            android:src="@drawable/ic_info_outline"
             app:layout_constraintBottom_toBottomOf="@id/tv_tag_recommend"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_tag_recommend"
@@ -185,7 +185,7 @@
         android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/temp_back_arrow"
+        android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
