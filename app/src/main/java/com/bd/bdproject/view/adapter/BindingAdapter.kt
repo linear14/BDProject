@@ -23,6 +23,18 @@ fun bindBrightness(view: View, brightness: Int) {
 
 }
 
+@BindingAdapter("brightnessCollection")
+fun bindBrightnessForCollection(view: View, brightness: Int) {
+
+    val gradientDrawable = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.BR_TL
+    }
+    gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+
+    view.background = gradientDrawable
+
+}
+
 @BindingAdapter("dateCode")
 fun bindDay(view: TextView, dateCode: String) {
     val day = dateCode.substring(6, 8)

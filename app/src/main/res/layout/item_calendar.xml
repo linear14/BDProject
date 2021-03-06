@@ -16,7 +16,7 @@
         tools:background="#FFC7C7">
 
         <View
-            brightness="@{light.bright}"
+            brightnessCollection="@{light.bright}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="3:5"
@@ -30,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textColor="@android:color/white"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_small"
             android:layout_margin="8dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

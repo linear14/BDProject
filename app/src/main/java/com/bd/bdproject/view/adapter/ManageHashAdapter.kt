@@ -1,14 +1,12 @@
 package com.bd.bdproject.view.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.TagWithLights
 import com.bd.bdproject.databinding.ItemManageHashBinding
-import com.bd.bdproject.dialog.BottomSelector
-import com.bd.bdproject.view.activity.ManageHashActivity
 
 class ManageHashAdapter(
     var tags: List<TagWithLights>,
@@ -47,11 +45,11 @@ class ManageHashAdapter(
                     if(twl in checkedTags) {
                         // 체크가 되어있는 상태 -> 체크 없애야함
                         checkedTags.remove(twl)
-                        ivCheck.setBackgroundColor(Color.parseColor("#aaaaaa"))
+                        ivCheck.setImageResource(R.drawable.ic_unchecked)
                     } else {
                         // 체크가 안되어있는 상태 -> 체크 만들어줌
                         checkedTags.add(twl)
-                        ivCheck.setBackgroundColor(Color.parseColor("#000000"))
+                        ivCheck.setImageResource(R.drawable.ic_checked)
                     }
 
                     checkBoxClickedListener(twl)
@@ -65,9 +63,9 @@ class ManageHashAdapter(
 
         private fun setCheckedState(tag: TagWithLights) {
             if(tag in checkedTags) {
-                binding.ivCheck.setBackgroundColor(Color.parseColor("#000000"))
+                binding.ivCheck.setImageResource(R.drawable.ic_checked)
             } else {
-                binding.ivCheck.setBackgroundColor(Color.parseColor("#aaaaaa"))
+                binding.ivCheck.setImageResource(R.drawable.ic_unchecked)
             }
         }
 

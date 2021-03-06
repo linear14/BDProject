@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:paddingVertical="16dp"
+    tools:background="@color/black">
 
-    <View
+    <ImageView
         android:id="@+id/iv_check"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="#aaaaaa"
+        android:layout_width="@dimen/image_button_size_large"
+        android:layout_height="@dimen/image_button_size_large"
+        android:layout_marginStart="8dp"
+        android:padding="@dimen/padding_for_image_button"
+        android:src="@drawable/ic_unchecked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,20 +22,23 @@
         android:id="@+id/tv_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="4dp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/text_size_normal"
+        app:layout_constraintBottom_toBottomOf="@id/iv_check"
         app:layout_constraintStart_toEndOf="@id/iv_check"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_check"
         tools:text="# 이동현" />
 
     <ImageView
         android:id="@+id/iv_more"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="@dimen/image_button_size_large"
+        android:layout_height="@dimen/image_button_size_large"
+        android:layout_marginEnd="4dp"
+        android:padding="@dimen/padding_for_image_button"
+        android:src="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="@id/iv_check"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/iv_check" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

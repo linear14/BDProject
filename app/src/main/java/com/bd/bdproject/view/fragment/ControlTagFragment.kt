@@ -261,7 +261,7 @@ open class ControlTagFragment: BaseFragment() {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             if(s.isEmpty()) {
-                binding.ivClearText.visibility = View.GONE
+                binding.ivClearText.visibility = View.INVISIBLE
 
                 searchJob?.cancel()
                 searchJob = GlobalScope.launch {

@@ -8,28 +8,59 @@
     android:background="@android:color/transparent"
     tools:background="@color/black">
 
-    <TextView
-        android:id="@+id/action_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:text="다음"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/action_enroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:text="완료"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="@dimen/image_button_size_large"
+                android:layout_height="@dimen/image_button_size_large"
+                android:layout_marginStart="@dimen/margin_for_image_button"
+                android:padding="@dimen/padding_for_image_button"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/action_next"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/padding_normal"
+                android:text="다음"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_larger"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/action_enroll"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/padding_normal"
+                android:text="완료"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_larger"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <TextView
         android:id="@+id/tv_brightness"
@@ -37,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_size_largest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -77,7 +108,7 @@
             android:layout_marginStart="2dp"
             android:text="#"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -92,18 +123,21 @@
             android:maxLength="8"
             android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/tv_hash"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.523" />
 
         <ImageView
             android:id="@+id/iv_clear_text"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="@dimen/image_button_size_large"
+            android:layout_height="@dimen/image_button_size_large"
+            android:padding="@dimen/padding_for_image_button"
             android:src="@drawable/ic_delete_bright"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/tv_hash"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_hash" />
@@ -112,9 +146,8 @@
             android:id="@+id/separator1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="4dp"
             android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/tv_hash" />
+            app:layout_constraintTop_toBottomOf="@id/iv_clear_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -150,22 +183,22 @@
             android:overScrollMode="never"
             android:text="추천검색어"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_normal"
+            app:layout_constraintBottom_toBottomOf="@id/iv_tag_recommend_info"
             app:layout_constraintEnd_toStartOf="@id/iv_tag_recommend_info"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/iv_tag_recommend_info" />
 
         <ImageView
             android:id="@+id/iv_tag_recommend_info"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="@dimen/image_button_size_large"
+            android:layout_height="@dimen/image_button_size_large"
+            android:padding="@dimen/padding_for_image_button"
             android:src="@drawable/ic_info_outline"
-            app:layout_constraintBottom_toBottomOf="@id/tv_tag_recommend"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_tag_recommend"
-            app:layout_constraintTop_toTopOf="@id/tv_tag_recommend" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_tag_recommend"
@@ -178,15 +211,5 @@
             app:layout_constraintTop_toBottomOf="@id/tv_tag_recommend" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/btn_back"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
