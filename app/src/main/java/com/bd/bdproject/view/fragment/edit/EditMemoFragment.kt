@@ -30,12 +30,30 @@ open class EditMemoFragment: ControlMemoFragment() {
             editMemo()
         }
 
-        initBackground()
-        showUi()
+        makeBackground()
+        showUiWithoutAnimation()
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
         }
+    }
+
+    private fun makeBackground() {
+        binding.apply {
+            val brightness: Int = args.light?.bright ?: 0
+            val memo: String? = args.light?.memo
+
+            setEntireMemoFragmentColor(brightness)
+
+            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+            layoutAddMemo.background = gradientDrawable
+            inputMemo.setText(memo)
+        }
+    }
+
+    private fun showUiWithoutAnimation() {
+        binding.layoutMemo.alpha = 1.0f
+        binding.tvBrightness.visibility = View.GONE
     }
 
     private fun editMemo() {
@@ -60,23 +78,5 @@ open class EditMemoFragment: ControlMemoFragment() {
         }
 
 
-    }
-
-    private fun initBackground() {
-        binding.apply {
-            val brightness: Int = args.light?.bright ?: 0
-            val memo: String? = args.light?.memo
-
-            setEntireMemoFragmentColor(brightness)
-
-            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-            layoutAddMemo.background = gradientDrawable
-            inputMemo.setText(memo)
-        }
-    }
-
-    private fun showUi() {
-        binding.layoutMemo.alpha = 1.0f
-        binding.tvBrightness.visibility = View.GONE
     }
 }

@@ -70,12 +70,6 @@ open class ControlMemoFragment: BaseFragment() {
         _binding = null
     }
 
-    private fun observeKeyboard() {
-        TedKeyboardObserver(requireActivity()).listen { isShow ->
-            isKeyboardShowing = isShow
-        }
-    }
-
     private fun setTagRecyclerView() {
         val layoutManagerEnrolled = FlexboxLayoutManager(requireActivity()).apply {
             flexDirection = FlexDirection.ROW
@@ -96,6 +90,12 @@ open class ControlMemoFragment: BaseFragment() {
                 tvTextCount,
                 btnBack
             )
+        }
+    }
+
+    private fun observeKeyboard() {
+        TedKeyboardObserver(requireActivity()).listen { isShow ->
+            isKeyboardShowing = isShow
         }
     }
 

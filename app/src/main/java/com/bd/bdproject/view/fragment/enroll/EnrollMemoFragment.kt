@@ -16,6 +16,7 @@ import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_MEMO
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlMemoFragment
@@ -49,42 +50,43 @@ open class EnrollMemoFragment: ControlMemoFragment() {
 
         setOnBackPressed()
 
-        initBackground()
-        showUi()
+        makeBackground()
+        if(isAnimationActive()) {
+            showUiWithAnimation()
+        } else {
+            showUiWithoutAnimation()
+        }
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
         }
     }
 
-    private fun setOnBackPressed() {
-        onBackPressedListener = object: OnBackPressedInFragment {
-            override fun onBackPressed(): Boolean {
-                binding.apply {
-                    return if (isKeyboardShowing) {
-                        KeyboardUtil.keyBoardHide(binding.inputMemo)
-                        true
-                    } else {
-                        if(!isChangingFragment) {
-                            saveMemo()
-                            isChangingFragment = true
-                            layoutMemo.animateTransparency(0.0f, 2000)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
-                                        super.onAnimationEnd(animation)
-                                        sharedViewModel.previousPage.value = CONTROL_MEMO
-                                        KeyboardUtil.keyBoardHide(binding.inputMemo)
-                                        (activity as BitdamEnrollActivity).onBackPressed(true)
-                                    }
-                                })
-                            true
-                        } else {
-                            true
-                        }
-                    }
-                }
-            }
+    private fun makeBackground() {
+        binding.apply {
+            val brightness = sharedViewModel.brightness.value?:0
+            val tags = sharedViewModel.tags.value?: mutableListOf()
+            val memo = sharedViewModel.memo.value
+
+            setEntireMemoFragmentColor(brightness)
+
+            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+            layoutAddMemo.background = gradientDrawable
+            inputMemo.setText(memo)
+
+            tvBrightness.text = brightness.toString()
+            tagEnrolledAdapter.submitList(tags.toMutableList(), brightness)
         }
+    }
+
+    private fun showUiWithAnimation() {
+        CoroutineScope(Dispatchers.Main).launch {
+            binding.layoutMemo.animateTransparency(1.0f, 2000)
+        }
+    }
+
+    private fun showUiWithoutAnimation() {
+        binding.layoutMemo.alpha = 1.0f
     }
 
     private fun insertLightWithTag() {
@@ -160,31 +162,47 @@ open class EnrollMemoFragment: ControlMemoFragment() {
         lightTagRelationViewModel.insertRelation(dateCode, tagList)
     }
 
-    private fun initBackground() {
-        binding.apply {
-            val brightness = sharedViewModel.brightness.value?:0
-            val tags = sharedViewModel.tags.value?: mutableListOf()
-            val memo = sharedViewModel.memo.value
+    private fun setOnBackPressed() {
+        onBackPressedListener = object: OnBackPressedInFragment {
+            override fun onBackPressed(): Boolean {
+                binding.apply {
+                    return if (isKeyboardShowing) {
+                        KeyboardUtil.keyBoardHide(binding.inputMemo)
+                        true
+                    } else {
+                        if(!isChangingFragment) {
+                            saveMemo()
+                            isChangingFragment = true
 
-            setEntireMemoFragmentColor(brightness)
-
-            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-            layoutAddMemo.background = gradientDrawable
-            inputMemo.setText(memo)
-
-            tvBrightness.text = brightness.toString()
-            tagEnrolledAdapter.submitList(tags.toMutableList(), brightness)
-        }
-    }
-
-    private fun showUi() {
-        CoroutineScope(Dispatchers.Main).launch {
-            binding.layoutMemo.animateTransparency(1.0f, 2000)
+                            if(isAnimationActive()) {
+                                layoutMemo.animateTransparency(0.0f, 2000)
+                                    .setListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            super.onAnimationEnd(animation)
+                                            goBackToFragmentEnrollTag()
+                                        }
+                                    })
+                            } else {
+                                goBackToFragmentEnrollTag()
+                            }
+                            true
+                        } else {
+                            true
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun saveMemo() {
         sharedViewModel.memo.value = binding.inputMemo.text.toString()
+    }
+
+    private fun goBackToFragmentEnrollTag() {
+        sharedViewModel.previousPage.value = CONTROL_MEMO
+        KeyboardUtil.keyBoardHide(binding.inputMemo)
+        (activity as BitdamEnrollActivity).onBackPressed(true)
     }
 
 }
