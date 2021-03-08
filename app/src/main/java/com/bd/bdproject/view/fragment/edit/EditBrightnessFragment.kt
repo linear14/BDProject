@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.util.LightUtil.getDiagonalLight
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.common.LightViewModel
@@ -32,27 +31,19 @@ open class EditBrightnessFragment: ControlBrightnessFragment() {
 
     override fun onResume() {
         super.onResume()
-        showUi()
+        makeBackground(args.light?.bright?:0)
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
         }
     }
 
-    private fun showUi() {
-        binding.apply {
-            val brightness = args.light?.bright?:0
+    override fun makeBackground(brightness: Int) {
+        super.makeBackground(brightness)
 
-            setEntireLightFragmentColor(brightness)
-            gradientDrawable.colors = getDiagonalLight(brightness * 2)
-            layoutAddLight.background = gradientDrawable
-            tvBrightness.text = brightness.toString()
+        binding.apply {
             btnBack.visibility = View.VISIBLE
             btnDrawer.visibility = View.GONE
-            tvBrightness.visibility = View.VISIBLE
-            sbLight.barWidth = 4
-            sbLight.progress = brightness * 2
-
             sbLight.alpha = 1.0f
             actionEnroll.visibility = View.VISIBLE
         }

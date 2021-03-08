@@ -15,13 +15,10 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
-import com.bd.bdproject.util.Constant
+import com.bd.bdproject.util.*
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
-import com.bd.bdproject.util.LightUtil.getDiagonalLight
-import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
@@ -46,9 +43,14 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
 
         if(sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
-            showUi()
+            makeBackground(sharedViewModel.brightness.value?:0)
         } else {
-            showUiWithDelay()
+            if(isAnimationActive()) {
+                showUiWithAnimation()
+            } else {
+                showUiWithoutAnimation()
+            }
+
         }
 
         binding.btnDrawer.setOnClickListener {
@@ -151,7 +153,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
     }
 
-    private fun showUiWithDelay() {
+    private fun showUiWithAnimation() {
         CoroutineScope(Dispatchers.Main).launch {
             binding.apply {
                 tvAskCondition.visibility = View.GONE
@@ -193,20 +195,25 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
     }
 
-    private fun showUi() {
+    private fun showUiWithoutAnimation() {
         binding.apply {
-            val brightness = sharedViewModel.brightness.value?:0
+            tvAskCondition.visibility = View.VISIBLE
+            sbLight.visibility = View.VISIBLE
+            actionDatePick.visibility = View.VISIBLE
 
-            setEntireLightFragmentColor(brightness)
-            gradientDrawable.colors = getDiagonalLight(brightness * 2)
-            layoutAddLight.background = gradientDrawable
+            tvAskCondition.alpha = 1.0f
+            sbLight.alpha = 1.0f
+            actionDatePick.alpha = 1.0f
+        }
+    }
 
+    override fun makeBackground(brightness: Int) {
+        super.makeBackground(brightness)
+
+        binding.apply {
             actionDatePick.visibility = View.GONE
             tvAskCondition.visibility = View.GONE
-            tvBrightness.text = brightness.toString()
-            tvBrightness.visibility = View.VISIBLE
-            sbLight.barWidth = 4
-            sbLight.progress = brightness * 2
+
             isFirstPressed = false
 
             if(parentActivity.previousActivity == COLLECTION_MAIN) {
@@ -217,8 +224,10 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 btnDrawer.visibility = View.VISIBLE
             }
 
-            if(sharedViewModel.brightness.value != null) {
-                sbLight.animateTransparency(1.0f, 2000)
+            if(isAnimationActive()) {
+                if(sharedViewModel.brightness.value != null) {
+                    sbLight.animateTransparency(1.0f, 2000)
+                }
             } else {
                 sbLight.alpha = 1f
             }
@@ -231,7 +240,12 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 if(!isFirstPressed && !isChangingFragment) {
                     isChangingFragment = true
                     saveBrightness()
-                    goToFragmentEnrollTag()
+
+                    if(isAnimationActive()) {
+                        goToFragmentEnrollTagWithAnimation()
+                    } else {
+                        goToFragmentEnrollTag()
+                    }
                 }
             }
         }
@@ -241,17 +255,21 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         sharedViewModel.brightness.value = binding.tvBrightness.text.toString().toInt()
     }
 
-    private fun goToFragmentEnrollTag() {
+    private fun goToFragmentEnrollTagWithAnimation() {
         binding.sbLight.animateTransparency(0.0f, 2000)
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
-                    sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
-                    parentActivity.binding.drawer.closeDrawer(GravityCompat.START)
-                    val navDirection: NavDirections =
-                        EnrollBrightnessFragmentDirections.actionEnrollBrightnessFragmentToEnrollTagFragment()
-                    findNavController(binding.sbLight).navigate(navDirection)
+                    goToFragmentEnrollTag()
                 }
             })
+    }
+
+    private fun goToFragmentEnrollTag() {
+        sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
+        parentActivity.binding.drawer.closeDrawer(GravityCompat.START)
+        val navDirection: NavDirections =
+            EnrollBrightnessFragmentDirections.actionEnrollBrightnessFragmentToEnrollTagFragment()
+        findNavController(binding.sbLight).navigate(navDirection)
     }
 }

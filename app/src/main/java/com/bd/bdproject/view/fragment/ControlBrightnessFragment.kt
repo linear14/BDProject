@@ -92,6 +92,18 @@ open class ControlBrightnessFragment: BaseFragment() {
         }
     }
 
+    open fun makeBackground(brightness: Int) {
+        binding. apply {
+            setEntireLightFragmentColor(brightness)
+            gradientDrawable.colors = getDiagonalLight(brightness * 2)
+            layoutAddLight.background = gradientDrawable
+            tvBrightness.text = brightness.toString()
+            tvBrightness.visibility = View.VISIBLE
+            sbLight.barWidth = 4
+            sbLight.progress = brightness * 2
+        }
+    }
+
     private fun getBrightness(progress: Int): Int {
         val converted = progress / 10
         return (converted * 5)
