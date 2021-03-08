@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.KeyboardUtil
-import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.ControlTagFragment
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
@@ -59,27 +58,18 @@ open class EditTagFragment: ControlTagFragment() {
     override fun onResume() {
         super.onResume()
 
-        initBackground()
-        showUi()
+        makeBackground(
+            brightness = args.light?.bright ?: 0,
+            tags = args.tags?: mutableListOf()
+        )
+        showUiWithoutAnimation()
 
         binding.btnBack.setOnClickListener {
             parentActivity.onBackPressed()
         }
     }
 
-    private fun initBackground() {
-        val brightness: Int = args.light?.bright ?: 0
-        val tags = args.tags?: mutableListOf()
-
-        setEntireTagFragmentColor(brightness)
-        gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-
-        binding.layoutAddTag.background = gradientDrawable
-        tagViewModel.candidateTags.value = tags
-        binding.tvBrightness.text = brightness.toString()
-    }
-
-    private fun showUi() {
+    private fun showUiWithoutAnimation() {
         binding.apply {
             actionNext.visibility = View.GONE
             actionEnroll.visibility = View.VISIBLE

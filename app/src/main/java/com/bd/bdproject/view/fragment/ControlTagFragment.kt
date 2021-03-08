@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
+import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentControlTagBinding
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.viewmodel.common.TagViewModel
@@ -155,6 +157,16 @@ open class ControlTagFragment: BaseFragment() {
         _binding = null
     }
 
+    fun makeBackground(brightness: Int, tags: List<Tag>) {
+        setEntireTagFragmentColor(brightness)
+        gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+
+        binding.layoutAddTag.background = gradientDrawable
+        tagViewModel.candidateTags.value = tags.toMutableList()
+        binding.tvBrightness.text = brightness.toString()
+    }
+
+
     private fun checkIsValidTag(tagName: String): Boolean {
         val candidateTags = tagViewModel.candidateTags.value?: mutableListOf()
 
@@ -220,12 +232,6 @@ open class ControlTagFragment: BaseFragment() {
         }
     }
 
-    private fun observeKeyboard() {
-        TedKeyboardObserver(requireActivity()).listen { isShow ->
-            isKeyboardShowing = isShow
-        }
-    }
-
     fun setEntireTagFragmentColor(brightness: Int) {
         binding.apply {
             ColorUtil.setEntireViewColor(
@@ -241,6 +247,12 @@ open class ControlTagFragment: BaseFragment() {
                 ivTagRecommendInfo,
                 btnBack
             )
+        }
+    }
+
+    private fun observeKeyboard() {
+        TedKeyboardObserver(requireActivity()).listen { isShow ->
+            isKeyboardShowing = isShow
         }
     }
 

@@ -13,7 +13,7 @@ import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.util.Constant.CONTROL_MEMO
 import com.bd.bdproject.util.Constant.CONTROL_TAG
 import com.bd.bdproject.util.KeyboardUtil
-import com.bd.bdproject.util.LightUtil
+import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.ControlTagFragment
@@ -34,7 +34,11 @@ open class EnrollTagFragment: ControlTagFragment() {
             if(!isChangingFragment) {
                 isChangingFragment = true
                 saveTags()
-                goToFragmentEnrollMemo(it)
+                if(isAnimationActive()) {
+                    goToFragmentEnrollMemoWithAnimation()
+                } else {
+                    goToFragmentEnrollMemo()
+                }
             }
         }
 
@@ -46,8 +50,15 @@ open class EnrollTagFragment: ControlTagFragment() {
     override fun onResume() {
         super.onResume()
 
-        initBackground()
-        showUi()
+        makeBackground(
+            brightness = sharedViewModel.brightness.value ?: 0,
+            tags = sharedViewModel.tags.value ?: mutableListOf()
+        )
+        if(isAnimationActive()) {
+            showUiWithAnimation()
+        } else {
+            showUiWithoutAnimation()
+        }
 
         setOnBackPressed()
 
@@ -56,52 +67,7 @@ open class EnrollTagFragment: ControlTagFragment() {
         }
     }
 
-
-    private fun setOnBackPressed() {
-        onBackPressedListener = object: OnBackPressedInFragment {
-            override fun onBackPressed(): Boolean {
-                binding.apply {
-                    return if (isKeyboardShowing) {
-                        KeyboardUtil.keyBoardHide(binding.inputTag)
-                        true
-                    } else {
-                        if(!isChangingFragment) {
-                            saveTags()
-                            isChangingFragment = true
-                            rvTagEnrolled.animateTransparency(0.0f, 2000)
-                            layoutInput.animateTransparency(0.0f, 2000)
-                            layoutTagRecommend.animateTransparency(0.0f, 2000)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
-                                        super.onAnimationEnd(animation)
-                                        sharedViewModel.previousPage.value = CONTROL_TAG
-                                        KeyboardUtil.keyBoardHide(binding.inputTag)
-                                        parentActivity.onBackPressed(true)
-                                    }
-                                })
-                            true
-                        } else {
-                            true
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun initBackground() {
-        val brightness: Int = sharedViewModel.brightness.value ?: 0
-        val tags: List<Tag> = sharedViewModel.tags.value ?: mutableListOf()
-
-        setEntireTagFragmentColor(brightness)
-        gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-
-        binding.layoutAddTag.background = gradientDrawable
-        tagViewModel.candidateTags.value = tags.toMutableList()
-        binding.tvBrightness.text = brightness.toString()
-    }
-
-    private fun showUi() {
+    private fun showUiWithAnimation() {
         binding.apply {
             when (sharedViewModel.previousPage.value) {
                 CONTROL_MEMO -> {
@@ -123,8 +89,14 @@ open class EnrollTagFragment: ControlTagFragment() {
         }
     }
 
-    private fun saveTags() {
-        sharedViewModel.tags.value = tagViewModel.candidateTags.value
+    private fun showUiWithoutAnimation() {
+        binding.apply {
+            actionNext.visibility = View.VISIBLE
+            actionEnroll.visibility = View.GONE
+            rvTagEnrolled.alpha = 1.0f
+            layoutInput.alpha = 1.0f
+            layoutTagRecommend.alpha = 1.0f
+        }
     }
 
     private fun observeTagEnrolled() {
@@ -156,20 +128,69 @@ open class EnrollTagFragment: ControlTagFragment() {
         }
     }
 
-    private fun goToFragmentEnrollMemo(view: View) {
+    private fun setOnBackPressed() {
+        onBackPressedListener = object: OnBackPressedInFragment {
+            override fun onBackPressed(): Boolean {
+                binding.apply {
+                    return if (isKeyboardShowing) {
+                        KeyboardUtil.keyBoardHide(binding.inputTag)
+                        true
+                    } else {
+                        if(!isChangingFragment) {
+                            saveTags()
+                            isChangingFragment = true
+
+                            if(isAnimationActive()) {
+                                rvTagEnrolled.animateTransparency(0.0f, 2000)
+                                layoutInput.animateTransparency(0.0f, 2000)
+                                layoutTagRecommend.animateTransparency(0.0f, 2000)
+                                    .setListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            super.onAnimationEnd(animation)
+                                            goBackToFragmentEnrollBrightness()
+                                        }
+                                    })
+                            } else {
+                                goBackToFragmentEnrollBrightness()
+                            }
+                            true
+                        } else {
+                            true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun saveTags() {
+        sharedViewModel.tags.value = tagViewModel.candidateTags.value
+    }
+
+    private fun goBackToFragmentEnrollBrightness() {
+        sharedViewModel.previousPage.value = CONTROL_TAG
+        KeyboardUtil.keyBoardHide(binding.inputTag)
+        parentActivity.onBackPressed(true)
+    }
+
+    private fun goToFragmentEnrollMemoWithAnimation() {
         KeyboardUtil.keyBoardHide(binding.inputTag)
         binding.layoutInput.animateTransparency(0.0f, 2000)
         binding.layoutTagRecommend.animateTransparency(0.0f, 2000)
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
-                    sharedViewModel.previousPage.value = CONTROL_TAG
-                    KeyboardUtil.keyBoardHide(binding.inputTag)
-                    val navDirection: NavDirections =
-                        EnrollTagFragmentDirections.actionEnrollTagFragmentToEnrollMemoFragment()
-                    Navigation.findNavController(view).navigate(navDirection)
+                    goToFragmentEnrollMemo()
                 }
             })
+    }
+
+    private fun goToFragmentEnrollMemo() {
+        sharedViewModel.previousPage.value = CONTROL_TAG
+        KeyboardUtil.keyBoardHide(binding.inputTag)
+        val navDirection: NavDirections =
+            EnrollTagFragmentDirections.actionEnrollTagFragmentToEnrollMemoFragment()
+        Navigation.findNavController(binding.root).navigate(navDirection)
     }
 
 }
