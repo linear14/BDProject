@@ -123,11 +123,20 @@
                 android:paddingVertical="12dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="애니메이션"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:textSize="@dimen/text_size_normal" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_animation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"/>
+
 
             </LinearLayout>
 

@@ -1,9 +1,9 @@
 package com.bd.bdproject.view.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.bd.bdproject.databinding.ActivityManageHashBinding
+import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivitySettingBinding
+import com.bd.bdproject.util.BitDamApplication
 
 class SettingActivity : AppCompatActivity() {
 
@@ -17,6 +17,22 @@ class SettingActivity : AppCompatActivity() {
 
         binding.apply {
             btnBack.setOnClickListener { onBackPressed() }
+        }
+
+        setSwitchAnimation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        binding.apply {
+            switchAnimation.isChecked = BitDamApplication.pref.isAnimationActivate
+        }
+    }
+
+    private fun setSwitchAnimation() {
+        binding.switchAnimation.setOnCheckedChangeListener { _, isChecked ->
+            BitDamApplication.pref.isAnimationActivate = isChecked
         }
     }
 }
