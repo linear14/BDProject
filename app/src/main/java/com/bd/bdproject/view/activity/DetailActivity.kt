@@ -75,6 +75,11 @@ class DetailActivity : AppCompatActivity() {
                 drawer.closeDrawer(GravityCompat.START)
             }
 
+            navigationDrawer.actionSetting.setOnClickListener {
+                startActivity(Intent(this@DetailActivity, SettingActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
             btnBack.setOnClickListener { onBackPressed() }
 
             btnSpreadUpDown.setOnClickListener {

@@ -38,6 +38,11 @@ class BitdamEnrollActivity : AppCompatActivity() {
                 drawer.closeDrawer(GravityCompat.START)
             }
 
+            navigationDrawer.actionSetting.setOnClickListener {
+                startActivity(Intent(this@BitdamEnrollActivity, SettingActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
         }
     }
 
