@@ -13,4 +13,12 @@ class BitdamSharedPreferences(context: Context) {
     var isAnimationActivate: Boolean
         get() = pref.getBoolean("IS_ANIMATION_ACTIVATE", false)
         set(value) = pref.edit().putBoolean("IS_ANIMATION_ACTIVATE", value).apply()
+
+    var lastEnrolledLightTime: Long
+        get() = pref.getLong("LAST_ENROLLED_LIGHT_TIME", System.currentTimeMillis())
+        set(value) = pref.edit().putLong("LAST_ENROLLED_LIGHT_TIME", value).apply()
+
+    var dairyAlarmTime: Long
+        get() = pref.getLong("DAIRY_ALARM_TIME", 0)
+        set(value) = pref.edit().putLong("DAIRY_ALARM_TIME", value).apply()
 }

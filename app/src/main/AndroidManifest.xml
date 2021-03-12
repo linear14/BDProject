@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bd.bdproject">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".util.BitDamApplication"
         android:allowBackup="true"
@@ -10,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BDProject">
-        <activity android:name=".view.activity.SettingActivity"></activity>
+        <activity android:name=".view.activity.SettingActivity" />
         <activity android:name=".view.activity.CalendarActivity" />
         <activity android:name=".view.activity.AddOrEditHashActivity" />
         <activity android:name=".view.activity.ManageHashActivity" />
@@ -39,6 +42,15 @@
         <activity
             android:name=".view.activity.BitdamEnrollActivity"
             android:screenOrientation="portrait" />
+
+        <receiver android:name=".alarm.DeviceBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".alarm.DairyAlarmReceiver" />
     </application>
 
 </manifest>

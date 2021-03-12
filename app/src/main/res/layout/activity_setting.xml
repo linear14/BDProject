@@ -284,6 +284,31 @@
                     android:textSize="@dimen/text_size_normal" />
 
             </LinearLayout>
+
+            <Button
+                android:id="@+id/test_dairy_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오후 9시 알람"/>
+
+            <Button
+                android:id="@+id/test_dairy_alarm_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오후 9시 알람 취소"/>
+
+            <Button
+                android:id="@+id/test_three_day_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3일마다 한 번씩 알람"/>
+
+            <Button
+                android:id="@+id/test_three_day_alarm_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3일마다 한 번씩 알람 취소"/>
+
         </LinearLayout>
     </ScrollView>
 
