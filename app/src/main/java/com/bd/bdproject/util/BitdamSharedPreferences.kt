@@ -21,4 +21,8 @@ class BitdamSharedPreferences(context: Context) {
     var dairyAlarmTime: Long
         get() = pref.getLong("DAIRY_ALARM_TIME", 0)
         set(value) = pref.edit().putLong("DAIRY_ALARM_TIME", value).apply()
+
+    var bitdamPassword: String?
+        get() = pref.getString("BITDAM_PASSWORD", null)
+        set(value) = pref.edit().putString("BITDAM_PASSWORD", value).apply()
 }

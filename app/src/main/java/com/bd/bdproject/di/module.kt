@@ -30,4 +30,5 @@ val appModule = module {
     viewModel { StatisticDetailViewModel(get(), get()) }
     viewModel { ManageHashViewModel(get(), get()) }
     viewModel { StatisticCalendarViewModel() }
+    viewModel { SetPasswordViewModel() }
 }
