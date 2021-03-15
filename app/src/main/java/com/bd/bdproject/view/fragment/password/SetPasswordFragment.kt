@@ -86,14 +86,14 @@ class SetPasswordFragment: Fragment() {
         }
     }
 
-    private fun setScreenUpdatePassword() {
+    private fun setScreenConfirmPassword() {
         binding.apply {
             tvSetPasswordTitle.text = "암호 확인"
             tvSetPasswordDescription.text = "한번 더 입력해주세요"
         }
     }
 
-    private fun setScreenConfirmPassword() {
+    private fun setScreenUpdatePassword() {
         binding.apply {
             tvSetPasswordTitle.text = "암호 변경"
             tvSetPasswordDescription.text = "설정할 암호를 입력해 주세요"

@@ -25,4 +25,8 @@ class BitdamSharedPreferences(context: Context) {
     var bitdamPassword: String?
         get() = pref.getString("BITDAM_PASSWORD", null)
         set(value) = pref.edit().putString("BITDAM_PASSWORD", value).apply()
+
+    var passwordHint: String?
+        get() = pref.getString("BITDAM_PASSWORD_HINT", null)
+        set(value) = pref.edit().putString("BITDAM_PASSWORD_HINT", value).apply()
 }

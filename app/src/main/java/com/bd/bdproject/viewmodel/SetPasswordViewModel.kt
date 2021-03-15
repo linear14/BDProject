@@ -12,6 +12,7 @@ class SetPasswordViewModel: ViewModel() {
     val isActivate: MutableLiveData<Boolean> = MutableLiveData(BitDamApplication.pref.bitdamPassword != null)
     val tempPassword: MutableLiveData<String> = MutableLiveData()
     val confirmPassword: MutableLiveData<String> = MutableLiveData()
+    var passwordHint: String = ""
 
     fun clickButton(cmd: String) {
         var temp = if(type == PasswordType.TYPE_NEW) {
