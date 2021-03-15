@@ -9,10 +9,14 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavDirections
+import androidx.navigation.Navigation
 import com.bd.bdproject.alarm.DairyAlarmReceiver
 import com.bd.bdproject.alarm.DeviceBootReceiver
 import com.bd.bdproject.databinding.ActivitySettingBinding
 import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.view.fragment.enroll.EnrollBrightnessFragmentDirections
+import com.bd.bdproject.view.fragment.password.SetPasswordFragmentDirections
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,6 +31,10 @@ class SettingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.apply {
+            settingLock.setOnClickListener {
+                startActivity(Intent(it.context, SetPasswordActivity::class.java))
+            }
+
             btnBack.setOnClickListener { onBackPressed() }
 
             /*** 테스트 코드 ***/

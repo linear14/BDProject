@@ -57,7 +57,7 @@
             android:id="@+id/circle_marker"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/deco_marker_circle"
+            android:background="@drawable/deco_marker_circle_yellow"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/guideline_bottom_circle"
             app:layout_constraintEnd_toStartOf="@id/guideline_right_circle"
