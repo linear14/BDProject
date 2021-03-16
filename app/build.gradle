@@ -89,6 +89,9 @@ dependencies {
     // Pie Chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    // lifecycle
+    implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
+
     // Test
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -5,10 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.databinding.ActivitySplashBinding
+import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.util.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.util.Constant.SPLASH
+import com.bd.bdproject.util.SharedUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import kotlinx.coroutines.*
@@ -22,9 +24,10 @@ class SplashActivity : AppCompatActivity() {
     var splashJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        BitdamLog.contentLogger("onCreate()")
+        BitDamApplication.removeLifecycleObserver()
+        BitdamLog.contentLogger("SplashActivity: onCreate")
 
+        super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater).apply {
             setContentView(root)
 
@@ -56,6 +59,7 @@ class SplashActivity : AppCompatActivity() {
 
                     startActivity(intent.apply { putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH) } )
                     finish()
+                    BitDamApplication.enrollLifecycleObserver()
                 }
             }
         }
@@ -63,7 +67,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        BitdamLog.contentLogger("onResume()")
+        BitdamLog.contentLogger("SplashActivity: onResume")
 
         splashJob?.let { job ->
             if(!job.isActive) {
@@ -79,4 +83,32 @@ class SplashActivity : AppCompatActivity() {
             splashJob?.cancelAndJoin()
         }
     }
+
+
+    // LIFECYCLE TEST
+    override fun onStart() {
+        super.onStart()
+        BitdamLog.contentLogger("SplashActivity: onStart")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BitdamLog.contentLogger("SplashActivity: onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        BitdamLog.contentLogger("SplashActivity: onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        BitdamLog.contentLogger("SplashActivity: onDestroy")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        BitdamLog.contentLogger("SplashActivity: onRestart")
+    }
+    // LIFECYCLE TEST END
 }

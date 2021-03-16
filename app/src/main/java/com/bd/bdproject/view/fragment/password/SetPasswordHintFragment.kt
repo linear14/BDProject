@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bd.bdproject.databinding.FragmentSetPasswordBinding
 import com.bd.bdproject.databinding.FragmentSetPasswordHintBinding
 import com.bd.bdproject.view.activity.SetPasswordActivity
-import com.bd.bdproject.viewmodel.SetPasswordViewModel
+import com.bd.bdproject.viewmodel.PasswordViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SetPasswordHintFragment: Fragment() {
@@ -18,7 +17,7 @@ class SetPasswordHintFragment: Fragment() {
     var _binding: FragmentSetPasswordHintBinding? = null
     val binding get() = _binding!!
 
-    val viewModel: SetPasswordViewModel by sharedViewModel()
+    val viewModel: PasswordViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

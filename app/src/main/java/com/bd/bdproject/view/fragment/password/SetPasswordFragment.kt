@@ -13,7 +13,7 @@ import com.bd.bdproject.PasswordType
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentSetPasswordBinding
 import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.viewmodel.SetPasswordViewModel
+import com.bd.bdproject.viewmodel.PasswordViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SetPasswordFragment: Fragment() {
@@ -21,7 +21,7 @@ class SetPasswordFragment: Fragment() {
     var _binding: FragmentSetPasswordBinding? = null
     val binding get() = _binding!!
 
-    val viewModel: SetPasswordViewModel by sharedViewModel()
+    val viewModel: PasswordViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

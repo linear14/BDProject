@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.widget.Toast
 import com.bd.bdproject.databinding.ActivitySetPasswordBinding
 import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.viewmodel.SetPasswordViewModel
+import com.bd.bdproject.viewmodel.PasswordViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SetPasswordActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySetPasswordBinding
-    private val viewModel: SetPasswordViewModel by viewModel()
+    private val viewModel: PasswordViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
