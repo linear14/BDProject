@@ -6,17 +6,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation
 import com.bd.bdproject.alarm.DairyAlarmReceiver
 import com.bd.bdproject.alarm.DeviceBootReceiver
 import com.bd.bdproject.databinding.ActivitySettingBinding
 import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.view.fragment.enroll.EnrollBrightnessFragmentDirections
-import com.bd.bdproject.view.fragment.password.SetPasswordFragmentDirections
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +30,17 @@ class SettingActivity : AppCompatActivity() {
         binding.apply {
             settingLock.setOnClickListener {
                 startActivity(Intent(it.context, SetPasswordActivity::class.java))
+            }
+
+            settingHelp.setOnClickListener {
+                val emailIntent = Intent(Intent.ACTION_SENDTO/*, Uri.fromParts("mailto", "", null)*/).apply {
+                    type = "message/rfc822"
+                    data = Uri.parse("mailto:")
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf("bitdam@gmail.com"))
+                    putExtra(Intent.EXTRA_SUBJECT, "문의 제목")
+                    putExtra(Intent.EXTRA_TEXT, "문의내용을 남겨주세요.\n(비밀번호 찾기 및 데이터 복원은 불가능합니다)")
+                }
+                startActivity(Intent.createChooser(emailIntent,""))
             }
 
             btnBack.setOnClickListener { onBackPressed() }
