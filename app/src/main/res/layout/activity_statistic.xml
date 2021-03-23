@@ -114,10 +114,10 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:background="#2a0d16" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -136,10 +136,10 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:background="#563737" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -158,10 +158,10 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:background="#a14021" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -180,10 +180,10 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:background="#ff7a00" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -202,10 +202,10 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:background="#ffcd4d" />
 
                     <TextView
                         android:layout_width="wrap_content"
