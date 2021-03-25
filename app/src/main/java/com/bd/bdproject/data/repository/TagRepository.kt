@@ -1,6 +1,7 @@
 package com.bd.bdproject.data.repository
 
 import com.bd.bdproject.data.dao.TagDao
+import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.TagWithLights
 
@@ -36,7 +37,7 @@ class TagRepository(private val tagDao: TagDao) {
         return tagDao.searchTagReturnTagDesc(word)
     }
 
-    fun searchTagOrderByUsedCount(word: String): List<String> {
+    fun searchTagOrderByUsedCount(word: String): List<SearchedTag> {
         return tagDao.searchTagOrderByUsedCount(word)
     }
 

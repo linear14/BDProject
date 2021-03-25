@@ -121,7 +121,7 @@ open class EnrollTagFragment: ControlTagFragment() {
             val brightness = sharedViewModel.brightness.value
 
             tagRecommendAdapter.submitList(
-                searchedResult.map{ Tag(it) }.toMutableList(),
+                searchedResult.map{ Tag(it.name) }.toMutableList(),
                 brightness?:0,
                 true
             )

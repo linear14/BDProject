@@ -2,6 +2,7 @@ package com.bd.bdproject.data.dao
 
 import androidx.room.*
 import com.bd.bdproject.data.model.LightWithTags
+import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.TagWithLights
 
@@ -36,14 +37,14 @@ interface TagDao {
     @Query("SELECT * FROM tag WHERE name LIKE :word ORDER BY name DESC")
     fun searchTagReturnTagDesc(word: String): List<TagWithLights>
 
-    @Query("SELECT A.name " +
+    @Query("SELECT A.name, Count(A.name) as count " +
             "FROM tag A, lightTagRelation B " +
             "WHERE A.name LIKE :word " +
             "AND A.name = B.name " +
             "GROUP BY A.name " +
             "ORDER BY Count(A.name) DESC " +
             "LIMIT 3")
-    fun searchTagOrderByUsedCount(word: String): List<String>
+    fun searchTagOrderByUsedCount(word: String): List<SearchedTag>
 
     @Transaction
     @Query("SELECT * FROM tag WHERE name = :tagName")

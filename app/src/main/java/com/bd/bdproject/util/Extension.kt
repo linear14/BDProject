@@ -3,6 +3,7 @@ package com.bd.bdproject.util
 import android.content.res.Resources
 import android.view.View
 import android.view.ViewPropertyAnimator
+import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER
 
 fun View.animateTransparency(toAlpha: Float, duration: Long = 0): ViewPropertyAnimator {
@@ -107,5 +108,17 @@ fun String.addTransparency(transparency: String): String {
         sb.toString()
     } else {
         this
+    }
+}
+
+fun MutableList<SearchedTag>.returnBoundaryList(maxCount: Int): MutableList<SearchedTag> {
+    if(this.size < maxCount) {
+        return this
+    } else {
+        val newList = mutableListOf<SearchedTag>()
+        for(i in 0 until maxCount) {
+            newList.add(this[i])
+        }
+        return newList
     }
 }

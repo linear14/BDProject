@@ -101,7 +101,7 @@ open class EditTagFragment: ControlTagFragment() {
             val brightness = args.light?.bright ?: 0
 
             tagRecommendAdapter.submitList(
-                searchedResult.map{ Tag(it) }.toMutableList(),
+                searchedResult.map{ Tag(it.name) }.toMutableList(),
                 brightness,
                 true
             )
