@@ -141,7 +141,8 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                                     tvBrightness.visibility = View.VISIBLE
                                     tvBrightness.text =
                                         (sharedViewModel.brightness.value ?: 0).toString()
-                                    sbLight.barWidth = 4
+                                    // TODO 여기서도 Seekbar 제대로 보이도록 변경
+                                    // sbLight.barWidth = 4
                                     isFirstPressed = false
                                 }
                             }
@@ -213,6 +214,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         binding.apply {
             actionDatePick.visibility = View.GONE
             tvAskCondition.visibility = View.GONE
+            sbLight.makeBarVisible()
 
             isFirstPressed = false
 
@@ -236,7 +238,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
     private fun setSeekBarReleaseListener() {
         binding.apply {
-            sbLight.setOnReleaseListener { progress ->
+            sbLight.setOnReleaseListener {
                 if(!isFirstPressed && !isChangingFragment) {
                     isChangingFragment = true
                     saveBrightness()

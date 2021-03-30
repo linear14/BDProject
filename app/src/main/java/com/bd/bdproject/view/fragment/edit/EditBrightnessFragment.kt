@@ -45,6 +45,7 @@ open class EditBrightnessFragment: ControlBrightnessFragment() {
             btnBack.visibility = View.VISIBLE
             btnDrawer.visibility = View.GONE
             sbLight.alpha = 1.0f
+            sbLight.makeBarVisible()
             actionEnroll.visibility = View.VISIBLE
         }
     }

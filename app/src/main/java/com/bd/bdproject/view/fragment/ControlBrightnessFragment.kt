@@ -42,8 +42,6 @@ open class ControlBrightnessFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            sbLight.thumbPlaceholderDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.deco_seekbar_thumb)
-
             setSeekBarPressListener()
             setSeekBarProgressChangedListener()
         }
@@ -63,13 +61,13 @@ open class ControlBrightnessFragment: BaseFragment() {
 
     private fun setSeekBarPressListener() {
         binding.apply {
-            sbLight.setOnPressListener { progress ->
+            sbLight.setOnPressListener {
                 if(isFirstPressed) {
                     tvAskCondition.visibility = View.GONE
                     tvBrightness.visibility = View.VISIBLE
-                    tvBrightness.text = getBrightness(progress).toString()
-                    sbLight.barWidth = 4
                     actionDatePick.visibility = View.GONE
+
+                    sbLight.makeBarVisible()
                 }
             }
         }
@@ -99,8 +97,7 @@ open class ControlBrightnessFragment: BaseFragment() {
             layoutAddLight.background = gradientDrawable
             tvBrightness.text = brightness.toString()
             tvBrightness.visibility = View.VISIBLE
-            sbLight.barWidth = 4
-            sbLight.progress = brightness * 2
+            sbLight.firstProgress = brightness * 2
         }
     }
 
