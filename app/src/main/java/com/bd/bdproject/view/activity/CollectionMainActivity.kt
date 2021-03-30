@@ -96,6 +96,8 @@ class CollectionMainActivity : AppCompatActivity() {
 
             if(sb.toString().timeToLong() > System.currentTimeMillis()) {
                 Toast.makeText(this, "미래의 빛을 등록할 수 없습니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            } else if(sb.toString() == System.currentTimeMillis().timeToString()) {
+                Toast.makeText(this, "오늘의 빛은 홈 화면에서 등록해주세요.", Toast.LENGTH_SHORT).show()
             } else {
                 GlobalScope.launch {
                     val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())

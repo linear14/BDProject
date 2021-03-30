@@ -90,27 +90,6 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     override fun onResume() {
         super.onResume()
 
-        // 오늘의 빛이 등록되어있는지 다시 확인 (Collection 에서 오늘의 빛을 추가했을 경우를 대비)
-        CoroutineScope(Dispatchers.IO).launch {
-            val currentDay = System.currentTimeMillis().timeToString()
-            val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(currentDay)
-            val isEnrolledToday = deferred.await()
-
-            if(isEnrolledToday) {
-                launch(Dispatchers.Main) {
-                    val intent: Intent =
-                        Intent(requireActivity(), DetailActivity::class.java).apply {
-                            putExtra(Constant.INFO_DATE_CODE, currentDay)
-                            putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, true)
-                        }
-
-                    startActivity(intent.apply { putExtra(Constant.INFO_PREVIOUS_ACTIVITY, Constant.SPLASH) } )
-                    parentActivity.finish()
-                }
-            }
-        }
-
-
         binding.actionDatePick.setOnClickListener {
             val dateBundle = Bundle().apply {
                 val dateCode = sharedViewModel.dateCode.value
@@ -236,9 +215,13 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             if(isAnimationActive()) {
                 if(sharedViewModel.brightness.value != null) {
                     sbLight.animateTransparency(1.0f, 2000)
+                } else {
+                    if(parentActivity.previousActivity == COLLECTION_MAIN) {
+                        sbLight.animateTransparency(1.0f, 2000)
+                    }
                 }
             } else {
-                sbLight.alpha = 1f
+                sbLight.alpha = 1.0f
             }
         }
     }

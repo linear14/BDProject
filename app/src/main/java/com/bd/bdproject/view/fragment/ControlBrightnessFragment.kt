@@ -111,6 +111,7 @@ open class ControlBrightnessFragment: BaseFragment() {
                 brightness,
                 tvBrightness,
                 actionEnroll,
+                btnDrawer,
                 btnBack
             )
         }
