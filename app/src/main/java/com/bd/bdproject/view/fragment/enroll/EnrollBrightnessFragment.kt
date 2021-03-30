@@ -15,16 +15,22 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
-import com.bd.bdproject.util.*
+import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
+import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.util.timeToLong
+import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 open class EnrollBrightnessFragment: ControlBrightnessFragment() {
@@ -76,6 +82,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
         binding.apply {
             setSeekBarReleaseListener()
+            setThumbFirstClickListener()
         }
 
     }
@@ -141,8 +148,8 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                                     tvBrightness.visibility = View.VISIBLE
                                     tvBrightness.text =
                                         (sharedViewModel.brightness.value ?: 0).toString()
-                                    // TODO 여기서도 Seekbar 제대로 보이도록 변경
-                                    // sbLight.barWidth = 4
+                                    sbLight.makeBarVisible()
+                                    sbLight.thumbAvailable = true
                                     isFirstPressed = false
                                 }
                             }
@@ -250,6 +257,12 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun setThumbFirstClickListener() {
+        binding.sbLight.setOnThumbFirstClickListener {
+            binding.sbLight.thumbAvailable = true
         }
     }
 

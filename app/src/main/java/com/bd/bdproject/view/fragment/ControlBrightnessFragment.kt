@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
 import com.bd.bdproject.util.LightUtil.getDiagonalLight
@@ -98,6 +96,7 @@ open class ControlBrightnessFragment: BaseFragment() {
             tvBrightness.text = brightness.toString()
             tvBrightness.visibility = View.VISIBLE
             sbLight.firstProgress = brightness * 2
+            sbLight.thumbAvailable = true
         }
     }
 

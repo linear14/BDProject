@@ -54,18 +54,20 @@ class BitdamSeekBar: View {
     var firstProgress: Int? = null
 
     private var thumbRect: Rect? = null
-    private var thumbAvailable = false
+    private var thumbPressed = false
+    var thumbAvailable = false
 
     private var onProgressChangeListener: ((Int) -> Unit)? = null
     private var onPressListener: (() -> Unit)? = null
     private var onReleaseListener: (() -> Unit)? = null
+    private var onThumbFirstClickListener: (() -> Unit)? = null
 
     init {
         thumbRadius = 20.dpToPx()
         verticalOffset = 25.dpToPx()
         minValue = 0
         maxValue = 200
-        thumbAvailable = false
+        thumbPressed = false
         isInit = true
     }
 
@@ -125,6 +127,10 @@ class BitdamSeekBar: View {
         this.onReleaseListener = listener
     }
 
+    fun setOnThumbFirstClickListener(listener: (() -> Unit)?) {
+        this.onThumbFirstClickListener = listener
+    }
+
     private fun activateThumbTouchListener() {
         setOnTouchListener { view, event ->
             when(event.action) {
@@ -132,7 +138,7 @@ class BitdamSeekBar: View {
 
                     thumbRect?.let { thumbRect ->
                         if(thumbRect.contains(event.x.toInt(), event.y.toInt())) {
-                            thumbAvailable = true
+                            thumbPressed = true
                             onPressListener?.invoke()
                         }
                     }
@@ -144,7 +150,7 @@ class BitdamSeekBar: View {
                         makeBoundaryList()
                     }
 
-                    if(thumbAvailable) {
+                    if(thumbPressed && thumbAvailable) {
                         thumbRect?.let { thumbRect ->
                             var (x, y) = event.x to event.y + top
 
@@ -185,11 +191,16 @@ class BitdamSeekBar: View {
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if(thumbAvailable) {
-                        onReleaseListener?.invoke()
-                        view.performClick()
+                    if(thumbPressed) {
+                        if(thumbAvailable) {
+                            onReleaseListener?.invoke()
+                            view.performClick()
+                        } else {
+                            onThumbFirstClickListener?.invoke()
+                            onProgressChangeListener?.invoke(firstProgress?:defaultProgress)
+                        }
                     }
-                    thumbAvailable = false
+                    thumbPressed = false
                 }
             }
             true
