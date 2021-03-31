@@ -2,17 +2,16 @@ package com.bd.bdproject.view.activity
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.databinding.ActivityCalendarBinding
-import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 import org.koin.android.ext.android.inject
-import java.lang.StringBuilder
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -37,15 +36,27 @@ class CalendarActivity : AppCompatActivity() {
 
                 val startDay = viewModel.duration.value?.first
                 val endDay = viewModel.duration.value?.second?:startDay
-                resultIntent.putExtra("START_DAY", startDay)
-                resultIntent.putExtra("END_DAY", endDay)
 
-                BitdamLog.titleLogger("달력에서의 ViewModel 제공 데이터 (initViewModel)")
-                BitdamLog.dateCodeLogger(startDay)
-                BitdamLog.dateCodeLogger(endDay)
+                if(startDay != null && endDay != null) {
+                    val interval = endDay - startDay
 
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+                    if(interval <= 1000 * 60 * 60 * 24 * 365L) {
+                        resultIntent.putExtra("START_DAY", startDay)
+                        resultIntent.putExtra("END_DAY", endDay)
+
+                        /*BitdamLog.titleLogger("달력에서의 ViewModel 제공 데이터 (initViewModel)")
+                        BitdamLog.dateCodeLogger(startDay)
+                        BitdamLog.dateCodeLogger(endDay)*/
+
+                        setResult(Activity.RESULT_OK, resultIntent)
+                        finish()
+                    } else {
+                        Toast.makeText(this.root.context, "1년 이내의 기간 설정만 가능합니다.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this.root.context, "값이 불분명합니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
     }
