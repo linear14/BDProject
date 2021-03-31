@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.databinding.ActivitySplashBinding
+import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.Constant.INFO_DATE_CODE
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
@@ -35,6 +36,7 @@ class SplashActivity : AppCompatActivity() {
                 val deferred = splashViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
                 val isEnrolledToday = deferred.await()
 
+                AlarmUtil.setThreeDayAlarm(this@SplashActivity)
                 delay(1500)
 
                 // 데이터 불러오기 실패했을 경우

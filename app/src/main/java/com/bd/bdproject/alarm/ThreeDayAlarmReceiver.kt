@@ -27,16 +27,16 @@ class ThreeDayAlarmReceiver: BroadcastReceiver() {
         )
 
         context?.let {
-            val builder = NotificationCompat.Builder(it, "default")
+            val builder = NotificationCompat.Builder(it, "three_day_alarm_channel")
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 builder.setSmallIcon(R.drawable.ic_bitdam)
 
-                val channelName = "PUSH_CHANNEL"
-                val description = "푸쉬 테스트"
+                val channelName = "THREE_DAY_CHANNEL"
+                val description = "FOR_THREE_DAY_ALARM"
                 val importance = NotificationManager.IMPORTANCE_HIGH
 
-                val channel = NotificationChannel("default", channelName, importance)
+                val channel = NotificationChannel("three_day_alarm_channel", channelName, importance)
                 channel.description = description
 
                 notificationManager?.createNotificationChannel(channel)
@@ -51,23 +51,21 @@ class ThreeDayAlarmReceiver: BroadcastReceiver() {
                 .setContentText("3일동안 접속하지 않았어요. 빛을 등록해주세요.")
                 .setContentIntent(pendingIntent)
 
-            notificationManager?.notify(1234, builder.build())
+            notificationManager?.notify(5678, builder.build())
         }
 
-        // TODO 날짜 선택
-        val nextNotifyTime = Calendar.getInstance()
+        /*val nextNotifyTime = Calendar.getInstance()
         nextNotifyTime.set(Calendar.SECOND, 0)
-        nextNotifyTime.set(Calendar.DATE, 3)
-
-        // BitDamApplication.pref.dairyAlarmTime = nextNotifyTime.timeInMillis
+        // nextNotifyTime.add(Calendar.DATE, 3)
+        nextNotifyTime.add(Calendar.MINUTE, 16)
 
         val currentDateTime = nextNotifyTime.time
         val date_text = SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime)
         Toast.makeText(
             context?.applicationContext,
-            "다음 알람은 " + date_text + "으로 알람이 설정되었습니다!",
+            "다음 [3일 알람]은 " + date_text + "으로 알람이 설정되었습니다!",
             Toast.LENGTH_SHORT
         ).show()
-
+*/
     }
 }

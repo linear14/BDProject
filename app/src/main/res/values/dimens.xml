@@ -21,7 +21,7 @@
 
 
     <!-- text size -->
-    <dimen name="toolbar_title">16sp</dimen>
+    <dimen name="toolbar_title">18sp</dimen>
 
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_normal">14sp</dimen>

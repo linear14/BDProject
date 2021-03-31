@@ -27,16 +27,16 @@ class DairyAlarmReceiver: BroadcastReceiver() {
         )
 
         context?.let {
-            val builder = NotificationCompat.Builder(it, "default")
+            val builder = NotificationCompat.Builder(it, "dairy_alarm_channel")
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 builder.setSmallIcon(R.drawable.ic_bitdam)
 
-                val channelName = "PUSH_CHANNEL"
-                val description = "푸쉬 테스트"
+                val channelName = "DAIRY_CHANNEL"
+                val description = "FOR_DAIRY_ALARM"
                 val importance = NotificationManager.IMPORTANCE_HIGH
 
-                val channel = NotificationChannel("default", channelName, importance)
+                val channel = NotificationChannel("dairy_alarm_channel", channelName, importance)
                 channel.description = description
 
                 notificationManager?.createNotificationChannel(channel)
@@ -54,19 +54,17 @@ class DairyAlarmReceiver: BroadcastReceiver() {
             notificationManager?.notify(1234, builder.build())
         }
 
-        val nextNotifyTime = Calendar.getInstance()
+        /*val nextNotifyTime = Calendar.getInstance()
         nextNotifyTime.set(Calendar.SECOND, 0)
-        nextNotifyTime.add(Calendar.MINUTE, 15)
-
-        // BitDamApplication.pref.dairyAlarmTime = nextNotifyTime.timeInMillis
+        nextNotifyTime.add(Calendar.DATE, 1)
 
         val currentDateTime = nextNotifyTime.time
         val date_text = SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime)
         Toast.makeText(
             context?.applicationContext,
-            "다음 알람은 " + date_text + "으로 알람이 설정되었습니다!",
+            "다음 [매일 알람]은 " + date_text + "으로 알람이 설정되었습니다!",
             Toast.LENGTH_SHORT
-        ).show()
+        ).show()*/
 
     }
 }

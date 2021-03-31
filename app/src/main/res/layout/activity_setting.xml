@@ -32,13 +32,16 @@
                 app:tint="@color/black" />
 
             <TextView
+                style="@style/toolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:fontFamily="@font/noto_regular"
                 android:text="설정"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btn_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -58,24 +61,46 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="#ebebeb" />
+
             <LinearLayout
                 android:id="@+id/setting_push"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fontFamily="@font/noto_regular"
                     android:text="푸시 알림"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_push"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_lock"
@@ -84,16 +109,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="잠금 설정"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_how_to_use"
@@ -102,16 +132,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="사용방법 보기"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_animation"
@@ -120,25 +155,30 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/noto_regular"
-                    android:text="애니메이션"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:fontFamily="@font/noto_regular"
+                    android:text="애니메이션"
+                    android:textSize="@dimen/text_size_large" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_animation"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center" />
 
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_theme"
@@ -147,16 +187,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="테마 변경"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_backup"
@@ -165,35 +210,50 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="데이터 백업/복원"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_maker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="만든이"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_review"
@@ -202,16 +262,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="앱 평가하기"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_help"
@@ -220,16 +285,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="문의하기"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_license"
@@ -238,16 +308,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="오픈소스 라이선스"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_version"
@@ -256,16 +331,21 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="버전 정보"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <LinearLayout
                 android:id="@+id/setting_question"
@@ -274,40 +354,33 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="12dp">
+                android:paddingVertical="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="자주 묻는 질문"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/test_dairy_alarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="오후 9시 알람"/>
-
-            <Button
-                android:id="@+id/test_dairy_alarm_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="오후 9시 알람 취소"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
 
             <Button
                 android:id="@+id/test_three_day_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3일마다 한 번씩 알람"/>
+                android:text="3일마다 한 번씩 알람" />
 
             <Button
                 android:id="@+id/test_three_day_alarm_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3일마다 한 번씩 알람 취소"/>
+                android:text="3일마다 한 번씩 알람 취소" />
 
         </LinearLayout>
     </ScrollView>

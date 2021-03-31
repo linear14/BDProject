@@ -11,4 +11,6 @@
 
 
     <color name="text_color_gray">#D4D4D4</color>
+
+    <color name="color_yellow">#FFCC56</color>
 </resources>

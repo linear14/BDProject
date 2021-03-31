@@ -1,21 +1,13 @@
 package com.bd.bdproject.view.activity
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bd.bdproject.alarm.DairyAlarmReceiver
-import com.bd.bdproject.alarm.DeviceBootReceiver
 import com.bd.bdproject.databinding.ActivitySettingBinding
+import com.bd.bdproject.util.AlarmUtil
+import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
 import com.bd.bdproject.util.BitDamApplication
-import java.text.SimpleDateFormat
-import java.util.*
 
 class SettingActivity : AppCompatActivity() {
 
@@ -44,13 +36,9 @@ class SettingActivity : AppCompatActivity() {
             }
 
             btnBack.setOnClickListener { onBackPressed() }
-
-            /*** 테스트 코드 ***/
-            testDairyAlarm.setOnClickListener { setFirstAlarmTime(true) }
-            testDairyAlarmCancel.setOnClickListener { setFirstAlarmTime(false) }
         }
 
-
+        setSwitchPush()
         setSwitchAnimation()
     }
 
@@ -58,7 +46,27 @@ class SettingActivity : AppCompatActivity() {
         super.onResume()
 
         binding.apply {
+            switchPush.isChecked = BitDamApplication.pref.usePush
             switchAnimation.isChecked = BitDamApplication.pref.isAnimationActivate
+        }
+    }
+
+    private fun setSwitchPush() {
+        binding.switchPush.setOnCheckedChangeListener { view, newCheckedState ->
+            val oldCheckedState = BitDamApplication.pref.usePush
+            BitDamApplication.pref.usePush = newCheckedState
+
+            if(newCheckedState) {
+                if(oldCheckedState != newCheckedState) {
+                    AlarmUtil.setDairyAlarm(view.context, 22)
+                    AlarmUtil.setThreeDayAlarm(view.context)
+                }
+            } else {
+                if(oldCheckedState != newCheckedState) {
+                    AlarmUtil.setDairyAlarm(view.context, NOT_USE_ALARM)
+                    AlarmUtil.setThreeDayAlarm(view.context)
+                }
+            }
         }
     }
 
@@ -68,15 +76,15 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun setFirstAlarmTime(isNewAlarm: Boolean) {
+/*    private fun setFirstAlarmTime(isNewAlarm: Boolean) {
         // val time = BitDamApplication.pref.dairyAlarmTime
         val calendar = Calendar.getInstance()
         // TEST
         calendar.timeInMillis = System.currentTimeMillis() + 1000 * 10
-        /*calendar.timeInMillis = System.currentTimeMillis()
+        *//*calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 31)
-        calendar.set(Calendar.SECOND, 0)*/
+        calendar.set(Calendar.SECOND, 0)*//*
 
         if(calendar.before(Calendar.getInstance())) {
             calendar.add(Calendar.DATE, 1)
@@ -111,5 +119,5 @@ class SettingActivity : AppCompatActivity() {
             Toast.makeText(this, "알람이 취소되었습니다.", Toast.LENGTH_SHORT).show()
         }
 
-    }
+    }*/
 }
