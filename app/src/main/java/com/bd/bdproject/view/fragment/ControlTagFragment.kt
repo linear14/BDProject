@@ -23,6 +23,7 @@ import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.snackbar.Snackbar
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -172,7 +173,7 @@ open class ControlTagFragment: BaseFragment() {
 
         // 태그 갯수가 4개 이상 (등록)
         if (!tagEnrolledAdapter.isEditMode && candidateTags.size >= 4) {
-            Toast.makeText(BitDamApplication.applicationContext(), "태그는 최대 4개까지 등록 가능합니다.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "태그는 최대 4개까지 등록 가능합니다.", Snackbar.LENGTH_SHORT).show()
             binding.inputTag.setText(tagName)
             binding.inputTag.setSelection(binding.inputTag.text.length)
             return false
@@ -183,8 +184,7 @@ open class ControlTagFragment: BaseFragment() {
             (tagEnrolledAdapter.isEditMode && tagName in candidateTags
                 .filter { tag -> tag.name != tagEnrolledAdapter.editModeTag }
                 .map { it.name })) {
-            Toast.makeText(BitDamApplication.applicationContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT)
-                .show()
+            Snackbar.make(binding.root, "태그명이 중복되었습니다. 다시 입력해주세요.", Snackbar.LENGTH_SHORT).show()
             binding.inputTag.setText(tagName)
             binding.inputTag.setSelection(binding.inputTag.text.length)
             return false
@@ -316,7 +316,7 @@ open class ControlTagFragment: BaseFragment() {
         // 공백이 중간에 끼어있을 경우를 검사 (마지막 스페이스는 제외)
         private fun checkIsThereAnyBlank(s: CharSequence): Boolean {
             if((s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" ")))  {
-                Toast.makeText(BitDamApplication.applicationContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "공백이 포함된 태그는 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
                 binding.inputTag.text.clear()
                 return true
             }

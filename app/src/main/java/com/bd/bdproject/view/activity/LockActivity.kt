@@ -11,6 +11,7 @@ import com.bd.bdproject.PasswordType
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentSetPasswordBinding
 import com.bd.bdproject.viewmodel.PasswordViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 
 class LockActivity : AppCompatActivity() {
@@ -81,7 +82,7 @@ class LockActivity : AppCompatActivity() {
                         for(i in 0 until 4) {
                             (layoutDotPassword.getChildAt(i) as View).setBackgroundResource(R.drawable.deco_marker_circle_gray)
                         }
-                        Toast.makeText(this@LockActivity, "잘못된 암호입니다.", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "잘못된 암호입니다.", Snackbar.LENGTH_SHORT).show()
                         viewModel.verifyPassword.value = ""
                     }
                 }

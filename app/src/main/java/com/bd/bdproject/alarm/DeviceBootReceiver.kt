@@ -30,12 +30,12 @@ class DeviceBootReceiver : BroadcastReceiver() {
             }
 
             val nextAlarmTime: Date = nextNotifyTime.time
-            val toastMessage = SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ").format(nextAlarmTime)
+            /*val toastMessage = SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ").format(nextAlarmTime)
             Toast.makeText(
                 context.applicationContext,
                 "[재부팅후] 다음 알람은 " + toastMessage + "으로 알람이 설정되었습니다!",
                 Toast.LENGTH_SHORT
-            ).show()
+            ).show()*/
 
             manager.setRepeating(
                 AlarmManager.RTC_WAKEUP, nextNotifyTime.timeInMillis,

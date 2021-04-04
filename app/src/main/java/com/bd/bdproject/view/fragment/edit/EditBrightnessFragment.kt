@@ -8,6 +8,7 @@ import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.common.LightViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 

@@ -1,24 +1,23 @@
 package com.bd.bdproject.util
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.widget.Toast
+import android.view.View
 import com.bd.bdproject.alarm.DairyAlarmReceiver
 import com.bd.bdproject.alarm.DeviceBootReceiver
 import com.bd.bdproject.alarm.ThreeDayAlarmReceiver
-import java.text.SimpleDateFormat
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 object AlarmUtil {
 
     const val NOT_USE_ALARM = -1000
 
-    fun setDairyAlarm(context: Context, hour: Int) {
+    fun setDairyAlarm(context: Context, view: View, hour: Int) {
         val pm = context.packageManager
         val receiver = ComponentName(context, DeviceBootReceiver::class.java)
         val alarmIntent = Intent(context, DairyAlarmReceiver::class.java).let { intent ->
@@ -40,11 +39,11 @@ object AlarmUtil {
             if(calendar.before(Calendar.getInstance())) {
                 calendar.add(Calendar.DATE, 1)
             }
-            Toast.makeText(context, "매일 알람을 설정하셨습니다.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(view, "매일 알람을 설정하셨습니다.", Snackbar.LENGTH_SHORT).show()
 
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent)
         } else {
-            Toast.makeText(context, "매일 알람을 해제하셨습니다.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(view, "매일 알람을 해제하셨습니다.", Snackbar.LENGTH_SHORT).show()
         }
     }
 

@@ -22,6 +22,7 @@ import com.bd.bdproject.util.dpToPx
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -60,11 +61,11 @@ class ManageHashActivity : AppCompatActivity() {
 
                         manageHashViewModel.setOnAsyncWorkFinishedListener(object: OnAsyncWorkFinished {
                             override fun onSuccess() {
-                                Toast.makeText(this@ManageHashActivity, "태그 삭제가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                Snackbar.make(binding.root, "태그 삭제가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
                             }
 
                             override fun onFailure() {
-                                Toast.makeText(this@ManageHashActivity, "태그 삭제에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                                Snackbar.make(binding.root, "태그 삭제에 실패하였습니다.", Snackbar.LENGTH_SHORT).show()
                             }
 
                         })
@@ -119,11 +120,11 @@ class ManageHashActivity : AppCompatActivity() {
             actionDelete.setOnClickListener {
                 manageHashViewModel.setOnAsyncWorkFinishedListener(object: OnAsyncWorkFinished {
                     override fun onSuccess() {
-                        Toast.makeText(this@ManageHashActivity, "선택된 태그 삭제가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "선택된 태그 삭제가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
                     }
 
                     override fun onFailure() {
-                        Toast.makeText(this@ManageHashActivity, "선택된 태그 삭제에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "선택된 태그 삭제에 실패하였습니다.", Snackbar.LENGTH_SHORT).show()
                     }
 
                 })
@@ -155,11 +156,11 @@ class ManageHashActivity : AppCompatActivity() {
 
                         if(job.isCancelled) {
                             GlobalScope.launch(Dispatchers.Main) {
-                                Toast.makeText(applicationContext, "태그 합치기에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                                Snackbar.make(binding.root, "태그 합치기에 실패하였습니다.", Snackbar.LENGTH_SHORT).show()
                             }
                         } else if(job.isCompleted) {
                             GlobalScope.launch(Dispatchers.Main) {
-                                Toast.makeText(applicationContext, "태그 합치기가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                Snackbar.make(binding.root, "태그 합치기가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
                                 manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                             }
                         }

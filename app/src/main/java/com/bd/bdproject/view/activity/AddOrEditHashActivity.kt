@@ -13,6 +13,7 @@ import com.bd.bdproject.util.dpToPx
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.ACTION_ADD
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.ACTION_EDIT
 import com.bd.bdproject.viewmodel.ManageHashViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -71,11 +72,11 @@ class AddOrEditHashActivity : AppCompatActivity() {
                 val newTag = inputTag.text.toString()
 
                 if(newTag.isEmpty()) {
-                    Toast.makeText(view.context, "태그명을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "태그명을 입력해주세요.", Snackbar.LENGTH_SHORT).show()
                 } else if(newTag.contains(" ")) {
-                    Toast.makeText(view.context, "태그에는 공백이 들어갈 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "태그에는 공백이 들어갈 수 없습니다.", Snackbar.LENGTH_SHORT).show()
                 } else if(manageHashViewModel.isAlreadyExist(newTag)){
-                    Toast.makeText(view.context, "이미 존재하는 태그명입니다.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "이미 존재하는 태그명입니다.", Snackbar.LENGTH_SHORT).show()
                 } else {
                     when(type) {
                         ACTION_ADD -> {

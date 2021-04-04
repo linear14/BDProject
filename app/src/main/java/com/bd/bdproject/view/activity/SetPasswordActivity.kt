@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.bd.bdproject.databinding.ActivitySetPasswordBinding
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.viewmodel.PasswordViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SetPasswordActivity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class SetPasswordActivity : AppCompatActivity() {
             viewModel.isActivate.value = isChecked
 
             if(!isChecked) {
-                Toast.makeText(this, "암호가 해제되었습니다.", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "암호가 해제되었습니다.", Snackbar.LENGTH_SHORT).show()
                 BitDamApplication.pref.bitdamPassword = null
                 BitDamApplication.pref.passwordHint = null
             }

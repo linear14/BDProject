@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
@@ -16,6 +17,7 @@ import com.bd.bdproject.view.adapter.CollectionCalendarAdapter
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.CalendarViewModel
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -95,9 +97,9 @@ class CollectionMainActivity : AppCompatActivity() {
             }
 
             if(sb.toString().timeToLong() > System.currentTimeMillis()) {
-                Toast.makeText(this, "미래의 빛을 등록할 수 없습니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "미래의 빛을 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
             } else if(sb.toString() == System.currentTimeMillis().timeToString()) {
-                Toast.makeText(this, "오늘의 빛은 홈 화면에서 등록해주세요.", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "오늘의 빛은 홈 화면에서 등록해주세요.", Snackbar.LENGTH_SHORT).show()
             } else {
                 GlobalScope.launch {
                     val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
@@ -105,7 +107,7 @@ class CollectionMainActivity : AppCompatActivity() {
 
                     if(deferred.getCompleted()) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@CollectionMainActivity, "이미 빛 정보가 등록되어 있는 날입니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
                         }
                     } else {
                         withContext(Dispatchers.Main) {

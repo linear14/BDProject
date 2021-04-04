@@ -14,6 +14,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentSetPasswordBinding
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.viewmodel.PasswordViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SetPasswordFragment: Fragment() {
@@ -167,7 +168,7 @@ class SetPasswordFragment: Fragment() {
                             Navigation.findNavController(binding.root).navigate(directions)
                         }
                     } else {
-                        Toast.makeText(requireContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "비밀번호가 일치하지 않습니다.", Snackbar.LENGTH_SHORT).show()
                         viewModel.confirmPassword.value = ""
                     }
                 }

@@ -15,6 +15,7 @@ import com.bd.bdproject.view.adapter.TagAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.snackbar.Snackbar
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
 
 open class ControlMemoFragment: BaseFragment() {
@@ -113,7 +114,7 @@ open class ControlMemoFragment: BaseFragment() {
                 if(length > MAX_MEMO_LENGTH) {
                     inputMemo.setText(s?.substring(0, MAX_MEMO_LENGTH))
                     inputMemo.setSelection(MAX_MEMO_LENGTH)
-                    Toast.makeText(requireActivity(), "메모는 ${MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "메모는 ${MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Snackbar.LENGTH_SHORT).show()
                 } else {
                     tvTextCount.text = "${s?.length?:0}/${MAX_MEMO_LENGTH}자"
                 }

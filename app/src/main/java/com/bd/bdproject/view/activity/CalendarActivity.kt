@@ -11,6 +11,7 @@ import com.bd.bdproject.databinding.ActivityCalendarBinding
 import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 
 class CalendarActivity : AppCompatActivity() {
@@ -51,10 +52,10 @@ class CalendarActivity : AppCompatActivity() {
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
                     } else {
-                        Toast.makeText(this.root.context, "1년 이내의 기간 설정만 가능합니다.", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "1년 이내의 기간 설정만 가능합니다.", Snackbar.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this.root.context, "값이 불분명합니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "값이 불분명합니다. 다시 선택해주세요.", Snackbar.LENGTH_SHORT).show()
                 }
 
             }

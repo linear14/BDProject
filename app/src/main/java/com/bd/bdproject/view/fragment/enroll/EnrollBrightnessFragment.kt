@@ -27,6 +27,7 @@ import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -110,7 +111,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 }
 
                 if(sb.toString().timeToLong() > System.currentTimeMillis()) {
-                    Toast.makeText(requireActivity(), "미래의 빛을 등록할 수 없습니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "미래의 빛을 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
                 } else {
                     CoroutineScope(Dispatchers.IO).launch {
                         val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
@@ -118,7 +119,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
                         launch(Dispatchers.Main) {
                             if(isEnrolledToday) {
-                                Toast.makeText(requireActivity(), "이미 빛 정보가 등록되어 있는 날입니다.\n다른 날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                                Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
                             } else {
                                 sharedViewModel.dateCode.value = sb.toString()
                                 binding.apply {

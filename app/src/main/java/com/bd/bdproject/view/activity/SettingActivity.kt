@@ -8,6 +8,7 @@ import com.bd.bdproject.databinding.ActivitySettingBinding
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
 import com.bd.bdproject.util.BitDamApplication
+import com.google.android.material.snackbar.Snackbar
 
 class SettingActivity : AppCompatActivity() {
 
@@ -58,12 +59,12 @@ class SettingActivity : AppCompatActivity() {
 
             if(newCheckedState) {
                 if(oldCheckedState != newCheckedState) {
-                    AlarmUtil.setDairyAlarm(view.context, 22)
+                    AlarmUtil.setDairyAlarm(view.context, binding.root, 22)
                     AlarmUtil.setThreeDayAlarm(view.context)
                 }
             } else {
                 if(oldCheckedState != newCheckedState) {
-                    AlarmUtil.setDairyAlarm(view.context, NOT_USE_ALARM)
+                    AlarmUtil.setDairyAlarm(view.context, binding.root, NOT_USE_ALARM)
                     AlarmUtil.setThreeDayAlarm(view.context)
                 }
             }
@@ -71,8 +72,20 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun setSwitchAnimation() {
-        binding.switchAnimation.setOnCheckedChangeListener { _, isChecked ->
-            BitDamApplication.pref.isAnimationActivate = isChecked
+        binding.switchAnimation.setOnCheckedChangeListener { _, newCheckedState ->
+            val oldCheckedState = BitDamApplication.pref.isAnimationActivate
+            BitDamApplication.pref.isAnimationActivate = newCheckedState
+
+            if(newCheckedState) {
+                if(oldCheckedState != newCheckedState) {
+                    Snackbar.make(binding.root, "애니메이션이 활성화됩니다.", Snackbar.LENGTH_SHORT).show()
+                }
+            } else {
+                if(oldCheckedState != newCheckedState) {
+                    Snackbar.make(binding.root, "애니메이션이 비활성화됩니다.", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+
         }
     }
 
