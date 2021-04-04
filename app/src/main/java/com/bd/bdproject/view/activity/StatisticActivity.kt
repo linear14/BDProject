@@ -14,15 +14,9 @@ import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.timeToLong
 import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.util.toLightLabel
 import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.model.GradientColor
 import org.koin.android.ext.android.inject
 
 

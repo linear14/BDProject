@@ -83,9 +83,6 @@ dependencies {
     // Keyboard Observer
     implementation 'gun0912.ted:tedkeyboardobserver:1.0.2'
 
-    // Pie Chart
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
     // lifecycle
     implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
 

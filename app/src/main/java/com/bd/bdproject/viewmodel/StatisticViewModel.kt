@@ -7,8 +7,6 @@ import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.util.toLightLabel
-import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

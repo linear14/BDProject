@@ -36,6 +36,10 @@ class SettingActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(emailIntent,""))
             }
 
+            settingLicense.setOnClickListener {
+                startActivity(Intent(it.context, LicenseActivity::class.java))
+            }
+
             btnBack.setOnClickListener { onBackPressed() }
         }
 
