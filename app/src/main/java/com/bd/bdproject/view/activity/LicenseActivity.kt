@@ -16,6 +16,8 @@ class LicenseActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rvLicense.adapter = LicenseAdapter()
+        binding.rvLicense.itemAnimator = null
+
         binding.btnBack.setOnClickListener {
             onBackPressed()
         }
