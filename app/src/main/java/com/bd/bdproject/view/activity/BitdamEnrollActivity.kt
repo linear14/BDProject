@@ -1,6 +1,7 @@
 package com.bd.bdproject.view.activity
 
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -41,6 +42,14 @@ class BitdamEnrollActivity : AppCompatActivity() {
             navigationDrawer.actionSetting.setOnClickListener {
                 startActivity(Intent(this@BitdamEnrollActivity, SettingActivity::class.java))
                 drawer.closeDrawer(GravityCompat.START)
+            }
+
+            try {
+                val pInfo: PackageInfo = applicationContext.packageManager.getPackageInfo(packageName, 0)
+                val version = pInfo.versionName
+                navigationDrawer.tvVersion.text = "ver. $version"
+            } catch (e: Exception) {
+                navigationDrawer.tvVersion.text = ""
             }
 
         }

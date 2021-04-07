@@ -2,6 +2,7 @@ package com.bd.bdproject.view.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
@@ -78,6 +79,14 @@ class DetailActivity : AppCompatActivity() {
             navigationDrawer.actionSetting.setOnClickListener {
                 startActivity(Intent(this@DetailActivity, SettingActivity::class.java))
                 drawer.closeDrawer(GravityCompat.START)
+            }
+
+            try {
+                val pInfo: PackageInfo = applicationContext.packageManager.getPackageInfo(packageName, 0)
+                val version = pInfo.versionName
+                navigationDrawer.tvVersion.text = "ver. $version"
+            } catch (e: Exception) {
+                navigationDrawer.tvVersion.text = ""
             }
 
             btnBack.setOnClickListener { onBackPressed() }

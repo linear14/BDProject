@@ -1,6 +1,8 @@
 package com.bd.bdproject.view.activity
 
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +40,14 @@ class SettingActivity : AppCompatActivity() {
 
             settingLicense.setOnClickListener {
                 startActivity(Intent(it.context, LicenseActivity::class.java))
+            }
+
+            try {
+                val pInfo: PackageInfo = applicationContext.packageManager.getPackageInfo(packageName, 0)
+                val version = pInfo.versionName
+                tvVersion.text = "현재 버전 $version"
+            } catch (e: Exception) {
+                tvVersion.text = "현재 버전을 알 수 없습니다."
             }
 
             btnBack.setOnClickListener { onBackPressed() }

@@ -336,9 +336,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fontFamily="@font/noto_regular"
                     android:text="버전 정보"
                     android:textSize="@dimen/text_size_large" />
+
+                <TextView
+                    android:id="@+id/tv_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#b2b2b2"
+                    android:textSize="@dimen/text_size_large"
+                    tools:text="현재 버전 1.0.0" />
 
             </LinearLayout>
 
@@ -369,18 +378,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#ebebeb" />
-
-            <Button
-                android:id="@+id/test_three_day_alarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3일마다 한 번씩 알람" />
-
-            <Button
-                android:id="@+id/test_three_day_alarm_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3일마다 한 번씩 알람 취소" />
 
         </LinearLayout>
     </ScrollView>
