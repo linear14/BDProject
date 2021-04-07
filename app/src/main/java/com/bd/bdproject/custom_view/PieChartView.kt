@@ -49,10 +49,12 @@ class PieChartView: View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        paintOutLine.strokeWidth = width * 0.02f
+        paintOutLine.strokeWidth = width * 0.008f
 
         val rightEnd = width.toFloat() - pieOffset
         val bottomEnd = height.toFloat() - pieOffset
+
+        //canvas.drawCircle(width / 2f, height / 2f, (width - 2 * pieOffset) / 2, paintWhite)
 
         rect.set(layoutOffset, layoutOffset, rightEnd + layoutOffset, bottomEnd + layoutOffset)
         drawCharts(canvas, true, paintBlur)
