@@ -2,8 +2,12 @@ package com.bd.bdproject.view.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.BitdamLog
+import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivitySplashBinding
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.BitDamApplication
@@ -32,38 +36,53 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater).apply {
             setContentView(root)
 
-            splashJob = CoroutineScope(Dispatchers.IO).launch {
-                val deferred = splashViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
-                val isEnrolledToday = deferred.await()
+            val scaleUpAnimation = AnimationUtils.loadAnimation(root.context, R.anim.scale_up).apply {
+                interpolator = AccelerateInterpolator()
+                setAnimationListener(object: Animation.AnimationListener {
+                    override fun onAnimationStart(p0: Animation?) {}
+                    override fun onAnimationRepeat(p0: Animation?) {}
 
-                AlarmUtil.setThreeDayAlarm(this@SplashActivity)
-                delay(1500)
+                    override fun onAnimationEnd(p0: Animation?) {
+                        splashJob = CoroutineScope(Dispatchers.IO).launch {
+                            val deferred = splashViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
+                            val isEnrolledToday = deferred.await()
 
-                // 데이터 불러오기 실패했을 경우
-                if(deferred.isCancelled) {
-                    val failedIntent = Intent().apply {
-                        putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH)
-                    }
+                            AlarmUtil.setThreeDayAlarm(this@SplashActivity)
+                            delay(1000)
 
-                    startActivity(failedIntent)
-                    finish()
-                }
+                            // 데이터 불러오기 실패했을 경우
+                            if(deferred.isCancelled) {
+                                val failedIntent = Intent().apply {
+                                    putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH)
+                                }
 
-                launch(Dispatchers.Main) {
-                    val intent: Intent = if(isEnrolledToday) {
-                        Intent(this@SplashActivity, DetailActivity::class.java).apply {
-                            putExtra(INFO_DATE_CODE, System.currentTimeMillis().timeToString())
-                            putExtra(INFO_SHOULD_HAVE_DRAWER, true)
+                                startActivity(failedIntent)
+                                finish()
+                            }
+
+                            launch(Dispatchers.Main) {
+                                val intent: Intent = if(isEnrolledToday) {
+                                    Intent(this@SplashActivity, DetailActivity::class.java).apply {
+                                        putExtra(INFO_DATE_CODE, System.currentTimeMillis().timeToString())
+                                        putExtra(INFO_SHOULD_HAVE_DRAWER, true)
+                                    }
+                                } else {
+                                    Intent(this@SplashActivity, BitdamEnrollActivity::class.java)
+                                }
+
+                                startActivity(intent.apply { putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH) } )
+                                finish()
+                                BitDamApplication.enrollLifecycleObserver()
+                            }
                         }
-                    } else {
-                        Intent(this@SplashActivity, BitdamEnrollActivity::class.java)
                     }
 
-                    startActivity(intent.apply { putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH) } )
-                    finish()
-                    BitDamApplication.enrollLifecycleObserver()
-                }
+                })
             }
+
+            ivLogo.animation = scaleUpAnimation
+            ivLogo.animate()
+
         }
     }
 
