@@ -27,6 +27,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        pickFirst  '**'
+    }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -85,6 +90,18 @@ dependencies {
 
     // lifecycle
     implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
+
+    // Drive
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation ('com.google.apis:google-api-services-drive:v3-rev20210315-1.31.0')
+            {
+                exclude group: 'org.apache.httpcomponents'
+            }
+    implementation ('com.google.api-client:google-api-client-android:1.31.0')
+            {
+                exclude group: 'org.apache.httpcomponents'
+            }
+    implementation 'com.google.http-client:google-http-client-gson:1.31.0'
 
     // Test
     testImplementation 'junit:junit:4.13.1'
