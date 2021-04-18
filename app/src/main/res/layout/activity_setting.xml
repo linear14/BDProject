@@ -172,7 +172,6 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center" />
 
-
             </LinearLayout>
 
             <View
@@ -181,7 +180,7 @@
                 android:background="#ebebeb" />
 
             <LinearLayout
-                android:id="@+id/setting_theme"
+                android:id="@+id/setting_send_data_to_drive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -193,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
-                    android:text="테마 변경"
+                    android:text="데이터 내보내기"
                     android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
@@ -204,7 +203,7 @@
                 android:background="#ebebeb" />
 
             <LinearLayout
-                android:id="@+id/setting_backup"
+                android:id="@+id/setting_retrieve_data_from_drive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -216,7 +215,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
-                    android:text="데이터 백업/복원"
+                    android:text="데이터 복구/불러오기"
                     android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>

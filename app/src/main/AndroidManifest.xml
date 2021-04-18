@@ -16,13 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BDProject">
-        <activity android:name=".test.TestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity android:name=".view.activity.LicenseActivity" />
         <activity android:name=".view.activity.LockActivity" />
         <activity android:name=".view.activity.SetPasswordActivity" />
@@ -46,6 +40,12 @@
         <activity
             android:name=".view.activity.SplashActivity"
             android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
         <activity
