@@ -10,12 +10,16 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import com.bd.bdproject.BitdamLog
+import com.bd.bdproject.data.model.DBInfo
 import com.bd.bdproject.databinding.ActivitySettingBinding
+import com.bd.bdproject.dialog.DBSelector
 import com.bd.bdproject.util.DriveServiceHelper
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
 import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.util.Constant.INFO_DB
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -197,6 +201,7 @@ class SettingActivity : AppCompatActivity() {
         }
         progressDialog.show()
 
+        // TODO -wal, -shm 파일까지 함께 보내야함. 혹은, 그 값들이 update 된 db를 보내기
         val filePath = "/data/data/com.bd.bdproject/databases/BITDAM_DB"
         driveServiceHelper?.createFile(filePath)
             .addOnSuccessListener {
@@ -220,9 +225,24 @@ class SettingActivity : AppCompatActivity() {
         progressDialog.show()
 
         driveServiceHelper?.findFiles()
-            .addOnSuccessListener {
+            .addOnSuccessListener { files ->
                 progressDialog.dismiss()
                 Toast.makeText(this, "Found Successfully", Toast.LENGTH_SHORT).show()
+
+                val dbNameBundle = Bundle().apply {
+                    val bundleArrayList = arrayListOf<DBInfo>().apply {
+                        files.forEach {
+                            add(DBInfo(it.first, it.second))
+                        }
+                    }
+                    putParcelableArrayList(INFO_DB, bundleArrayList)
+                }
+
+                val selector = DBSelector { id, dialog ->
+                    downloadFile(id, dialog)
+                }
+                selector.arguments = dbNameBundle
+                selector.show(supportFragmentManager, DBSelector.DB_SELECTOR)
             }
             .addOnFailureListener {
                 progressDialog.dismiss()
@@ -231,20 +251,23 @@ class SettingActivity : AppCompatActivity() {
             }
     }
 
-    private fun downloadFile(fileId: String = "1I41aKcJYlI6Amip8Jyz6xndvHWxQ7zBP") {
+    private fun downloadFile(fileId: String, dialog: DialogFragment) {
         val progressDialog = ProgressDialog(this).apply {
             title = "Uploading to Google Drive"
             setMessage("Please wait...")
         }
         progressDialog.show()
 
+        BitdamLog.contentLogger("다운로드 파일 : $fileId")
         driveServiceHelper?.retrieveFile(fileId)
             .addOnSuccessListener {
                 progressDialog.dismiss()
+                dialog.dismiss()
                 Toast.makeText(this, "Downloaded Succesfully", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 progressDialog.dismiss()
+                dialog.dismiss()
                 Toast.makeText(this, "다운로드 오류", Toast.LENGTH_SHORT).show()
                 BitdamLog.contentLogger(it.message.toString())
             }

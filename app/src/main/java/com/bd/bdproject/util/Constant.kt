@@ -21,6 +21,7 @@ object Constant {
 
     const val INFO_LIGHT = "LIGHT"
     const val INFO_TAG = "TAG"
+    const val INFO_DB = "DB"
 
     // 에러 났을경우
     const val ACTIVITY_NOT_RECOGNIZED = -1000

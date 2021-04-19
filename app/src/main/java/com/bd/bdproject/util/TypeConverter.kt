@@ -17,5 +17,6 @@ class TypeConverter {
 
     companion object{
         val FORMATTER = SimpleDateFormat("yyyyMMdd")
+        val FORMATTER_TIME = SimpleDateFormat("HHmmss")
     }
 }

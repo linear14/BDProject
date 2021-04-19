@@ -7,27 +7,29 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.bd.bdproject.R
+import com.bd.bdproject.data.model.DBInfo
+import com.bd.bdproject.databinding.DialogDbSelectorBinding
 import com.bd.bdproject.databinding.DialogTagCombinerBinding
+import com.bd.bdproject.util.Constant.INFO_DB
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.view.adapter.CombineTagAdapter
+import com.bd.bdproject.view.adapter.DBAdapter
 
-class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
+class DBSelector(val onIdSelected: (String, DialogFragment) -> Unit) : DialogFragment() {
 
     companion object {
-        const val TAG_COMBINER = "tag_combiner"
+        const val DB_SELECTOR = "db_selector"
     }
 
-    private var _binding: DialogTagCombinerBinding? = null
+    private var _binding: DialogDbSelectorBinding? = null
     val binding get() = _binding!!
 
-    private val combineTagAdapter by lazy {
-        CombineTagAdapter(tagList?.toMutableList()?: mutableListOf())
+    private val dbAdapter by lazy {
+        DBAdapter(dbList?.toList()?: mutableListOf())
     }
 
-    private val tagList by lazy {
-        val list = arguments?.getStringArray(INFO_TAG)
-        list?.sort()
-        list
+    private val dbList by lazy {
+        arguments?.getParcelableArrayList<DBInfo>(INFO_DB)
     }
 
     override fun onCreateView(
@@ -35,15 +37,15 @@ class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogTagCombinerBinding.inflate(inflater, container, false)
+        _binding = DialogDbSelectorBinding.inflate(inflater, container, false)
         isCancelable = false
 
         binding.apply {
             btnClose.setOnClickListener { dismiss() }
             btnConfirm.setOnClickListener {
-                combineTagAdapter.newPos.value?.let { checkedPos ->
-                    val tagName = combineTagAdapter.list[checkedPos]
-                    doCombined(tagName)
+                dbAdapter.newPos.value?.let { checkedPos ->
+                    val dbId = dbAdapter.list[checkedPos].id
+                    onIdSelected(dbId, this@DBSelector)
                     dismiss()
                 }
             }
@@ -80,8 +82,8 @@ class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
         // end
 
         binding.apply {
-            rvTags.itemAnimator = null
-            rvTags.adapter = combineTagAdapter
+            rvDbs.itemAnimator = null
+            rvDbs.adapter = dbAdapter
         }
     }
 
@@ -91,7 +93,7 @@ class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
     }
 
     private fun observeNewPosition() {
-        combineTagAdapter.newPos.observe(this) { newPosition ->
+        dbAdapter.newPos.observe(this) { newPosition ->
             if(newPosition == null) {
                 binding.btnConfirm.setBackgroundResource(R.drawable.deco_confirm_button_bottom_unchecked)
             } else {

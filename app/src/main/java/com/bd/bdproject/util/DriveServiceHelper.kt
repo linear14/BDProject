@@ -10,6 +10,7 @@ import com.google.api.services.drive.model.FileList
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.Executors
 
 class DriveServiceHelper(val driveService: Drive) {
@@ -19,8 +20,12 @@ class DriveServiceHelper(val driveService: Drive) {
     fun createFile(filePath: String): Task<String> {
         return Tasks.call(executor) {
 
+            val current = System.currentTimeMillis()
+            val today = current.timeToString()
+            val time = current.hmsToString()
+
             val fileMetaData = File()
-            fileMetaData.name = "빛담_${System.currentTimeMillis()}.db"
+            fileMetaData.name = "빛담_${today}_${time}.db"
 
             val file = java.io.File(filePath)
             val mediaContent = FileContent("application/x-sqlite3", file)
@@ -40,9 +45,10 @@ class DriveServiceHelper(val driveService: Drive) {
         }
     }
 
-    fun findFiles(): Task<Unit> {
+    fun findFiles(): Task<List<Pair<String, String>>> {
         return Tasks.call(executor) {
             var pageToken: String? = null
+            val fileNameAndIdPair = mutableListOf<Pair<String, String>>()
 
             do {
                 val result: FileList = driveService.files().list()
@@ -51,11 +57,14 @@ class DriveServiceHelper(val driveService: Drive) {
                     .execute()
 
                 for (file in result.files) {
+                    fileNameAndIdPair.add(Pair(file.name, file.id))
                     BitdamLog.contentLogger("File Name: ${file.name}, File Id: ${file.id}")
                 }
                 pageToken = result.nextPageToken
 
             } while (pageToken != null)
+
+            fileNameAndIdPair
         }
     }
 

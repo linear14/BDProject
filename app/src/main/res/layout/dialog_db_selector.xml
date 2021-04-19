@@ -22,13 +22,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:paddingHorizontal="20dp"
+        android:lineSpacingMultiplier="1.2"
         android:textSize="@dimen/text_size_large"
-        android:text="대표 이름으로 지정할\n해시태그를 선택해주세요"
+        android:text="불러올 데이터베이스를 선택해주세요.\n(경고 : 기존 데이터는 새로운 데이터로 모두 대체됩니다.)"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_close" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_tags"
+        android:id="@+id/rv_dbs"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
