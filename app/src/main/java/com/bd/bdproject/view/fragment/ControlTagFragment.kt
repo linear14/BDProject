@@ -284,6 +284,16 @@ open class ControlTagFragment: BaseFragment() {
             if(s.isNotEmpty()) {
                 binding.ivClearText.visibility = View.VISIBLE
 
+                val lastIndex = s.length - 1
+                val tagName = s.substring(0, lastIndex)
+
+                // 길이가 9일때 마지막 단어가 공백이 아니면 8자리로 돌리고 return
+                if(s.length == 9 && s[lastIndex] != ' ') {
+                    binding.inputTag.setText(s.substring(0, 8))
+                    binding.inputTag.setSelection(8)
+                    return
+                }
+
                 // 추천 검색어
                 if(!isLastWordBlank(s)) {
                     searchJob?.cancel()
@@ -294,9 +304,6 @@ open class ControlTagFragment: BaseFragment() {
                         }
                     }
                 }
-
-                val lastIndex = s.length - 1
-                val tagName = s.substring(0, lastIndex)
 
                 if(checkIsThereAnyBlank(s)) { return }
 

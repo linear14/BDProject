@@ -120,7 +120,7 @@
             android:layout_marginStart="4dp"
             android:background="@android:color/transparent"
             android:inputType="text"
-            android:maxLength="8"
+            android:maxLength="9"
             android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_normal"
