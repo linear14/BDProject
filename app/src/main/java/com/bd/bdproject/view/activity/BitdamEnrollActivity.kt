@@ -7,9 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivityBitdamEnrollBinding
+import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.ACTIVITY_NOT_RECOGNIZED
+import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.fragment.BaseFragment
+import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class BitdamEnrollActivity : AppCompatActivity() {
 
@@ -17,6 +25,7 @@ class BitdamEnrollActivity : AppCompatActivity() {
     val previousActivity by lazy {
         intent.getIntExtra(INFO_PREVIOUS_ACTIVITY, ACTIVITY_NOT_RECOGNIZED)
     }
+    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +49,7 @@ class BitdamEnrollActivity : AppCompatActivity() {
             }
 
             navigationDrawer.actionSetting.setOnClickListener {
+                checkEnrollStateViewModel.isVisitedSetting = true
                 startActivity(Intent(this@BitdamEnrollActivity, SettingActivity::class.java))
                 drawer.closeDrawer(GravityCompat.START)
             }
@@ -53,6 +63,30 @@ class BitdamEnrollActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(checkEnrollStateViewModel.isVisitedSetting) {
+            checkEnrollStateViewModel.isVisitedSetting = false
+            CoroutineScope(Dispatchers.IO).launch {
+                val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
+                val isEnrolledToday = deferred.await()
+
+                if (isEnrolledToday) {
+                    launch(Dispatchers.Main) {
+                        val intent =
+                            Intent(this@BitdamEnrollActivity, DetailActivity::class.java).apply {
+                                putExtra(INFO_PREVIOUS_ACTIVITY, Constant.BITDAM_ENROLL)
+                            }
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+            }
+        }
+        checkEnrollStateViewModel.isVisitedSetting = false
     }
 
     override fun onBackPressed() {

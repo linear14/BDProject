@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewPropertyAnimator
 import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER
+import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER_TIME
 
 fun View.animateTransparency(toAlpha: Float, duration: Long = 0): ViewPropertyAnimator {
     return this.animate()
@@ -14,6 +15,10 @@ fun View.animateTransparency(toAlpha: Float, duration: Long = 0): ViewPropertyAn
 
 fun Long?.timeToString(): String {
     return this.let { FORMATTER.format(this) }
+}
+
+fun Long?.hmsToString(): String {
+    return this.let { FORMATTER_TIME.format(this) }
 }
 
 fun String?.timeToLong(): Long {

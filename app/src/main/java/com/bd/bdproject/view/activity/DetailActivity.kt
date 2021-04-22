@@ -33,9 +33,14 @@ import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.toBitDamDateFormat
 import com.bd.bdproject.view.adapter.TagAdapter
+import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class DetailActivity : AppCompatActivity() {
@@ -43,6 +48,7 @@ class DetailActivity : AppCompatActivity() {
     lateinit var binding: ActivityDetailBinding
 
     private val lightViewModel: LightViewModel by inject()
+    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
     private var tagAdapter: TagAdapter? = null
 
     private val gradientDrawable = GradientDrawable().apply {
@@ -77,6 +83,7 @@ class DetailActivity : AppCompatActivity() {
             }
 
             navigationDrawer.actionSetting.setOnClickListener {
+                checkEnrollStateViewModel.isVisitedSetting = true
                 startActivity(Intent(this@DetailActivity, SettingActivity::class.java))
                 drawer.closeDrawer(GravityCompat.START)
             }
@@ -95,16 +102,45 @@ class DetailActivity : AppCompatActivity() {
                 showOrHideDetails(btnSpreadUpDown)
             }
         }
+
+        observeLight()
     }
 
     override fun onResume() {
         super.onResume()
 
-        lightViewModel.getLightWithTags(intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString())
-        initButtons()
-        observeLight()
-        setTagRecyclerView()
-        setEditButtons()
+        if(checkEnrollStateViewModel.isVisitedSetting) {
+            checkEnrollStateViewModel.isVisitedSetting = false
+            CoroutineScope(Dispatchers.IO).launch {
+                val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
+                val isEnrolledToday = deferred.await()
+
+                if (!isEnrolledToday) {
+                    launch(Dispatchers.Main) {
+                        val intent =
+                            Intent(this@DetailActivity, BitdamEnrollActivity::class.java).apply {
+                                putExtra(INFO_PREVIOUS_ACTIVITY, DETAIL)
+                            }
+                        startActivity(intent)
+                        finish()
+                    }
+                } else {
+                    lightViewModel.getLightWithTags(intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString())
+
+                    launch(Dispatchers.Main) {
+                        initButtons()
+                        setTagRecyclerView()
+                        setEditButtons()
+                    }
+                }
+            }
+        } else {
+            lightViewModel.getLightWithTags(intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString())
+            initButtons()
+            setTagRecyclerView()
+            setEditButtons()
+        }
+
     }
 
     private fun initButtons() {

@@ -1,20 +1,58 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import com.bd.bdproject.BitdamLog
+import com.bd.bdproject.data.model.DBInfo
 import com.bd.bdproject.databinding.ActivitySettingBinding
+import com.bd.bdproject.dialog.DBSelector
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
 import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.util.Constant.INFO_DB
+import com.bd.bdproject.util.DriveServiceHelper
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.google.android.material.snackbar.Snackbar
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveScopes
+import java.util.*
 
 class SettingActivity : AppCompatActivity() {
 
+    companion object {
+        const val SEND_DATA = 1
+        const val RETRIEVE_DATA = 2
+    }
+
+    private lateinit var driveServiceHelper: DriveServiceHelper
     lateinit var binding: ActivitySettingBinding
+
+    private val startSendDataForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            handleSignInIntent(result.data, SEND_DATA)
+        }
+    }
+
+    private val startRetrieveDataForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            handleSignInIntent(result.data, RETRIEVE_DATA)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +63,14 @@ class SettingActivity : AppCompatActivity() {
         binding.apply {
             settingLock.setOnClickListener {
                 startActivity(Intent(it.context, SetPasswordActivity::class.java))
+            }
+
+            settingSendDataToDrive.setOnClickListener {
+                requestSignIn(SEND_DATA)
+            }
+
+            settingRetrieveDataFromDrive.setOnClickListener {
+                requestSignIn(RETRIEVE_DATA)
             }
 
             settingHelp.setOnClickListener {
@@ -101,6 +147,137 @@ class SettingActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun requestSignIn(type: Int) {
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            .build()
+
+        GoogleSignIn.getClient(this, signInOptions).also { client ->
+            client.signOut()
+                .addOnSuccessListener {
+                    val signInIntent = client.signInIntent
+
+                    when(type) {
+                        SEND_DATA -> { startSendDataForResult.launch(signInIntent) }
+                        RETRIEVE_DATA -> { startRetrieveDataForResult.launch(signInIntent) }
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this@SettingActivity, "구글 연동에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun handleSignInIntent(data: Intent?, type: Int) {
+        GoogleSignIn.getSignedInAccountFromIntent(data)
+            .addOnSuccessListener { signInAccount ->
+                val credential = GoogleAccountCredential
+                    .usingOAuth2(this, Collections.singleton(DriveScopes.DRIVE_FILE))
+
+                credential.selectedAccount = signInAccount.account
+
+                val googleDriveService = Drive.Builder (
+                    NetHttpTransport() /*AndroidHttp.newCompatibleTransport()*/,
+                    GsonFactory(),
+                    credential
+                )
+                    .setApplicationName("BITDAM_DRIVE")
+                    .build()
+
+                driveServiceHelper = DriveServiceHelper(googleDriveService)
+
+                when(type) {
+                    SEND_DATA -> { uploadFile() }
+                    RETRIEVE_DATA -> { findFiles() }
+                }
+
+            }
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+            }
+
+    }
+
+    private fun uploadFile() {
+        val progressDialog = ProgressDialog(this).apply {
+            title = "Uploading to Google Drive"
+            setMessage("Please wait...")
+        }
+        progressDialog.show()
+
+        val filePath = "/data/data/com.bd.bdproject/databases/BITDAM_DB"
+        driveServiceHelper?.createFile(filePath)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show()
+
+            }
+            .addOnFailureListener {
+                progressDialog.dismiss()
+                Toast.makeText(this, "저장 오류", Toast.LENGTH_SHORT).show()
+                BitdamLog.contentLogger(it.message.toString())
+            }
+
+    }
+
+    private fun findFiles() {
+        val progressDialog = ProgressDialog(this).apply {
+            title = "Uploading to Google Drive"
+            setMessage("Please wait...")
+        }
+        progressDialog.show()
+
+        driveServiceHelper?.findFiles()
+            .addOnSuccessListener { files ->
+                progressDialog.dismiss()
+                Toast.makeText(this, "Found Successfully", Toast.LENGTH_SHORT).show()
+
+                val dbNameBundle = Bundle().apply {
+                    val bundleArrayList = arrayListOf<DBInfo>().apply {
+                        files.forEach {
+                            add(DBInfo(it.first, it.second))
+                        }
+                    }
+                    putParcelableArrayList(INFO_DB, bundleArrayList)
+                }
+
+                val selector = DBSelector { id, dialog ->
+                    downloadFile(id, dialog)
+                }
+                selector.arguments = dbNameBundle
+                selector.show(supportFragmentManager, DBSelector.DB_SELECTOR)
+            }
+            .addOnFailureListener {
+                progressDialog.dismiss()
+                Toast.makeText(this, "파일 탐색 오류", Toast.LENGTH_SHORT).show()
+                BitdamLog.contentLogger(it.message.toString())
+            }
+    }
+
+    private fun downloadFile(fileId: String, dialog: DialogFragment) {
+        val progressDialog = ProgressDialog(this).apply {
+            title = "Uploading to Google Drive"
+            setMessage("Please wait...")
+        }
+        progressDialog.show()
+
+        BitdamLog.contentLogger("다운로드 파일 : $fileId")
+        driveServiceHelper?.retrieveFile(fileId)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                dialog.dismiss()
+                Toast.makeText(this, "Downloaded Succesfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                progressDialog.dismiss()
+                dialog.dismiss()
+                Toast.makeText(this, "다운로드 오류", Toast.LENGTH_SHORT).show()
+                BitdamLog.contentLogger(it.message.toString())
+            }
+
     }
 
 /*    private fun setFirstAlarmTime(isNewAlarm: Boolean) {

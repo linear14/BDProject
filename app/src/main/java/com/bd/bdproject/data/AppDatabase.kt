@@ -28,7 +28,9 @@ abstract class AppDatabase: RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, "BITDAM_DB").build()
+            return Room.databaseBuilder(context, AppDatabase::class.java, "BITDAM_DB")
+                .setJournalMode(JournalMode.TRUNCATE)
+                .build()
         }
     }
 }
