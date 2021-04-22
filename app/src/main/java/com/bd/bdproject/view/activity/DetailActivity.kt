@@ -95,6 +95,8 @@ class DetailActivity : AppCompatActivity() {
                 showOrHideDetails(btnSpreadUpDown)
             }
         }
+
+        observeLight()
     }
 
     override fun onResume() {
@@ -102,7 +104,6 @@ class DetailActivity : AppCompatActivity() {
 
         lightViewModel.getLightWithTags(intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString())
         initButtons()
-        observeLight()
         setTagRecyclerView()
         setEditButtons()
     }
