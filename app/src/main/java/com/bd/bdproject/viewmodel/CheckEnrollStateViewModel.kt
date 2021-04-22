@@ -8,6 +8,8 @@ import kotlinx.coroutines.async
 
 class CheckEnrollStateViewModel(private val lightRepo: LightRepository): ViewModel() {
 
+    var isVisitedSetting = false
+
     fun isEnrolledTodayAsync(dateCode: String): Deferred<Boolean> {
         return GlobalScope.async { lightRepo.isEnrolledToday(dateCode) }
     }
