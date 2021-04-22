@@ -15,11 +15,11 @@ import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.data.model.DBInfo
 import com.bd.bdproject.databinding.ActivitySettingBinding
 import com.bd.bdproject.dialog.DBSelector
-import com.bd.bdproject.util.DriveServiceHelper
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.Constant.INFO_DB
+import com.bd.bdproject.util.DriveServiceHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -155,12 +155,19 @@ class SettingActivity : AppCompatActivity() {
             .requestScopes(Scope(DriveScopes.DRIVE_FILE))
             .build()
 
-        val client: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions)
-        val signInIntent = client.signInIntent
+        GoogleSignIn.getClient(this, signInOptions).also { client ->
+            client.signOut()
+                .addOnSuccessListener {
+                    val signInIntent = client.signInIntent
 
-        when(type) {
-            SEND_DATA -> { startSendDataForResult.launch(signInIntent) }
-            RETRIEVE_DATA -> { startRetrieveDataForResult.launch(signInIntent) }
+                    when(type) {
+                        SEND_DATA -> { startSendDataForResult.launch(signInIntent) }
+                        RETRIEVE_DATA -> { startRetrieveDataForResult.launch(signInIntent) }
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this@SettingActivity, "구글 연동에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
@@ -201,7 +208,6 @@ class SettingActivity : AppCompatActivity() {
         }
         progressDialog.show()
 
-        // TODO -wal, -shm 파일까지 함께 보내야함. 혹은, 그 값들이 update 된 db를 보내기
         val filePath = "/data/data/com.bd.bdproject/databases/BITDAM_DB"
         driveServiceHelper?.createFile(filePath)
             .addOnSuccessListener {
