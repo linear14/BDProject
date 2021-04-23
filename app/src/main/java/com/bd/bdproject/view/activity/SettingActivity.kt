@@ -107,14 +107,14 @@ class SettingActivity : AppCompatActivity() {
         super.onResume()
 
         binding.apply {
-            switchPush.isChecked = BitDamApplication.pref.usePush
+            //switchPush.isChecked = BitDamApplication.pref.usePush
             switchAnimation.isChecked = BitDamApplication.pref.isAnimationActivate
         }
     }
 
     private fun setSwitchPush() {
         binding.switchPush.setOnCheckedChangeListener { view, newCheckedState ->
-            val oldCheckedState = BitDamApplication.pref.usePush
+           /* val oldCheckedState = BitDamApplication.pref.usePush
             BitDamApplication.pref.usePush = newCheckedState
 
             if(newCheckedState) {
@@ -127,7 +127,7 @@ class SettingActivity : AppCompatActivity() {
                     AlarmUtil.setDairyAlarm(view.context, binding.root, NOT_USE_ALARM)
                     AlarmUtil.setThreeDayAlarm(view.context)
                 }
-            }
+            }*/
         }
     }
 

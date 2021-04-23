@@ -7,23 +7,27 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.bd.bdproject.R
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.data.model.PushMessage
+import com.bd.bdproject.util.AlarmUtil.REQUEST_ALARM
 import com.bd.bdproject.view.activity.SplashActivity
-import java.text.SimpleDateFormat
 import java.util.*
 
 class DairyAlarmReceiver: BroadcastReceiver() {
 
+    private val pushList = listOf<PushMessage>(
+        PushMessage("오늘의 빛을 담을 시간이에요✨", "소중한 빛을 지금 바로 기록해볼까요?"),
+        PushMessage("오늘의 빛을 담을 시간이에요✨", "오늘도 빛을 담아주실거죠? 얼마나 밝을지 궁금해요!")
+    )
+
     override fun onReceive(context: Context?, intent: Intent?) {
         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val pendingIntent = PendingIntent.getActivity(
-            context, 0, Intent(
+            context, REQUEST_ALARM, Intent(
                 context,
                 SplashActivity::class.java
-            ), PendingIntent.FLAG_UPDATE_CURRENT
+            ), 0
         )
 
         context?.let {
@@ -44,27 +48,18 @@ class DairyAlarmReceiver: BroadcastReceiver() {
                 builder.setSmallIcon(R.mipmap.ic_launcher)
             }
 
+            val rand = Random()
+            val randIndex = rand.nextInt(pushList.size)
+
             builder.setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle("매일 알림")
-                .setContentText("오늘의 빛을 등록하는 시간입니다")
+                .setContentTitle(pushList[randIndex].title)
+                .setContentText(pushList[randIndex].content)
                 .setContentIntent(pendingIntent)
 
             notificationManager?.notify(1234, builder.build())
         }
-
-        /*val nextNotifyTime = Calendar.getInstance()
-        nextNotifyTime.set(Calendar.SECOND, 0)
-        nextNotifyTime.add(Calendar.DATE, 1)
-
-        val currentDateTime = nextNotifyTime.time
-        val date_text = SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime)
-        Toast.makeText(
-            context?.applicationContext,
-            "다음 [매일 알람]은 " + date_text + "으로 알람이 설정되었습니다!",
-            Toast.LENGTH_SHORT
-        ).show()*/
 
     }
 }

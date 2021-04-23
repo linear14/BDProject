@@ -60,6 +60,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".alarm.DairyAlarmReceiver" />
+        <receiver android:name=".alarm.ThreeDayAlarmReceiver" />
     </application>
 
 </manifest>

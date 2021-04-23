@@ -7,23 +7,28 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.bd.bdproject.R
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.data.model.PushMessage
+import com.bd.bdproject.util.AlarmUtil.REQUEST_ALARM
 import com.bd.bdproject.view.activity.SplashActivity
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ThreeDayAlarmReceiver: BroadcastReceiver() {
 
+    private val pushList = listOf<PushMessage>(
+        PushMessage("빛담의 불이 꺼지고 있어요…\uD83D\uDE22 돌아와주세요", "빛담은 언제나 당신의 이야기를 들을 준비가 되어있답니다. 언제든 환영할게요!"),
+        PushMessage("빛담이 너무 어두워요..", "최근 기분이 어땠는지 빛담은 궁금해요. 당신의 빛을 담아주세요!"),
+        PushMessage("빛담을 잊어버리셨나요?", "빛이 사라지고 있어요. 다시 한 번 빛담과 빛을 모아볼까요?")
+    )
+
     override fun onReceive(context: Context?, intent: Intent?) {
         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val pendingIntent = PendingIntent.getActivity(
-            context, 0, Intent(
+            context, REQUEST_ALARM, Intent(
                 context,
                 SplashActivity::class.java
-            ), PendingIntent.FLAG_UPDATE_CURRENT
+            ), 0
         )
 
         context?.let {
@@ -44,28 +49,17 @@ class ThreeDayAlarmReceiver: BroadcastReceiver() {
                 builder.setSmallIcon(R.mipmap.ic_launcher)
             }
 
+            val rand = Random()
+            val randIndex = rand.nextInt(pushList.size)
+
             builder.setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle("장기 미접속 알람")
-                .setContentText("3일동안 접속하지 않았어요. 빛을 등록해주세요.")
+                .setContentTitle(pushList[randIndex].title)
+                .setContentText(pushList[randIndex].content)
                 .setContentIntent(pendingIntent)
 
             notificationManager?.notify(5678, builder.build())
         }
-
-        /*val nextNotifyTime = Calendar.getInstance()
-        nextNotifyTime.set(Calendar.SECOND, 0)
-        // nextNotifyTime.add(Calendar.DATE, 3)
-        nextNotifyTime.add(Calendar.MINUTE, 16)
-
-        val currentDateTime = nextNotifyTime.time
-        val date_text = SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime)
-        Toast.makeText(
-            context?.applicationContext,
-            "다음 [3일 알람]은 " + date_text + "으로 알람이 설정되었습니다!",
-            Toast.LENGTH_SHORT
-        ).show()
-*/
     }
 }
