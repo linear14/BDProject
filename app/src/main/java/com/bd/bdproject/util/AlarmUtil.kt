@@ -1,10 +1,7 @@
 package com.bd.bdproject.util
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_CANCEL_CURRENT
-import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -53,7 +50,7 @@ object AlarmUtil {
                 calendar.add(Calendar.DATE, 1)
             }
 
-            Snackbar.make(view, "매일 알람을 설정하셨습니다.", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(view, "작성 시간 알림이 설정되었어요", Snackbar.LENGTH_SHORT).show()
 
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
@@ -62,11 +59,11 @@ object AlarmUtil {
                 alarmIntent
             )
         } else {
-            Snackbar.make(view, "매일 알람을 해제하셨습니다.", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(view, "작성 시간 알림이 해지되었어요", Snackbar.LENGTH_SHORT).show()
         }
     }
 
-    fun setThreeDayAlarm(context: Context) {
+    fun setThreeDayAlarm(context: Context, view: View? = null, use: Boolean) {
         val pm = context.packageManager
         val receiver = ComponentName(context, DeviceBootReceiver::class.java)
         val alarmIntent = Intent(context, ThreeDayAlarmReceiver::class.java).let { intent ->
@@ -77,18 +74,20 @@ object AlarmUtil {
         alarmManager.cancel(alarmIntent)
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
 
-        if(BitDamApplication.pref.useAppPush) {
+        if(BitDamApplication.pref.useAppPush && use) {
 
-            val calendar = Calendar.getInstance().apply {
-                add(Calendar.DATE, 3)
-            }
+            val nextAlarmTime = BitDamApplication.pref.lastVisitedTime + AlarmManager.INTERVAL_DAY * 3
+
+            view?.let { Snackbar.make(view, "빛담 앱 알림을 수신합니다", Snackbar.LENGTH_SHORT).show() }
 
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
+                nextAlarmTime,
                 AlarmManager.INTERVAL_DAY * 3,
                 alarmIntent
             )
+        } else {
+            view?.let { Snackbar.make(view, "빛담 앱 알림을 수신하지 않습니다", Snackbar.LENGTH_SHORT).show() }
         }
     }
 }

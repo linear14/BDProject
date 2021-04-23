@@ -15,11 +15,11 @@ class BitdamSharedPreferences(context: Context) {
         set(value) = pref.edit().putBoolean("IS_ANIMATION_ACTIVATE", value).apply()
 
     var lastVisitedTime: Long
-        get() = pref.getLong("LAST_ENROLLED_LIGHT_TIME", System.currentTimeMillis())
-        set(value) = pref.edit().putLong("LAST_ENROLLED_LIGHT_TIME", value).apply()
+        get() = pref.getLong("LAST_VISITED_TIME", System.currentTimeMillis())
+        set(value) = pref.edit().putLong("LAST_VISITED_TIME", value).apply()
 
     var dairyAlarmTime: Int
-        get() = pref.getInt("DAIRY_ALARM_TIME", 0)
+        get() = pref.getInt("DAIRY_ALARM_TIME", -1)
         set(value) = pref.edit().putInt("DAIRY_ALARM_TIME", value).apply()
 
     var bitdamPassword: String?
@@ -31,7 +31,7 @@ class BitdamSharedPreferences(context: Context) {
         set(value) = pref.edit().putString("BITDAM_PASSWORD_HINT", value).apply()
 
     var useDairyPush: Boolean
-        get() = pref.getBoolean("USE_DAIRY_PUSH", true)
+        get() = pref.getBoolean("USE_DAIRY_PUSH", false)
         set(value) = pref.edit().putBoolean("USE_DAIRY_PUSH", value).apply()
 
     var useAppPush: Boolean

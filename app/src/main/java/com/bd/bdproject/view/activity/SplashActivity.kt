@@ -47,7 +47,10 @@ class SplashActivity : AppCompatActivity() {
                             val deferred = splashViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
                             val isEnrolledToday = deferred.await()
 
-                            AlarmUtil.setThreeDayAlarm(this@SplashActivity)
+                            BitDamApplication.pref.lastVisitedTime = System.currentTimeMillis()
+                            if(BitDamApplication.pref.useAppPush) {
+                                AlarmUtil.setThreeDayAlarm(this@SplashActivity, use = true)
+                            }
                             delay(1000)
 
                             // 데이터 불러오기 실패했을 경우

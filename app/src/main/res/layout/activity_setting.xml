@@ -89,12 +89,6 @@
                     android:text="푸시 알림"
                     android:textSize="@dimen/text_size_large" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_push"
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center" />
-
             </LinearLayout>
 
             <View
