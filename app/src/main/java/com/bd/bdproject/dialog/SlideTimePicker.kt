@@ -32,6 +32,8 @@ class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : Di
         _binding?.let {
             it.apply {
 
+                tvDialogTitle.text = "알림 시간을 설정해주세요"
+
                 pickerFirst.minValue = 0
                 pickerFirst.maxValue = 11
                 pickerFirst.value = 0
@@ -45,7 +47,7 @@ class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : Di
                 pickerThird.displayedValues = arrayOf("am", "pm")
                 pickerThird.value = 0
 
-                setDialogTitle()
+                setCurrentStateText()
 
                 btnConfirm.setOnClickListener {
                     listener.invoke(pickerFirst.value, pickerSecond.value, pickerThird.value)
@@ -93,21 +95,21 @@ class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : Di
     private fun setTimePickerValueChangedListener() {
         binding.apply {
             pickerFirst.setOnValueChangedListener { picker, oldVal, newVal ->
-                setDialogTitle()
+                setCurrentStateText()
             }
 
             pickerSecond.setOnValueChangedListener { picker, oldVal, newVal ->
-                setDialogTitle()
+                setCurrentStateText()
             }
 
             pickerThird.setOnValueChangedListener { picker, oldVal, newVal ->
-                setDialogTitle()
+                setCurrentStateText()
             }
 
         }
     }
 
-    private fun setDialogTitle() {
+    private fun setCurrentStateText() {
 
         val noMatchedTime = "존재하지 않는 시간"
 

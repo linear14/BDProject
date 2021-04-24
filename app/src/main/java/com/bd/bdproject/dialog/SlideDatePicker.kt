@@ -40,6 +40,8 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
         _binding?.let {
             it.apply {
 
+                tvDialogTitle.text = "추가할 날짜를 선택해주세요"
+
                 pickerFirst.minValue = MIN_YEAR
                 pickerFirst.maxValue = MAX_YEAR
                 pickerFirst.value = cal[Calendar.YEAR]
@@ -52,7 +54,7 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
                 pickerThird.maxValue = 31
                 pickerThird.value = cal[Calendar.DATE]
 
-                setDialogTitle()
+                setCurrentStateText()
 
                 btnConfirm.setOnClickListener {
                     listener.onDateSet(null, pickerFirst.value, pickerSecond.value, pickerThird.value)
@@ -108,7 +110,7 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
                     pickerThird.value = 1
                 }
                 pickerThird.maxValue = newMaxDate
-                setDialogTitle()
+                setCurrentStateText()
             }
 
             pickerSecond.setOnValueChangedListener { picker, oldVal, newVal ->
@@ -120,17 +122,17 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
                     pickerThird.value = 1
                 }
                 pickerThird.maxValue = newMaxDate
-                setDialogTitle()
+                setCurrentStateText()
             }
 
             pickerThird.setOnValueChangedListener { picker, oldVal, newVal ->
-                setDialogTitle()
+                setCurrentStateText()
             }
 
         }
     }
 
-    private fun setDialogTitle() {
+    private fun setCurrentStateText() {
 
         val noMatchedDate = "존재하지 않는 날짜"
 
