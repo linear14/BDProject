@@ -21,13 +21,14 @@ class DeviceBootReceiver : BroadcastReceiver() {
             val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             // 매일알람시간, 마지막 접속시간(3일 알람을 위한) 순
-            val dairyAlarmTime = BitDamApplication.pref.dairyAlarmTime
+            val dairyAlarmHour = BitDamApplication.pref.dairyAlarmHour
+            val dairyAlarmMin = BitDamApplication.pref.dairyAlarmMin
             val lastVisitedTime = BitDamApplication.pref.lastVisitedTime
 
             if(BitDamApplication.pref.useAppPush) {
                 val calendar = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, dairyAlarmTime)
-                    set(Calendar.MINUTE, 0)
+                    set(Calendar.HOUR_OF_DAY, dairyAlarmHour)
+                    set(Calendar.MINUTE, dairyAlarmMin)
                     set(Calendar.SECOND, 0)
                 }
 

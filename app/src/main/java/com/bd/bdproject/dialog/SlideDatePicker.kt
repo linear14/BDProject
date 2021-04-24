@@ -8,10 +8,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Window
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.bd.bdproject.databinding.DialogDatePickerBinding
-import com.bd.bdproject.util.dpToPx
+import com.bd.bdproject.databinding.DialogThreeItemPickerBinding
 import java.util.*
 
 class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.OnDateSetListener) : DialogFragment() {
@@ -21,7 +22,7 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
         const val MIN_YEAR = 1980
     }
 
-    private var _binding: DialogDatePickerBinding? = null
+    private var _binding: DialogThreeItemPickerBinding? = null
     val binding get() = _binding!!
 
     private val cal: Calendar = Calendar.getInstance()
@@ -34,27 +35,27 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogDatePickerBinding.inflate(LayoutInflater.from(context))
+        _binding = DialogThreeItemPickerBinding.inflate(LayoutInflater.from(context))
 
         _binding?.let {
             it.apply {
 
-                pickerYear.minValue = MIN_YEAR
-                pickerYear.maxValue = MAX_YEAR
-                pickerYear.value = cal[Calendar.YEAR]
+                pickerFirst.minValue = MIN_YEAR
+                pickerFirst.maxValue = MAX_YEAR
+                pickerFirst.value = cal[Calendar.YEAR]
 
-                pickerMonth.minValue = 1
-                pickerMonth.maxValue = 12
-                pickerMonth.value = cal[Calendar.MONTH] + 1
+                pickerSecond.minValue = 1
+                pickerSecond.maxValue = 12
+                pickerSecond.value = cal[Calendar.MONTH] + 1
 
-                pickerDate.minValue = 1
-                pickerDate.maxValue = 31
-                pickerDate.value = cal[Calendar.DATE]
+                pickerThird.minValue = 1
+                pickerThird.maxValue = 31
+                pickerThird.value = cal[Calendar.DATE]
 
                 setDialogTitle()
 
                 btnConfirm.setOnClickListener {
-                    listener.onDateSet(null, pickerYear.value, pickerMonth.value, pickerDate.value)
+                    listener.onDateSet(null, pickerFirst.value, pickerSecond.value, pickerThird.value)
                     dismiss()
                 }
 
@@ -98,31 +99,31 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
 
     private fun setDatePickerValueChangedListener() {
         binding.apply {
-            pickerYear.setOnValueChangedListener { picker, oldVal, newVal ->
+            pickerFirst.setOnValueChangedListener { picker, oldVal, newVal ->
                 cal.set(Calendar.YEAR, newVal)
                 cal.set(Calendar.DAY_OF_MONTH, 1)
 
                 val newMaxDate = cal.getActualMaximum(Calendar.DATE)
-                if(newMaxDate < pickerDate.value) {
-                    pickerDate.value = 1
+                if(newMaxDate < pickerThird.value) {
+                    pickerThird.value = 1
                 }
-                pickerDate.maxValue = newMaxDate
+                pickerThird.maxValue = newMaxDate
                 setDialogTitle()
             }
 
-            pickerMonth.setOnValueChangedListener { picker, oldVal, newVal ->
+            pickerSecond.setOnValueChangedListener { picker, oldVal, newVal ->
                 cal.set(Calendar.MONTH, newVal - 1)
                 cal.set(Calendar.DAY_OF_MONTH, 1)
 
                 val newMaxDate = cal.getActualMaximum(Calendar.DATE)
-                if(newMaxDate < pickerDate.value) {
-                    pickerDate.value = 1
+                if(newMaxDate < pickerThird.value) {
+                    pickerThird.value = 1
                 }
-                pickerDate.maxValue = newMaxDate
+                pickerThird.maxValue = newMaxDate
                 setDialogTitle()
             }
 
-            pickerDate.setOnValueChangedListener { picker, oldVal, newVal ->
+            pickerThird.setOnValueChangedListener { picker, oldVal, newVal ->
                 setDialogTitle()
             }
 
@@ -134,9 +135,9 @@ class SlideDatePicker(val dateBundle: Bundle?, val listener: DatePickerDialog.On
         val noMatchedDate = "존재하지 않는 날짜"
 
         binding.apply {
-            val year = pickerYear.value
-            val month = pickerMonth.value
-            val date = pickerDate.value
+            val year = pickerFirst.value
+            val month = pickerSecond.value
+            val date = pickerThird.value
 
             val titleCal = Calendar.getInstance()
             titleCal.set(year, month - 1, date)

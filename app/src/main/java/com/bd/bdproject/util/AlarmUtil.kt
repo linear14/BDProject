@@ -27,7 +27,7 @@ object AlarmUtil {
      * of the intent that can be supplied when the actual send happens.
      */
 
-    fun setDairyAlarm(context: Context, view: View, hour: Int) {
+    fun setDairyAlarm(context: Context, view: View, hour: Int, min: Int) {
         val pm = context.packageManager
         val receiver = ComponentName(context, DeviceBootReceiver::class.java)
         val alarmIntent = Intent(context, DairyAlarmReceiver::class.java).let { intent ->
@@ -42,7 +42,7 @@ object AlarmUtil {
 
             val calendar = Calendar.getInstance().apply {
                 set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, 0)
+                set(Calendar.MINUTE, min)
                 set(Calendar.SECOND, 0)
             }
 

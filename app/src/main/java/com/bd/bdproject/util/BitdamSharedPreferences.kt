@@ -18,9 +18,13 @@ class BitdamSharedPreferences(context: Context) {
         get() = pref.getLong("LAST_VISITED_TIME", System.currentTimeMillis())
         set(value) = pref.edit().putLong("LAST_VISITED_TIME", value).apply()
 
-    var dairyAlarmTime: Int
-        get() = pref.getInt("DAIRY_ALARM_TIME", -1)
-        set(value) = pref.edit().putInt("DAIRY_ALARM_TIME", value).apply()
+    var dairyAlarmHour: Int
+        get() = pref.getInt("DAIRY_ALARM_HOUR", -1)
+        set(value) = pref.edit().putInt("DAIRY_ALARM_HOUR", value).apply()
+
+    var dairyAlarmMin: Int
+        get() = pref.getInt("DAIRY_ALARM_MIN", -1)
+        set(value) = pref.edit().putInt("DAIRY_ALARM_MIN", value).apply()
 
     var bitdamPassword: String?
         get() = pref.getString("BITDAM_PASSWORD", null)

@@ -37,21 +37,21 @@
         app:layout_constraintTop_toBottomOf="@id/tv_current_state">
 
         <NumberPicker
-            android:id="@+id/picker_year"
+            android:id="@+id/picker_first"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <NumberPicker
-            android:id="@+id/picker_month"
+            android:id="@+id/picker_second"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="24dp"
-            app:layout_constraintEnd_toStartOf="@id/picker_date"
-            app:layout_constraintStart_toEndOf="@id/picker_year" />
+            app:layout_constraintEnd_toStartOf="@id/picker_third"
+            app:layout_constraintStart_toEndOf="@id/picker_first" />
 
         <NumberPicker
-            android:id="@+id/picker_date"
+            android:id="@+id/picker_third"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent" />

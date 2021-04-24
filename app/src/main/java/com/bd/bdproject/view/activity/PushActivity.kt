@@ -3,6 +3,7 @@ package com.bd.bdproject.view.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bd.bdproject.databinding.ActivityPushBinding
+import com.bd.bdproject.dialog.SlideTimePicker
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
 import com.bd.bdproject.util.BitDamApplication
@@ -51,19 +52,31 @@ class PushActivity : AppCompatActivity() {
 
         binding.switchPushDairy.setOnCheckedChangeListener { view, newCheckedState ->
             val oldCheckedState = BitDamApplication.pref.useDairyPush
-            BitDamApplication.pref.useDairyPush = newCheckedState
 
             if (newCheckedState) {
                 if (oldCheckedState != newCheckedState) {
-                    BitDamApplication.pref.dairyAlarmTime = 22
-                    AlarmUtil.setDairyAlarm(view.context, binding.root, 22)
+                    openTimePicker(true)
                 }
             } else {
                 if (oldCheckedState != newCheckedState) {
-                    BitDamApplication.pref.dairyAlarmTime = -1
-                    AlarmUtil.setDairyAlarm(view.context, binding.root, NOT_USE_ALARM)
+                    BitDamApplication.pref.dairyAlarmHour = -1
+                    BitDamApplication.pref.dairyAlarmMin = -1
+                    BitDamApplication.pref.useDairyPush = false
+                    AlarmUtil.setDairyAlarm(view.context, binding.root, -1, -1)
                 }
             }
         }
+    }
+
+    private fun openTimePicker(use: Boolean) {
+        val picker = SlideTimePicker { hour, min, ap ->
+            BitDamApplication.pref.dairyAlarmHour = if(ap == 0) hour else hour+12
+            BitDamApplication.pref.dairyAlarmMin = min
+
+            BitDamApplication.pref.useDairyPush = use
+            AlarmUtil.setDairyAlarm(binding.root.context, binding.root, if(ap == 0) hour else hour+12, min)
+        }
+
+        picker.show(supportFragmentManager, "SlideTimePicker")
     }
 }
