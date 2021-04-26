@@ -47,6 +47,7 @@ class CollectionMainActivity : AppCompatActivity() {
 
         binding.apply {
             rvCalendar.adapter = calendarAdapter
+            rvCalendar.itemAnimator = null
             rvCalendar.addItemDecoration(SpacesItemDecorator())
 
             btnPreviousMonth.setOnClickListener { moveToPreviousMonth() }

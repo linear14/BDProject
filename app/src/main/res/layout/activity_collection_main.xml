@@ -65,7 +65,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/padding_normal">
+            android:paddingHorizontal="@dimen/padding_normal"
+            android:paddingBottom="20dp">
 
             <ImageView
                 android:id="@+id/btn_previous_month"

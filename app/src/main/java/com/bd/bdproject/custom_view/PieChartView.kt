@@ -40,6 +40,8 @@ class PieChartView: View {
 
     // 밝기 분류 (1~5), cnt
     var datas = mutableListOf<Pair<Int, Int>>()
+    var theMostCountBrightnessItem = -1
+    var isOnlyOneData = false
 
     val layoutOffset = 20f
     val pieOffset = 40f
@@ -106,27 +108,47 @@ class PieChartView: View {
             }
             canvas.drawArc(rect, startAngle, swipeAngle, useCenter, paint)
 
-            // text test
-            /*if(paint == paintIn) {
+            // region text
+            if(paint == paintIn) {
                 val temp = startAngle + swipeAngle / 2f
                 val centerAngle = if(temp >= 360f) temp - 360 else temp
-                val percentage = (((datas[i].second.toFloat() / entireCount.toFloat()) * 1000).roundToInt() / 10.0).toString()
+                val percentage = (((datas[i].second.toFloat() / entireCount.toFloat()) * 100).roundToInt()).toString()
 
                 Log.d("angle_test", "centerAngle: $centerAngle")
 
-                val textMeasured = paintText.measureText(percentage, 0, percentage.length)
-                val heightMeasured = paintText.descent() + paintText.ascent()
+                // 4% 이상인 데이터만 숫자로 표시
+                if(percentage.toInt() >= 4) {
 
-                canvas.drawText("$percentage%",
-                    width/2f + calculatePointX((width - 80f)/2, centerAngle) - (textMeasured / 2f),
-                    height/2f + calculatePointY((height - 80f)/2, centerAngle) - (heightMeasured / 2),
-                    paintText
-                )
+                    // 가장 많이 등록된 항목은 글자크기를 크게
+                    if(datas[i].first == theMostCountBrightnessItem) {
+                        paintText.textSize = 60f
+                    } else {
+                        paintText.textSize = 40f
+                    }
 
-                // 다음 텍스트 준비
-                Log.d("angle_test", "swipeAngle: $swipeAngle")
-            }*/
-            // text test end
+                    // 만약 데이터가 단 한개만 존재한다면 글자를 중앙배치
+                    // 그렇지 않다면, 글자는 그래프 각 영역의 중간
+
+                    val textMeasured = paintText.measureText("$percentage%", 0, percentage.length + 1)
+                    val heightMeasured = paintText.descent() + paintText.ascent()
+
+                    if(isOnlyOneData) {
+                        canvas.drawText("$percentage%",
+                            width/2f - (textMeasured / 2f),
+                            height/2f - (heightMeasured / 2),
+                            paintText
+                        )
+                    } else {
+                        canvas.drawText("$percentage%",
+                            width/2f + calculatePointX((width - 80f)/2, centerAngle) - (textMeasured / 2f),
+                            height/2f + calculatePointY((height - 80f)/2, centerAngle) - (heightMeasured / 2),
+                            paintText
+                        )
+                    }
+                }
+
+            }
+            // endregion
 
             // 다음 그림 준비
             val temp = startAngle + swipeAngle
@@ -136,14 +158,28 @@ class PieChartView: View {
 
     fun setData(data: MutableList<Pair<Int, Int>>) {
         this.datas = data
+
+        if(data.isNotEmpty()) {
+            data.sortByDescending { it.second }
+            theMostCountBrightnessItem = data[0].first
+
+            var count = 0
+            for(i in data) {
+                if(i.second != 0) {
+                    count++
+                }
+            }
+            isOnlyOneData = (count == 1)
+        }
+
         invalidate()
     }
 
     private fun calculatePointX(radius: Float, angleInDegrees: Float): Float {
-        return ((radius * 0.55) * Math.cos(angleInDegrees * Math.PI / 180f)).toFloat()
+        return ((radius * 0.60) * Math.cos(angleInDegrees * Math.PI / 180f)).toFloat()
     }
 
     private fun calculatePointY(radius: Float, angleInDegrees: Float): Float {
-        return ((radius * 0.55) * Math.sin(angleInDegrees * Math.PI / 180f)).toFloat()
+        return ((radius * 0.60) * Math.sin(angleInDegrees * Math.PI / 180f)).toFloat()
     }
 }
