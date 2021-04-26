@@ -224,8 +224,8 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="20dp"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toEndOf="@id/layout_legend"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/layout_legend"
                 app:layout_constraintTop_toTopOf="@id/layout_legend" />
 
             <View
@@ -247,12 +247,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separator2" />
 
+            <ImageView
+                android:id="@+id/iv_my_hash_info"
+                android:layout_width="32dp"
+                android:layout_height="@dimen/image_button_size_large"
+                android:layout_marginTop="8dp"
+                android:paddingVertical="@dimen/padding_for_image_button"
+                android:paddingStart="8dp"
+                android:src="@drawable/ic_info_outline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/separator2" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/tv_my_hash">
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/iv_my_hash_info">
 
                 <TextView
                     android:id="@+id/tv_hash"
@@ -314,6 +325,20 @@
                 android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/layout_header" />
+
+            <TextView
+                android:id="@+id/tv_my_hash_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0"
+                tools:alpha="1"
+                android:background="@drawable/deco_info_layout"
+                android:gravity="start"
+                tools:visibility="visible"
+                android:text="해시태그 클릭시 상세정보를\n볼 수 있어요 :)"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/iv_my_hash_info"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

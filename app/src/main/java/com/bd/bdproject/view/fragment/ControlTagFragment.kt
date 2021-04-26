@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
@@ -105,6 +106,7 @@ open class ControlTagFragment: BaseFragment() {
                     .setListener(object: AnimatorListenerAdapter() {
                         override fun onAnimationStart(animation: Animator?) {
                             super.onAnimationStart(animation)
+                            ivTagRecommendInfo.setImageResource(R.drawable.ic_info_fill)
                             tvTagRecommendInfo.visibility = View.VISIBLE
                         }
 
@@ -119,6 +121,7 @@ open class ControlTagFragment: BaseFragment() {
                                         .setListener(object: AnimatorListenerAdapter() {
                                             override fun onAnimationEnd(animation: Animator?) {
                                                 super.onAnimationEnd(animation)
+                                                ivTagRecommendInfo.setImageResource(R.drawable.ic_info_outline)
                                                 tvTagRecommendInfo.visibility = View.GONE
                                             }
                                         })

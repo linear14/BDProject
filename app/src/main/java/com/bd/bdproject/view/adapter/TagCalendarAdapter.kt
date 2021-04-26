@@ -181,9 +181,9 @@ class TagCalendarAdapter(
 
         private fun setBackgroundFilter() {
             when(viewModel.activatedGridPosition.value) {
-                null -> binding.viewFilter.visibility = View.GONE
-                layoutPosition -> binding.viewFilter.visibility = View.GONE
-                else -> binding.viewFilter.visibility = View.VISIBLE
+                null -> binding.root.alpha = 1.0f
+                layoutPosition -> binding.root.alpha = 1.0f
+                else -> binding.root.alpha = 0.4f
             }
         }
 

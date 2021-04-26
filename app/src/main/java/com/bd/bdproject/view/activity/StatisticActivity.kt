@@ -1,22 +1,31 @@
 package com.bd.bdproject.view.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.BitdamLog
+import com.bd.bdproject.R
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.util.Constant.INFO_TAG
+import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.util.timeToLong
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.util.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 
@@ -72,6 +81,39 @@ class StatisticActivity : AppCompatActivity() {
 
         observeDate()
         observeLightForDuration()
+
+        binding.apply {
+            ivMyHashInfo.setOnClickListener {
+                tvMyHashInfo.animateTransparency(1.0f, 500)
+                .setListener(object: AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator?) {
+                        super.onAnimationStart(animation)
+                        ivMyHashInfo.setImageResource(R.drawable.ic_info_fill)
+                        tvMyHashInfo.visibility = View.VISIBLE
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+
+                        GlobalScope.launch {
+                            delay(2000)
+
+                            GlobalScope.launch(Dispatchers.Main) {
+                                tvMyHashInfo.animateTransparency(0.0f, 500)
+                                    .setListener(object: AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            super.onAnimationEnd(animation)
+                                            ivMyHashInfo.setImageResource(R.drawable.ic_info_outline)
+                                            tvMyHashInfo.visibility = View.GONE
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                })
+
+            }
+        }
 
         binding.btnBack.setOnClickListener { onBackPressed() }
     }
