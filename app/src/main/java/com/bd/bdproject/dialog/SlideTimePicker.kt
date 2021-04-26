@@ -3,6 +3,7 @@ package com.bd.bdproject.dialog
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -17,13 +18,10 @@ import java.util.*
 
 class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : DialogFragment() {
 
-    companion object {
-        const val MAX_YEAR = 2099
-        const val MIN_YEAR = 1980
-    }
-
     private var _binding: DialogThreeItemPickerBinding? = null
     val binding get() = _binding!!
+
+    private var isSet = false
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -50,11 +48,12 @@ class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : Di
                 setCurrentStateText()
 
                 btnConfirm.setOnClickListener {
-                    listener.invoke(pickerFirst.value, pickerSecond.value, pickerThird.value)
+                    isSet = true
                     dismiss()
                 }
 
                 btnCancel.setOnClickListener {
+                    isSet = false
                     dismiss()
                 }
             }
@@ -120,6 +119,17 @@ class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : Di
 
             tvCurrentState.text = "$hour : $min : $ap"
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        if(isSet) {
+            binding.apply {
+                listener.invoke(pickerFirst.value, pickerSecond.value, pickerThird.value)
+            }
+        } else {
+            listener.invoke(-1, -1, -1)
+        }
+        super.onDismiss(dialog)
     }
 
 }

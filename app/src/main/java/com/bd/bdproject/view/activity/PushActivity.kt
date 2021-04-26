@@ -70,11 +70,15 @@ class PushActivity : AppCompatActivity() {
 
     private fun openTimePicker(use: Boolean) {
         val picker = SlideTimePicker { hour, min, ap ->
-            BitDamApplication.pref.dairyAlarmHour = if(ap == 0) hour else hour+12
-            BitDamApplication.pref.dairyAlarmMin = min
+            if(hour == -1 && min == -1 && ap == -1) {
+                binding.switchPushDairy.isChecked = false
+            } else {
+                BitDamApplication.pref.dairyAlarmHour = if(ap == 0) hour else hour+12
+                BitDamApplication.pref.dairyAlarmMin = min
 
-            BitDamApplication.pref.useDairyPush = use
-            AlarmUtil.setDairyAlarm(binding.root.context, binding.root, if(ap == 0) hour else hour+12, min)
+                BitDamApplication.pref.useDairyPush = use
+                AlarmUtil.setDairyAlarm(binding.root.context, binding.root, if(ap == 0) hour else hour+12, min)
+            }
         }
 
         picker.show(supportFragmentManager, "SlideTimePicker")
