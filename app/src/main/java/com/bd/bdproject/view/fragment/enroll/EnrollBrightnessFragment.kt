@@ -245,9 +245,20 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     }
 
     private fun setThumbFirstClickListener() {
-        binding.sbLight.setOnThumbFirstClickListener {
-            binding.sbLight.thumbAvailable = true
+        binding.apply {
+            sbLight.setOnThumbFirstClickListener {
+                sbLight.thumbAvailable = true
+
+                if (isFirstPressed) {
+                    tvAskCondition.visibility = View.GONE
+                    tvBrightness.visibility = View.VISIBLE
+                    actionDatePick.visibility = View.GONE
+
+                    sbLight.makeBarVisible()
+                }
+            }
         }
+
     }
 
     private fun saveBrightness() {

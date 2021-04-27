@@ -52,7 +52,6 @@ object LightUtil {
      *  first: 시작 빛의 Color.rgb 코드값
      *  second: 종료 빛의 Color.rgb 코드값
      */
-    // TODO 중복 코드같은데, refactoring 해보면 좋겠다.
     private fun getLights(start: Pair<LightRGB, LightRGB>, end: Pair<LightRGB, LightRGB>, progress: Int): IntArray {
         val progressRatio = ((progress % 10).toDouble() / 10)
 

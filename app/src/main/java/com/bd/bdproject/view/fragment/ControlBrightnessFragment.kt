@@ -40,7 +40,6 @@ open class ControlBrightnessFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            setSeekBarPressListener()
             setSeekBarProgressChangedListener()
         }
 
@@ -57,19 +56,6 @@ open class ControlBrightnessFragment: BaseFragment() {
         _binding = null
     }
 
-    private fun setSeekBarPressListener() {
-        binding.apply {
-            sbLight.setOnPressListener {
-                if(isFirstPressed) {
-                    tvAskCondition.visibility = View.GONE
-                    tvBrightness.visibility = View.VISIBLE
-                    actionDatePick.visibility = View.GONE
-
-                    sbLight.makeBarVisible()
-                }
-            }
-        }
-    }
 
     private fun setSeekBarProgressChangedListener() {
         binding.apply {

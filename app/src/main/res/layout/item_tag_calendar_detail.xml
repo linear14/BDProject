@@ -23,10 +23,11 @@
         android:id="@+id/iv_brightness"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_small_brightness"
         app:layout_constraintBottom_toBottomOf="@id/tv_brightness"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_brightness" />
+        app:layout_constraintTop_toTopOf="@id/tv_brightness"
+        app:tint="@color/white"/>
 
     <TextView
         android:id="@+id/tv_brightness"
@@ -44,10 +45,11 @@
         android:id="@+id/iv_tags"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_small_tag"
         app:layout_constraintBottom_toBottomOf="@id/tv_tags"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_tags" />
+        app:layout_constraintTop_toTopOf="@id/tv_tags"
+        app:tint="@color/white"/>
 
     <TextView
         android:id="@+id/tv_tags"
@@ -65,10 +67,11 @@
         android:id="@+id/iv_memo"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_small_memo"
         app:layout_constraintBottom_toBottomOf="@id/tv_memo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_memo" />
+        app:layout_constraintTop_toTopOf="@id/tv_memo"
+        app:tint="@color/white"/>
 
     <TextView
         android:id="@+id/tv_memo"
@@ -86,9 +89,11 @@
         android:id="@+id/btn_close"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:padding="8dp"
-        android:src="@mipmap/ic_launcher"
+        android:paddingStart="8dp"
+        android:paddingBottom="8dp"
+        android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
