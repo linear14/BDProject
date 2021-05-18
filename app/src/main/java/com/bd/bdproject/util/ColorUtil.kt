@@ -1,6 +1,8 @@
 package com.bd.bdproject.util
 
+import android.graphics.Color
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -21,6 +23,10 @@ object ColorUtil {
                     item.setTextColor(colorCode)
                     item.setHintTextColor(colorCode)
                     item.setLineColor(colorCode)
+                }
+                is EditText -> {
+                    item.setTextColor(colorCode)
+                    item.setHintTextColor(Color.parseColor(if(brightness in 0 until 80) "#60FFFFFF" else "#60000000"))
                 }
                 is TextView -> {
                     item.setTextColor(colorCode)
