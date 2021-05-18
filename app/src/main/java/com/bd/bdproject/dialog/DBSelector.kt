@@ -75,7 +75,7 @@ class DBSelector(val onIdSelected: (String, DialogFragment) -> Unit) : DialogFra
         // dialog의 높이 고정시키기
         val params = dialog?.window?.attributes
         params?.let {
-            it.width = (windowWidth * 0.788).toInt()
+            it.width = (windowWidth * 0.666).toInt()
             it.height = (windowHeight * 0.574).toInt()
         }
         dialog?.window?.attributes = params as WindowManager.LayoutParams
