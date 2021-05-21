@@ -1,7 +1,9 @@
 package com.bd.bdproject.view.fragment.edit
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -48,6 +50,10 @@ open class EditTagFragment: ControlTagFragment() {
                 }
             }
 
+        }
+
+        binding.ivTagRecommendInfo.setOnClickListener {
+            animateTagRecommendInfo(args.light?.bright?:0)
         }
 
         observeTagEnrolled()

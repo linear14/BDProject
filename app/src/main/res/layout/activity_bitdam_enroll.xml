@@ -24,7 +24,6 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_star"
-            app:lottie_speed="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:lottie_rawRes="@raw/bg_star"

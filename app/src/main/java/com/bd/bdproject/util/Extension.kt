@@ -7,6 +7,8 @@ import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER
 import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER_TIME
 
+val screenTransitionAnimationMilliSecond = 750L
+
 fun View.animateTransparency(toAlpha: Float, duration: Long = 0): ViewPropertyAnimator {
     return this.animate()
         .alpha(toAlpha)

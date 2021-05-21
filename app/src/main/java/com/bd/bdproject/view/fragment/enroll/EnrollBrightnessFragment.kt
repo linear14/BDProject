@@ -15,13 +15,10 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
-import com.bd.bdproject.util.Constant
+import com.bd.bdproject.util.*
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
-import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
@@ -151,7 +148,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 delay(1000)
 
                 launch(Dispatchers.Main) {
-                    tvAskCondition.animateTransparency(1.0f, 2000)
+                    tvAskCondition.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                         .setListener(object: AnimatorListenerAdapter() {
                             override fun onAnimationStart(animation: Animator?) {
                                 super.onAnimationStart(animation)
@@ -161,14 +158,14 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                             override fun onAnimationEnd(animation: Animator?) {
                                 super.onAnimationEnd(animation)
                                 if(!isChangingFragment) {
-                                    sbLight.animateTransparency(1.0f, 2000)
+                                    sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                                         .setListener(object: AnimatorListenerAdapter() {
                                             override fun onAnimationStart(animation: Animator?) {
                                                 super.onAnimationStart(animation)
                                                 sbLight.visibility = View.VISIBLE
                                             }
                                         })
-                                    actionDatePick.animateTransparency(1.0f, 2000)
+                                    actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                                         .setListener(object: AnimatorListenerAdapter() {
                                             override fun onAnimationStart(animation: Animator?) {
                                                 actionDatePick.visibility = View.VISIBLE
@@ -202,7 +199,6 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             actionDatePick.visibility = View.GONE
             tvAskCondition.visibility = View.GONE
             sbLight.makeBarVisible()
-
             isFirstPressed = false
 
             if(parentActivity.previousActivity == COLLECTION_MAIN) {
@@ -215,10 +211,10 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
             if(isAnimationActive()) {
                 if(sharedViewModel.brightness.value != null) {
-                    sbLight.animateTransparency(1.0f, 2000)
+                    sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                 } else {
                     if(parentActivity.previousActivity == COLLECTION_MAIN) {
-                        sbLight.animateTransparency(1.0f, 2000)
+                        sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                     }
                 }
             } else {
@@ -266,7 +262,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     }
 
     private fun goToFragmentEnrollTagWithAnimation() {
-        binding.sbLight.animateTransparency(0.0f, 2000)
+        binding.sbLight.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)

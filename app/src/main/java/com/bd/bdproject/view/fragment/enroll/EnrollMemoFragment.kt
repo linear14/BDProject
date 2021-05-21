@@ -81,7 +81,7 @@ open class EnrollMemoFragment: ControlMemoFragment() {
 
     private fun showUiWithAnimation() {
         CoroutineScope(Dispatchers.Main).launch {
-            binding.layoutMemo.animateTransparency(1.0f, 2000)
+            binding.layoutMemo.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
         }
     }
 
@@ -175,7 +175,7 @@ open class EnrollMemoFragment: ControlMemoFragment() {
                             isChangingFragment = true
 
                             if(isAnimationActive()) {
-                                layoutMemo.animateTransparency(0.0f, 2000)
+                                layoutMemo.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
                                     .setListener(object : AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
                                             super.onAnimationEnd(animation)

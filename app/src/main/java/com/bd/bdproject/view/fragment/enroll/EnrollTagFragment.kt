@@ -15,6 +15,7 @@ import com.bd.bdproject.util.Constant.CONTROL_TAG
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.util.screenTransitionAnimationMilliSecond
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.ControlTagFragment
 import com.bd.bdproject.viewmodel.EnrollViewModel
@@ -40,6 +41,10 @@ open class EnrollTagFragment: ControlTagFragment() {
                     goToFragmentEnrollMemo()
                 }
             }
+        }
+
+        binding.ivTagRecommendInfo.setOnClickListener {
+            animateTagRecommendInfo(sharedViewModel.brightness.value ?: 0)
         }
 
         observeTagEnrolled()
@@ -72,18 +77,18 @@ open class EnrollTagFragment: ControlTagFragment() {
             when (sharedViewModel.previousPage.value) {
                 CONTROL_MEMO -> {
                     rvTagEnrolled.alpha = 1.0f
-                    layoutInput.animateTransparency(1.0f, 2000)
-                    layoutTagRecommend.animateTransparency(1.0f, 2000)
+                    layoutInput.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                    layoutTagRecommend.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                 }
                 else -> {
-                    rvTagEnrolled.animateTransparency(1.0f, 2000)
+                    rvTagEnrolled.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                         .setListener(object : AnimatorListenerAdapter() {
                             override fun onAnimationStart(animation: Animator?) {
                                 rvTagEnrolled.alpha = 0f
                             }
                         })
-                    layoutInput.animateTransparency(1.0f, 2000)
-                    layoutTagRecommend.animateTransparency(1.0f, 2000)
+                    layoutInput.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                    layoutTagRecommend.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                 }
             }
         }
@@ -141,9 +146,9 @@ open class EnrollTagFragment: ControlTagFragment() {
                             isChangingFragment = true
 
                             if(isAnimationActive()) {
-                                rvTagEnrolled.animateTransparency(0.0f, 2000)
-                                layoutInput.animateTransparency(0.0f, 2000)
-                                layoutTagRecommend.animateTransparency(0.0f, 2000)
+                                rvTagEnrolled.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                                layoutInput.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                                layoutTagRecommend.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
                                     .setListener(object : AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
                                             super.onAnimationEnd(animation)
@@ -175,8 +180,8 @@ open class EnrollTagFragment: ControlTagFragment() {
 
     private fun goToFragmentEnrollMemoWithAnimation() {
         KeyboardUtil.keyBoardHide(binding.inputTag)
-        binding.layoutInput.animateTransparency(0.0f, 2000)
-        binding.layoutTagRecommend.animateTransparency(0.0f, 2000)
+        binding.layoutInput.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+        binding.layoutTagRecommend.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
             .setListener(object: AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)

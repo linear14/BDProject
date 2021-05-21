@@ -15,10 +15,7 @@ import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentControlTagBinding
-import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.util.ColorUtil
-import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.util.*
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
@@ -101,37 +98,6 @@ open class ControlTagFragment: BaseFragment() {
         _binding = FragmentControlTagBinding.inflate(inflater, container, false).apply {
             inputTag.addTextChangedListener(InputTagWatcher())
 
-            ivTagRecommendInfo.setOnClickListener {
-                tvTagRecommendInfo.animateTransparency(1.0f, 500)
-                    .setListener(object: AnimatorListenerAdapter() {
-                        override fun onAnimationStart(animation: Animator?) {
-                            super.onAnimationStart(animation)
-                            ivTagRecommendInfo.setImageResource(R.drawable.ic_info_fill)
-                            tvTagRecommendInfo.visibility = View.VISIBLE
-                        }
-
-                        override fun onAnimationEnd(animation: Animator?) {
-                            super.onAnimationEnd(animation)
-
-                            GlobalScope.launch {
-                                delay(2000)
-
-                                GlobalScope.launch(Dispatchers.Main) {
-                                    tvTagRecommendInfo.animateTransparency(0.0f, 500)
-                                        .setListener(object: AnimatorListenerAdapter() {
-                                            override fun onAnimationEnd(animation: Animator?) {
-                                                super.onAnimationEnd(animation)
-                                                ivTagRecommendInfo.setImageResource(R.drawable.ic_info_outline)
-                                                tvTagRecommendInfo.visibility = View.GONE
-                                            }
-                                        })
-                                }
-                            }
-                        }
-                    })
-
-            }
-
             ivClearText.setOnClickListener {
                 inputTag.setText(null)
                 tagViewModel.searchTag(null)
@@ -168,6 +134,40 @@ open class ControlTagFragment: BaseFragment() {
         binding.layoutAddTag.background = gradientDrawable
         tagViewModel.candidateTags.value = tags.toMutableList()
         binding.tvBrightness.text = brightness.toString()
+    }
+
+    fun animateTagRecommendInfo(brightness: Int) {
+        binding.apply {
+            tvTagRecommendInfo.animateTransparency(1.0f, 500)
+                .setListener(object: AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator?) {
+                        super.onAnimationStart(animation)
+                        ivTagRecommendInfo.setImageResource(R.drawable.ic_info_fill)
+                        tvTagRecommendInfo.visibility = View.VISIBLE
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+
+                        GlobalScope.launch {
+                            delay(2000)
+
+                            GlobalScope.launch(Dispatchers.Main) {
+                                tvTagRecommendInfo.animateTransparency(0.0f, 500)
+                                    .setListener(object: AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            super.onAnimationEnd(animation)
+                                            ivTagRecommendInfo.setImageResource(R.drawable.ic_info_outline)
+                                            ColorUtil.setEntireViewColor(brightness, ivTagRecommendInfo)
+                                            tvTagRecommendInfo.visibility = View.GONE
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                })
+        }
+
     }
 
 
