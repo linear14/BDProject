@@ -7,6 +7,15 @@
     android:background="@drawable/gradient_manage_hash"
     tools:context=".view.activity.AddOrEditHashActivity">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_star"
+        app:lottie_speed="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_rawRes="@raw/bg_only_star"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -166,6 +175,5 @@
             app:layout_constraintTop_toBottomOf="@id/tv_hash" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

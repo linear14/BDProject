@@ -103,6 +103,9 @@ dependencies {
             }
     implementation 'com.google.http-client:google-http-client-gson:1.31.0'
 
+    // Lottie
+    implementation 'com.airbnb.android:lottie:3.7.0'
+
     // Test
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

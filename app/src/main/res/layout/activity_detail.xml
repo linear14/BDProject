@@ -135,6 +135,14 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_star"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lottie_rawRes="@raw/bg_star"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
+
         <View
             android:id="@+id/view_filter"
             android:layout_width="match_parent"
