@@ -1,12 +1,11 @@
 package com.bd.bdproject.view.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.StatisticViewType
 import com.bd.bdproject.data.model.StatisticCalendar
 import com.bd.bdproject.databinding.ItemStatisticCalendarDayBinding
@@ -14,6 +13,7 @@ import com.bd.bdproject.databinding.ItemStatisticCalendarEmptyBinding
 import com.bd.bdproject.databinding.ItemStatisticCalendarHeaderBinding
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
+import java.util.*
 
 class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCalendar>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -24,6 +24,7 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
     }
 
     private var viewModel: StatisticCalendarViewModel? = null
+    private val calendar = Calendar.getInstance()
 
     override fun getItemViewType(position: Int): Int {
         return when(calendarList[position].type) {
@@ -117,9 +118,16 @@ class StatisticCalendarAdapter(private val calendarList: MutableList<StatisticCa
         RecyclerView.ViewHolder(binding.root) {
 
         fun onBind(dateCode: Long) {
+            calendar.timeInMillis = dateCode
+
             binding.apply {
                 val dateCodeString = dateCode.timeToString()
                 tvDate.text = dateCodeString.substring(6, 8)
+                when(calendar.get(Calendar.DAY_OF_WEEK)) {
+                    1 -> tvDate.setTextColor(Color.parseColor("#FF0000"))
+                    7 -> tvDate.setTextColor(Color.parseColor("#008EFF"))
+                    else -> tvDate.setTextColor(Color.parseColor("#000000"))
+                }
 
                 viewModel?.let { vm ->
                     val startDay = vm.duration.value?.first
