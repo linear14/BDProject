@@ -89,7 +89,7 @@ dependencies {
     implementation 'gun0912.ted:tedkeyboardobserver:1.0.2'
 
     // lifecycle
-    implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.3.1'
 
     // Drive
     implementation 'com.google.android.gms:play-services-auth:19.0.0'

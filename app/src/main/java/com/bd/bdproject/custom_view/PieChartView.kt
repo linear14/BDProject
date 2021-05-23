@@ -71,6 +71,10 @@ class PieChartView: View {
             return
         }
 
+        /*paintIn -> "20"
+        paintBlur -> "50"
+        else -> ""*/
+
         val additionalCode = when(paint) {
             paintIn -> "70"
             paintBlur -> "70"

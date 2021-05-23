@@ -1,5 +1,6 @@
 package com.bd.bdproject.view.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -57,6 +58,7 @@ class DetailActivity : AppCompatActivity() {
 
     var isHideDetails = false
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -66,6 +68,8 @@ class DetailActivity : AppCompatActivity() {
             btnDrawer.setOnClickListener {
                 drawer.openDrawer(GravityCompat.START)
             }
+
+            navigationDrawer.root.setOnTouchListener { _, _ -> true }
 
             navigationDrawer.actionMyLight.setOnClickListener {
                 startActivity(Intent(this@DetailActivity, CollectionMainActivity::class.java))

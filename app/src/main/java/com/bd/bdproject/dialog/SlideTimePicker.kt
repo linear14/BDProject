@@ -30,7 +30,7 @@ class SlideTimePicker(val listener: (hour: Int, min: Int, ap: Int) -> Unit) : Di
         _binding?.let {
             it.apply {
 
-                tvDialogTitle.text = "알림 시간을 설정해주세요"
+                tvDialogTitle.text = "작성 알림 시간을 설정해주세요"
 
                 pickerFirst.minValue = 0
                 pickerFirst.maxValue = 11

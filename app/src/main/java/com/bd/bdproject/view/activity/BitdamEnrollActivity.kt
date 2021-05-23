@@ -1,5 +1,6 @@
 package com.bd.bdproject.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.os.Bundle
@@ -27,11 +28,14 @@ class BitdamEnrollActivity : AppCompatActivity() {
     }
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityBitdamEnrollBinding.inflate(layoutInflater).apply {
             setContentView(root)
+
+            navigationDrawer.root.setOnTouchListener { _, _ -> true }
 
             navigationDrawer.actionMyLight.setOnClickListener {
                 startActivity(Intent(this@BitdamEnrollActivity, CollectionMainActivity::class.java))
