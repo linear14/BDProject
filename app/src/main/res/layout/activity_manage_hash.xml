@@ -9,12 +9,12 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_star"
-        app:lottie_speed="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:lottie_rawRes="@raw/bg_only_star"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/bg_only_star"
+        app:lottie_speed="1" />
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_main"
@@ -42,7 +42,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white"/>
+                    app:tint="@color/white" />
 
                 <TextView
                     style="@style/toolbarTitle"
@@ -123,6 +123,7 @@
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:hint="해시태그 검색"
+            android:maxLines="1"
             android:textColor="@color/white"
             android:textColorHint="#D4D4D4"
             android:textSize="14sp"
@@ -189,9 +190,9 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_filter_down"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

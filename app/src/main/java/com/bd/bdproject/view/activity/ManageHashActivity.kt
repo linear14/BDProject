@@ -3,13 +3,15 @@ package com.bd.bdproject.view.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
 import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
 import com.bd.bdproject.data.model.Tag
@@ -19,7 +21,6 @@ import com.bd.bdproject.dialog.TagCombiner
 import com.bd.bdproject.util.Constant.INFO_TAG
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.dpToPx
-import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -28,8 +29,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
-import java.lang.Exception
-import java.security.Key
 
 // TODO Database 작업 완료 후 리스너 설정을 다른 방식으로 진행하는 방안 고려
 class ManageHashActivity : AppCompatActivity() {
@@ -77,6 +76,30 @@ class ManageHashActivity : AppCompatActivity() {
             bottomSelector.show(supportFragmentManager, "selector")
         })
 
+    private val textWatcher = object: TextWatcher {
+        private var text: String? = null
+        private var beforeCursorPosition = 0
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            text = s.toString()
+            beforeCursorPosition = start
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            binding.inputSearch.also {
+                it.removeTextChangedListener(this)
+                if (it.lineCount > 1) {
+                    it.setText(text)
+                    it.setSelection(beforeCursorPosition)
+                }
+                it.addTextChangedListener(this)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageHashBinding.inflate(layoutInflater).apply {
@@ -106,6 +129,8 @@ class ManageHashActivity : AppCompatActivity() {
                 manageHashViewModel.searchedText.value = null
                 manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
             }
+
+            inputSearch.addTextChangedListener(textWatcher)
 
             filter.setOnClickListener {
                 registerForContextMenu(it)
