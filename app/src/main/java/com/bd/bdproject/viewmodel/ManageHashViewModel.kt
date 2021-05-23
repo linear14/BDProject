@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class ManageHashViewModel(
-    val tagRepository: TagRepository,
-    val relationRepository: LightTagRelationRepository
+    private val tagRepository: TagRepository,
+    private val relationRepository: LightTagRelationRepository
     ): ViewModel() {
 
     val tags: MutableLiveData<List<TagWithLights>> = MutableLiveData()
@@ -130,11 +130,7 @@ class ManageHashViewModel(
                     relationRepository.insertRelation(relationList)
                 }
 
-
         }
-
-
-
     }
 
 
@@ -154,10 +150,6 @@ class ManageHashViewModel(
             }
             checkedTags.value = temp
         }
-    }
-
-    fun addAllCheckedTags() {
-        // TODO 화면에 보이는 모든 태그 set에 넣기 구현
     }
 
     fun removeAllCheckedTags() {

@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
 import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
 import com.bd.bdproject.data.model.Tag
@@ -19,15 +18,11 @@ import com.bd.bdproject.databinding.ActivityManageHashBinding
 import com.bd.bdproject.dialog.BottomSelector
 import com.bd.bdproject.dialog.TagCombiner
 import com.bd.bdproject.util.Constant.INFO_TAG
-import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.dpToPx
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
 // TODO Database 작업 완료 후 리스너 설정을 다른 방식으로 진행하는 방안 고려
@@ -36,6 +31,7 @@ class ManageHashActivity : AppCompatActivity() {
     lateinit var binding: ActivityManageHashBinding
 
     private val manageHashViewModel: ManageHashViewModel by inject()
+    var searchJob: Job? = null
 
     val adapter = ManageHashAdapter(
         mutableListOf(),
@@ -81,6 +77,22 @@ class ManageHashActivity : AppCompatActivity() {
         private var beforeCursorPosition = 0
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            searchJob?.cancel()
+            if(s.isNullOrEmpty() || s.isBlank()) {
+                binding.actionReset.visibility = View.INVISIBLE
+                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500)
+                    manageHashViewModel.searchedText.value = null
+                    manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+                }
+            } else {
+                binding.actionReset.visibility = View.VISIBLE
+                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500)
+                    manageHashViewModel.searchedText.value = s.toString()
+                    manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+                }
+            }
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -117,17 +129,13 @@ class ManageHashActivity : AppCompatActivity() {
                 adapter.removeAllCheckedPosition()
             }
 
-            actionSearch.setOnClickListener {
-                manageHashViewModel.searchedText.value = inputSearch.text.toString()
-                manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
-                KeyboardUtil.keyBoardHide(it)
-                it.clearFocus()
-            }
-
             actionReset.setOnClickListener {
+                searchJob?.cancel()
                 binding.inputSearch.text.clear()
-                manageHashViewModel.searchedText.value = null
-                manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                    manageHashViewModel.searchedText.value = null
+                    manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+                }
             }
 
             inputSearch.addTextChangedListener(textWatcher)
@@ -184,7 +192,8 @@ class ManageHashActivity : AppCompatActivity() {
                                 Snackbar.make(binding.root, "태그 합치기에 실패하였습니다.", Snackbar.LENGTH_SHORT).show()
                             }
                         } else if(job.isCompleted) {
-                            GlobalScope.launch(Dispatchers.Main) {
+                            searchJob?.cancel()
+                            searchJob = GlobalScope.launch(Dispatchers.Main) {
                                 Snackbar.make(binding.root, "태그 합치기가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
                                 manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                             }
@@ -208,7 +217,15 @@ class ManageHashActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.d("LIFECYCLE_TEST", "onResumed Clicked")
-        manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+        if(binding.inputSearch.text.isNullOrEmpty() || binding.inputSearch.text.isBlank()) {
+            binding.actionReset.visibility = View.INVISIBLE
+        } else {
+            binding.actionReset.visibility = View.VISIBLE
+        }
+        searchJob?.cancel()
+        searchJob = GlobalScope.launch(Dispatchers.Main) {
+            manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+        }
     }
 
     override fun onCreateContextMenu(
@@ -255,12 +272,18 @@ class ManageHashActivity : AppCompatActivity() {
                 FILTER_ASC -> {
                     binding.filter.text = "오름차순"
                     manageHashViewModel.filter.value = FILTER_ASC
-                    manageHashViewModel.searchTag(binding.inputSearch.text.toString())
+                    searchJob?.cancel()
+                    searchJob = GlobalScope.launch(Dispatchers.Main) {
+                        manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+                    }
                 }
                 FILTER_DESC -> {
                     binding.filter.text = "내림차순"
                     manageHashViewModel.filter.value = FILTER_DESC
-                    manageHashViewModel.searchTag(binding.inputSearch.text.toString())
+                    searchJob?.cancel()
+                    searchJob = GlobalScope.launch(Dispatchers.Main) {
+                        manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
+                    }
                 }
             }
             return true

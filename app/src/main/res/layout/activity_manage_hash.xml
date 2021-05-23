@@ -139,10 +139,10 @@
             android:padding="@dimen/padding_for_image_button_smaller"
             android:src="@drawable/ic_delete_bright"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/action_search"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/action_search"
             android:layout_width="@dimen/image_button_size_smaller"
             android:layout_height="@dimen/image_button_size_smaller"
@@ -150,7 +150,7 @@
             android:src="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
