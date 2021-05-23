@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="12dp"
     android:background="@drawable/deco_tag_calendar_detail"
-    android:padding="14dp">
+    android:padding="14dp"
+    tools:background="@color/black">
 
     <TextView
         android:id="@+id/tv_date"
@@ -23,67 +24,67 @@
         android:id="@+id/iv_brightness"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_marginTop="14dp"
         android:src="@drawable/ic_small_brightness"
-        app:layout_constraintBottom_toBottomOf="@id/tv_brightness"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_brightness"
-        app:tint="@color/white"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_date"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/tv_brightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="14dp"
+        android:includeFontPadding="true"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/iv_brightness"
-        app:layout_constraintTop_toBottomOf="@id/tv_date"
+        app:layout_constraintTop_toTopOf="@id/iv_brightness"
         tools:text="60" />
 
     <ImageView
         android:id="@+id/iv_tags"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/ic_small_tag"
-        app:layout_constraintBottom_toBottomOf="@id/tv_tags"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_tags"
-        app:tint="@color/white"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_brightness"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/tv_tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
+        android:includeFontPadding="true"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/iv_tags"
-        app:layout_constraintTop_toBottomOf="@id/tv_brightness"
-        tools:text="# 이동현  # 이보람" />
+        app:layout_constraintTop_toTopOf="@id/iv_tags"
+        tools:text="# 테스트태그1  # 테스트태그2\n# 줄바꿈태그3" />
 
     <ImageView
         android:id="@+id/iv_memo"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/ic_small_memo"
-        app:layout_constraintBottom_toBottomOf="@id/tv_memo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_memo"
-        app:tint="@color/white"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_tags"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/tv_memo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
+        android:includeFontPadding="true"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/iv_memo"
-        app:layout_constraintTop_toBottomOf="@id/tv_tags"
-        tools:text="오늘은 과제가 잘된다~" />
+        app:layout_constraintTop_toTopOf="@id/iv_memo"
+        tools:text="오늘은 과제가 잘된다~\n테스트하려고 한 줄 띄워봤어요" />
 
     <ImageView
         android:id="@+id/btn_close"
@@ -94,6 +95,6 @@
         android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white"/>
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

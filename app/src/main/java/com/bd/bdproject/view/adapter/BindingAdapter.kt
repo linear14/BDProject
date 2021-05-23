@@ -27,7 +27,7 @@ fun bindBrightness(view: View, brightness: Int) {
 fun bindBrightnessForCollection(view: View, brightness: Int) {
 
     val gradientDrawable = GradientDrawable().apply {
-        orientation = GradientDrawable.Orientation.BR_TL
+        orientation = GradientDrawable.Orientation.TL_BR
     }
     gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
 
