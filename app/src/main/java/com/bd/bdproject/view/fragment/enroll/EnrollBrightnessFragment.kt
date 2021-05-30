@@ -2,25 +2,25 @@ package com.bd.bdproject.view.fragment.enroll
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
-import com.bd.bdproject.util.*
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
+import com.bd.bdproject.util.animateTransparency
+import com.bd.bdproject.util.screenTransitionAnimationMilliSecond
+import com.bd.bdproject.util.timeToLong
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
-import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
@@ -37,14 +37,12 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
     private val sharedViewModel: EnrollViewModel by activityViewModels()
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
-    val parentActivity by lazy {
+    private val parentActivity by lazy {
         activity as BitdamEnrollActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false).apply {
-
-        }
+        super.onCreateView(inflater, container, savedInstanceState)
 
         if(sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
             makeBackground(sharedViewModel.brightness.value?:0)
@@ -78,11 +76,7 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             sharedViewModel.dateCode.value = parentActivity.intent.getStringExtra("datecode")
         }
 
-        binding.apply {
-            setSeekBarReleaseListener()
-            setThumbFirstClickListener()
-        }
-
+        handleSeekBarEvent()
     }
 
     override fun onResume() {
@@ -192,12 +186,18 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
     }
 
-    override fun makeBackground(brightness: Int) {
-        super.makeBackground(brightness)
-
+    private fun makeBackground(brightness: Int) {
         binding.apply {
+            setEntireLightFragmentColor(brightness)
+            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+            parentActivity.binding.root.background = gradientDrawable
+
             actionDatePick.visibility = View.GONE
             tvAskCondition.visibility = View.GONE
+            tvBrightness.visibility = View.VISIBLE
+            tvBrightness.text = brightness.toString()
+            sbLight.firstProgress = brightness * 2
+            sbLight.thumbAvailable = true
             sbLight.makeBarVisible()
             isFirstPressed = false
 
@@ -223,8 +223,36 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
     }
 
-    private fun setSeekBarReleaseListener() {
+    private fun handleSeekBarEvent() {
         binding.apply {
+            // 최초 클릭 Listener
+            sbLight.setOnThumbFirstClickListener {
+                sbLight.thumbAvailable = true
+
+                if (isFirstPressed) {
+                    tvAskCondition.visibility = View.GONE
+                    tvBrightness.visibility = View.VISIBLE
+                    actionDatePick.visibility = View.GONE
+
+                    sbLight.makeBarVisible()
+                }
+            }
+
+            // 값 변화 Listener
+            sbLight.setOnProgressChangeListener { progress ->
+                if(!isChangingFragment) {
+                    val brightness = getBrightness(progress)
+                    setEntireLightFragmentColor(brightness)
+
+                    tvBrightness.text = brightness.toString()
+
+                    gradientDrawable.colors = LightUtil.getDiagonalLight(progress)
+                    parentActivity.binding.root.background = gradientDrawable
+                    isFirstPressed = false
+                }
+            }
+
+            // 손에서 뗐을때 Listener
             sbLight.setOnReleaseListener {
                 if(!isFirstPressed && !isChangingFragment) {
                     isChangingFragment = true
@@ -238,23 +266,6 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
                 }
             }
         }
-    }
-
-    private fun setThumbFirstClickListener() {
-        binding.apply {
-            sbLight.setOnThumbFirstClickListener {
-                sbLight.thumbAvailable = true
-
-                if (isFirstPressed) {
-                    tvAskCondition.visibility = View.GONE
-                    tvBrightness.visibility = View.VISIBLE
-                    actionDatePick.visibility = View.GONE
-
-                    sbLight.makeBarVisible()
-                }
-            }
-        }
-
     }
 
     private fun saveBrightness() {

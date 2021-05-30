@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.ColorUtil.setEntireViewColor
-import com.bd.bdproject.util.LightUtil.getDiagonalLight
 
 open class ControlBrightnessFragment: BaseFragment() {
 
@@ -29,20 +28,16 @@ open class ControlBrightnessFragment: BaseFragment() {
     var isFirstPressed = true
     var isChangingFragment = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false).apply {
 
         }
+
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.apply {
-            setSeekBarProgressChangedListener()
-        }
-
     }
 
     override fun onResume() {
@@ -56,37 +51,7 @@ open class ControlBrightnessFragment: BaseFragment() {
         _binding = null
     }
 
-
-    private fun setSeekBarProgressChangedListener() {
-        binding.apply {
-            sbLight.setOnProgressChangeListener { progress ->
-                if(!isChangingFragment) {
-                    val brightness = getBrightness(progress)
-                    setEntireLightFragmentColor(brightness)
-
-                    tvBrightness.text = brightness.toString()
-
-                    gradientDrawable.colors = getDiagonalLight(progress)
-                    layoutAddLight.background = gradientDrawable
-                    isFirstPressed = false
-                }
-            }
-        }
-    }
-
-    open fun makeBackground(brightness: Int) {
-        binding. apply {
-            setEntireLightFragmentColor(brightness)
-            gradientDrawable.colors = getDiagonalLight(brightness * 2)
-            layoutAddLight.background = gradientDrawable
-            tvBrightness.text = brightness.toString()
-            tvBrightness.visibility = View.VISIBLE
-            sbLight.firstProgress = brightness * 2
-            sbLight.thumbAvailable = true
-        }
-    }
-
-    private fun getBrightness(progress: Int): Int {
+    fun getBrightness(progress: Int): Int {
         val converted = progress / 10
         return (converted * 5)
     }
