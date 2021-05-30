@@ -192,13 +192,15 @@ class BitdamSeekBar: View {
 
                 MotionEvent.ACTION_UP -> {
                     if(thumbPressed) {
-                        if(thumbAvailable) {
-                            onReleaseListener?.invoke()
+                        onReleaseListener?.invoke()
+                        view.performClick()
+                        /*if(thumbAvailable) {
+                           onReleaseListener?.invoke()
                             view.performClick()
                         } else {
                             onThumbFirstClickListener?.invoke()
                             onProgressChangeListener?.invoke(firstProgress?:defaultProgress)
-                        }
+                        }*/
                     }
                     thumbPressed = false
                 }

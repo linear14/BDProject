@@ -74,7 +74,7 @@ open class EnrollTagFragment: ControlTagFragment() {
 
     private fun showUiWithAnimation() {
         binding.apply {
-            when (sharedViewModel.previousPage.value) {
+            when (sharedViewModel.previousPage) {
                 CONTROL_MEMO -> {
                     rvTagEnrolled.alpha = 1.0f
                     layoutInput.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
@@ -173,7 +173,7 @@ open class EnrollTagFragment: ControlTagFragment() {
     }
 
     private fun goBackToFragmentEnrollBrightness() {
-        sharedViewModel.previousPage.value = CONTROL_TAG
+        sharedViewModel.previousPage = CONTROL_TAG
         KeyboardUtil.keyBoardHide(binding.inputTag)
         parentActivity.onBackPressed(true)
     }
@@ -191,7 +191,7 @@ open class EnrollTagFragment: ControlTagFragment() {
     }
 
     private fun goToFragmentEnrollMemo() {
-        sharedViewModel.previousPage.value = CONTROL_TAG
+        sharedViewModel.previousPage = CONTROL_TAG
         KeyboardUtil.keyBoardHide(binding.inputTag)
         val navDirection: NavDirections =
             EnrollTagFragmentDirections.actionEnrollTagFragmentToEnrollMemoFragment()

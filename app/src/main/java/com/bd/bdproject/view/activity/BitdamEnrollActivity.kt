@@ -3,6 +3,7 @@ package com.bd.bdproject.view.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageInfo
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -12,6 +13,7 @@ import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.ACTIVITY_NOT_RECOGNIZED
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
@@ -28,13 +30,18 @@ class BitdamEnrollActivity : AppCompatActivity() {
     }
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
+    val gradientDrawable = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.TL_BR
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityBitdamEnrollBinding.inflate(layoutInflater).apply {
-            setContentView(root)
+        binding = ActivityBitdamEnrollBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        binding.apply {
             navigationDrawer.root.setOnTouchListener { _, _ -> true }
 
             navigationDrawer.actionMyLight.setOnClickListener {
@@ -114,5 +121,10 @@ class BitdamEnrollActivity : AppCompatActivity() {
     fun onBackPressed(isAnimationEnd: Boolean) {
         if(isAnimationEnd) super.onBackPressed()
         else onBackPressed()
+    }
+
+    fun updateBackgroundColor(progress: Int? = null) {
+        gradientDrawable.colors = LightUtil.getDiagonalLight(progress)
+        binding.root.background = gradientDrawable
     }
 }

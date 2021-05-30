@@ -29,7 +29,7 @@ import org.koin.android.ext.android.inject
 
 open class EnrollMemoFragment: ControlMemoFragment() {
 
-    private val lightViewModel: LightViewModel by inject()
+    /*private val lightViewModel: LightViewModel by inject()
     private val tagViewModel: TagViewModel by inject()
     private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
     private val sharedViewModel: EnrollViewModel by activityViewModels()
@@ -203,6 +203,6 @@ open class EnrollMemoFragment: ControlMemoFragment() {
         sharedViewModel.previousPage.value = CONTROL_MEMO
         KeyboardUtil.keyBoardHide(binding.inputMemo)
         (activity as BitdamEnrollActivity).onBackPressed(true)
-    }
+    }*/
 
 }

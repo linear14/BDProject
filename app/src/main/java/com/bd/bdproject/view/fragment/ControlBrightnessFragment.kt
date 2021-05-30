@@ -36,7 +36,7 @@ open class ControlBrightnessFragment: BaseFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+/*    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
@@ -104,7 +104,7 @@ open class ControlBrightnessFragment: BaseFragment() {
     }
 
 
-    /***
+    *//***
      * TODO 비동기로 2~3초마다 sbLight Thumb가 visible한지 검사하는 메서드를 만들어준다.
      * visible하면 return
      * 아니면 보여주는 메서드

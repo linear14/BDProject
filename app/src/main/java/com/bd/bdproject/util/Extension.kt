@@ -99,6 +99,13 @@ fun Int.toLightLabel(): String {
     return "$start ~ $end"
 }
 
+fun Int?.convertToBrightness(): Int {
+    if(this == null) return 0
+
+    val converted = this / 10
+    return (converted * 5)
+}
+
 fun Int.dpToPx(): Int {
     return (this * Resources.getSystem().displayMetrics.density).toInt()
 }

@@ -5,9 +5,10 @@ object Constant {
     // 프래그먼트 코드 (for previous fragment)
     const val INFO_PREVIOUS_FRAGMENT = "PREVIOUS_FRAGMENT"
     const val INFO_DESTINATION ="DESTINATION"
-    const val CONTROL_BRIGHTNESS = 8000
-    const val CONTROL_TAG = 8100
-    const val CONTROL_MEMO = 8200
+    const val CONTROL_HOME = 8000
+    const val CONTROL_BRIGHTNESS = 8100
+    const val CONTROL_TAG = 8200
+    const val CONTROL_MEMO = 8300
 
     const val INFO_PREVIOUS_ACTIVITY = "PREVIOUS_ACTIVITY"
     const val SPLASH = 7000

@@ -3,6 +3,7 @@ package com.bd.bdproject.view.fragment.enroll
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
+import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
@@ -31,40 +33,61 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-open class EnrollBrightnessFragment: ControlBrightnessFragment() {
+open class EnrollBrightnessFragment: BaseFragment() {
 
+    private var _binding: FragmentControlBrightnessBinding? = null
+    val binding get() = _binding!!
 
     private val sharedViewModel: EnrollViewModel by activityViewModels()
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
-    val parentActivity by lazy {
+    private val parentActivity by lazy {
         activity as BitdamEnrollActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false).apply {
+    /*** @flag
+     *  - isFirstPressed :
+     *      seekbar의 thumb를 클릭했는지 여부에 따라 값이 바뀝니다. (클릭하자마자 값이 바뀌는것을 방지)
+     *
+     *  - isChangingFragment :
+     *      다음 화면으로 전환 애니메이션이 동작하면 true로 변합니다.
+     *      true 상태에서는 추가적인 값의 조작이 불가능합니다.
+     * ***/
+    var isFirstPressed = true
 
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false)
 
-        if(sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
-            makeBackground(sharedViewModel.brightness.value?:0)
+        /*// 단순 화면 전환이거나
+        if (sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
+            makeBackground(sharedViewModel.brightness.value ?: 0)
         } else {
-            if(isAnimationActive()) {
+            if (isAnimationActive()) {
                 showUiWithAnimation()
             } else {
                 showUiWithoutAnimation()
             }
 
-        }
+        }*/
+        return binding.root
+    }
+}
 
-        binding.btnDrawer.setOnClickListener {
-            if(!isChangingFragment) {
-                parentActivity.binding.drawer.openDrawer(GravityCompat.START)
+/*
+        binding.apply {
+            btnDrawer.setOnClickListener {
+                if (!sharedViewModel.isFragmentTransitionState) {
+                    parentActivity.binding.drawer.openDrawer(GravityCompat.START)
+                }
             }
-        }
 
-        binding.btnBack.setOnClickListener {
-            parentActivity.onBackPressed()
+            btnBack.setOnClickListener {
+                parentActivity.onBackPressed()
+            }
         }
 
         return binding.root
@@ -87,6 +110,9 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
 
     override fun onResume() {
         super.onResume()
+
+        isFirstPressed = true
+        isChangingFragment = false
 
         binding.actionDatePick.setOnClickListener {
             val dateBundle = Bundle().apply {
@@ -192,10 +218,16 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
     }
 
-    override fun makeBackground(brightness: Int) {
-        super.makeBackground(brightness)
-
+    fun makeBackground(brightness: Int) {
         binding.apply {
+            setEntireLightFragmentColor(brightness)
+            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+            layoutAddLight.background = gradientDrawable
+            tvBrightness.text = brightness.toString()
+            tvBrightness.visibility = View.VISIBLE
+            sbLight.firstProgress = brightness * 2
+            sbLight.thumbAvailable = true
+
             actionDatePick.visibility = View.GONE
             tvAskCondition.visibility = View.GONE
             sbLight.makeBarVisible()
@@ -240,6 +272,23 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
         }
     }
 
+    private fun setSeekBarProgressChangedListener() {
+        binding.apply {
+            sbLight.setOnProgressChangeListener { progress ->
+                if(!isChangingFragment) {
+                    val brightness = getBrightness(progress)
+                    setEntireLightFragmentColor(brightness)
+
+                    tvBrightness.text = brightness.toString()
+
+                    gradientDrawable.colors = LightUtil.getDiagonalLight(progress)
+                    layoutAddLight.background = gradientDrawable
+                    isFirstPressed = false
+                }
+            }
+        }
+    }
+
     private fun setThumbFirstClickListener() {
         binding.apply {
             sbLight.setOnThumbFirstClickListener {
@@ -278,4 +327,21 @@ open class EnrollBrightnessFragment: ControlBrightnessFragment() {
             EnrollBrightnessFragmentDirections.actionEnrollBrightnessFragmentToEnrollTagFragment()
         findNavController(binding.sbLight).navigate(navDirection)
     }
-}
+
+    private fun getBrightness(progress: Int): Int {
+        val converted = progress / 10
+        return (converted * 5)
+    }
+
+    fun setEntireLightFragmentColor(brightness: Int) {
+        binding.apply {
+            ColorUtil.setEntireViewColor(
+                brightness,
+                tvBrightness,
+                actionEnroll,
+                btnDrawer,
+                btnBack
+            )
+        }
+    }
+}*/

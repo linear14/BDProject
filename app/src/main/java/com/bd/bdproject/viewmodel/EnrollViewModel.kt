@@ -6,17 +6,18 @@ import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.util.timeToString
 
 class EnrollViewModel: ViewModel() {
-    val dateCode: MutableLiveData<String> = MutableLiveData(System.currentTimeMillis().timeToString())
+    var dateCode: String? = System.currentTimeMillis().timeToString()
 
     var brightness: MutableLiveData<Int?> = MutableLiveData()
     var tags: MutableLiveData<List<Tag>?> = MutableLiveData()
     var memo: MutableLiveData<String?> = MutableLiveData()
 
-    val previousActivity: MutableLiveData<Int?> = MutableLiveData()
-    val previousPage: MutableLiveData<Int?> = MutableLiveData()
+    var previousActivity: Int? = null
+    var previousPage: Int? = null
+    var isFragmentTransitionState = false
 
     fun init() {
-        dateCode.value = System.currentTimeMillis().timeToString()
+        dateCode = System.currentTimeMillis().timeToString()
         brightness = MutableLiveData()
         tags = MutableLiveData()
         memo = MutableLiveData()

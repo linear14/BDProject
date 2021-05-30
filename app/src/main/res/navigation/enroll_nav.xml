@@ -3,7 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/enrollNavigation"
-    app:startDestination="@id/enrollBrightnessFragment">
+    app:startDestination="@id/enrollHomeFragment">
+
+    <fragment
+        android:id="@+id/enrollHomeFragment"
+        android:name="com.bd.bdproject.view.fragment.enroll.EnrollHomeFragment"
+        tools:layout="@layout/fragment_control_home">
+        <action
+            android:id="@+id/action_enrollHomeFragment_to_enrollBrightnessFragment"
+            app:destination="@id/enrollBrightnessFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/enrollBrightnessFragment"
@@ -28,8 +37,8 @@
         android:name="com.bd.bdproject.view.fragment.enroll.EnrollMemoFragment"
         tools:layout="@layout/fragment_control_memo">
         <action
-            android:id="@+id/action_enrollMemoFragment_to_enrollBrightnessFragment"
-            app:destination="@id/enrollBrightnessFragment"
+            android:id="@+id/action_enrollMemoFragment_to_enrollHomeFragment"
+            app:destination="@id/enrollHomeFragment"
             app:popUpTo="@id/enrollBrightnessFragment"
             app:popUpToInclusive="true"/>
     </fragment>

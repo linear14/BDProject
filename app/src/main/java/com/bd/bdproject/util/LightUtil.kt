@@ -28,22 +28,30 @@ object LightUtil {
         this[20] = Pair(LightRGB(255, 205, 77), LightRGB(255, 245, 220))
     }
 
-    fun getDiagonalLight(progress: Int): IntArray {
-        return if(progress != 200) {
-            // Log.d("COLOR_STATE", "progress: $progress, brightness: ${getBrightness(progress)}")
-            getLights(
-                levelMap[progress / 10]!!,
-                levelMap[(progress / 10) + 1]!!,
-                progress
-            )
-        } else {
-            val lightMaxStart = levelMap[20]!!.first
-            val lightMaxEnd = levelMap[20]!!.second
+    fun getDiagonalLight(progress: Int? = null): IntArray {
+        return when {
+            progress != null && progress != 200 -> {
+                getLights(
+                    levelMap[progress / 10]!!,
+                    levelMap[(progress / 10) + 1]!!,
+                    progress
+                )
+            }
+            progress == null -> {
+                intArrayOf(
+                    Color.rgb(0, 0, 0),
+                    Color.rgb(0, 0, 0)
+                )
+            }
+            else -> {
+                val lightMaxStart = levelMap[20]!!.first
+                val lightMaxEnd = levelMap[20]!!.second
 
-            intArrayOf(
-                Color.rgb(lightMaxStart.r, lightMaxStart.g, lightMaxStart.b),
-                Color.rgb(lightMaxEnd.r, lightMaxEnd.g, lightMaxEnd.b)
-            )
+                intArrayOf(
+                    Color.rgb(lightMaxStart.r, lightMaxStart.g, lightMaxStart.b),
+                    Color.rgb(lightMaxEnd.r, lightMaxEnd.g, lightMaxEnd.b)
+                )
+            }
         }
     }
 
