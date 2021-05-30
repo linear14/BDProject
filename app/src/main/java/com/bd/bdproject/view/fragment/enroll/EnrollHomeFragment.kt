@@ -30,7 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-open class EnrollHomeFragment: BaseFragment() {
+class EnrollHomeFragment: BaseFragment() {
 
     private var _binding: FragmentControlHomeBinding? = null
     val binding get() = _binding!!
@@ -59,6 +59,48 @@ open class EnrollHomeFragment: BaseFragment() {
                     parentActivity.binding.drawer.openDrawer(GravityCompat.START)
                 }
             }
+
+            actionDatePick.setOnClickListener {
+                val dateBundle = Bundle().apply {
+                    val dateCode = sharedViewModel.dateCode
+                    dateCode?.let {
+                        putInt("YEAR", it.substring(0, 4).toInt())
+                        putInt("MONTH", it.substring(4, 6).toInt())
+                        putInt("DATE", it.substring(6, 8).toInt())
+                    }
+                }
+
+                val picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
+                    Log.d("PICKER_TEST", "${year}년 ${monthOfYear}월 ${dayOfMonth}일")
+
+                    val sb = StringBuilder().apply {
+                        append(year)
+                        append(if(monthOfYear < 10) "0${monthOfYear}" else monthOfYear)
+                        append(if(dayOfMonth < 10) "0${dayOfMonth}" else dayOfMonth)
+                    }
+
+                    if(sb.toString().timeToLong() > System.currentTimeMillis()) {
+                        Snackbar.make(binding.root, "미래의 빛을 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
+                            val isEnrolledToday = deferred.await()
+
+                            launch(Dispatchers.Main) {
+                                if(isEnrolledToday) {
+                                    Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
+                                } else {
+                                    sharedViewModel.dateCode = sb.toString()
+                                    binding.apply {
+                                        goToFragmentEnrollBrightness()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                picker.show(requireActivity().supportFragmentManager, "SlideDatePicker")
+            }
         }
 
         handleSeekBar()
@@ -75,75 +117,28 @@ open class EnrollHomeFragment: BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        binding.actionDatePick.setOnClickListener {
-            val dateBundle = Bundle().apply {
-                val dateCode = sharedViewModel.dateCode
-                dateCode?.let {
-                    putInt("YEAR", it.substring(0, 4).toInt())
-                    putInt("MONTH", it.substring(4, 6).toInt())
-                    putInt("DATE", it.substring(6, 8).toInt())
-                }
-            }
-
-            val picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
-                Log.d("PICKER_TEST", "${year}년 ${monthOfYear}월 ${dayOfMonth}일")
-
-                val sb = StringBuilder().apply {
-                    append(year)
-                    append(if(monthOfYear < 10) "0${monthOfYear}" else monthOfYear)
-                    append(if(dayOfMonth < 10) "0${dayOfMonth}" else dayOfMonth)
-                }
-
-                if(sb.toString().timeToLong() > System.currentTimeMillis()) {
-                    Snackbar.make(binding.root, "미래의 빛을 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
-                        val isEnrolledToday = deferred.await()
-
-                        launch(Dispatchers.Main) {
-                            if(isEnrolledToday) {
-                                Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
-                            } else {
-                                sharedViewModel.dateCode = sb.toString()
-                                binding.apply {
-                                    goToFragmentEnrollBrightness()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            picker.show(requireActivity().supportFragmentManager, "SlideDatePicker")
-        }
-    }
-
     private fun showUiWithAnimation() {
         CoroutineScope(Dispatchers.Main).launch {
             binding.apply {
                 tvAskCondition.clearAnimation()
                 sbLight.clearAnimation()
+                actionDatePick.clearAnimation()
 
                 delay(1000)
 
-                launch(Dispatchers.Main) {
-                    // 질문 메세지 애니메이션
-                    tvAskCondition.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                        .setListener(object: AnimatorListenerAdapter() {
+                // 질문 메세지 애니메이션
+                tvAskCondition.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                    .setListener(object: AnimatorListenerAdapter() {
 
-                            // SeekBar 및 데이터피커 애니메이션
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                if(!sharedViewModel.isFragmentTransitionState) {
-                                    sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                                    actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                                }
+                        // SeekBar 및 데이터피커 애니메이션
+                        override fun onAnimationEnd(animation: Animator?) {
+                            super.onAnimationEnd(animation)
+                            if(!sharedViewModel.isFragmentTransitionState) {
+                                sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                                actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                             }
-                        })
-                }
+                        }
+                    })
             }
         }
 
@@ -172,21 +167,33 @@ open class EnrollHomeFragment: BaseFragment() {
     }
 
     private fun goToFragmentEnrollBrightnessWithAnimation() {
-        binding.tvAskCondition.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
-        binding.actionDatePick.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
-            .setListener(object: AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    goToFragmentEnrollBrightness()
-                }
-            })
+        binding.apply {
+            tvAskCondition.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter() {})
+
+            actionDatePick.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        goToFragmentEnrollBrightness()
+                    }
+                })
+        }
     }
 
+    // findNavController 부분 코드가 빠르게 두 번 이상 호출되면
+    // java.lang.IllegalArgumentException: navigation destination xx is unknown to this NavController 뜬다.
+    // https://stackoverflow.com/questions/51060762/illegalargumentexception-navigation-destination-xxx-is-unknown-to-this-navcontr
     private fun goToFragmentEnrollBrightness() {
         sharedViewModel.previousPage = CONTROL_HOME
         parentActivity.binding.drawer.closeDrawer(GravityCompat.START)
         val navDirection: NavDirections =
             EnrollHomeFragmentDirections.actionEnrollHomeFragmentToEnrollBrightnessFragment()
-        findNavController(binding.root).navigate(navDirection)
+        findNavController(parentActivity.binding.layoutFragment).navigate(navDirection)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

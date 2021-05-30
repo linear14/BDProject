@@ -14,11 +14,14 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
+import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.util.*
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
+import com.bd.bdproject.util.Constant.CONTROL_HOME
+import com.bd.bdproject.util.Constant.CONTROL_TAG
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
@@ -31,6 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 
 open class EnrollBrightnessFragment: BaseFragment() {
@@ -45,16 +49,6 @@ open class EnrollBrightnessFragment: BaseFragment() {
         activity as BitdamEnrollActivity
     }
 
-    /*** @flag
-     *  - isFirstPressed :
-     *      seekbar의 thumb를 클릭했는지 여부에 따라 값이 바뀝니다. (클릭하자마자 값이 바뀌는것을 방지)
-     *
-     *  - isChangingFragment :
-     *      다음 화면으로 전환 애니메이션이 동작하면 true로 변합니다.
-     *      true 상태에서는 추가적인 값의 조작이 불가능합니다.
-     * ***/
-    var isFirstPressed = true
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,108 +56,185 @@ open class EnrollBrightnessFragment: BaseFragment() {
     ): View {
         _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false)
 
-        /*// 단순 화면 전환이거나
-        if (sharedViewModel.brightness.value != null || parentActivity.previousActivity == COLLECTION_MAIN) {
-            makeBackground(sharedViewModel.brightness.value ?: 0)
-        } else {
-            if (isAnimationActive()) {
-                showUiWithAnimation()
-            } else {
+        when {
+            // 이전 페이지에서 넘어왔을 경우
+            sharedViewModel.previousPage == CONTROL_HOME -> {
+                if(isAnimationActive()) {
+                    showUiWithAnimationFromPreviousPage()
+                } else {
+                    showUiWithoutAnimation()
+                }
+            }
+
+            // 다음 페이지에서 돌아왔을 경우
+            sharedViewModel.previousPage == CONTROL_TAG -> {
+                if(isAnimationActive()) {
+                    showUiWithAnimationFromNextPage()
+                } else {
+                    showUiWithoutAnimation()
+                }
+            }
+
+            // 모아보기 페이지에서 빛 등록을 눌렀을 경우
+            sharedViewModel.previousActivity == COLLECTION_MAIN -> {
+                sharedViewModel.dateCode = parentActivity.intent.getStringExtra("datecode")
                 showUiWithoutAnimation()
             }
 
-        }*/
-        return binding.root
-    }
-}
-
-/*
-        binding.apply {
-            btnDrawer.setOnClickListener {
-                if (!sharedViewModel.isFragmentTransitionState) {
-                    parentActivity.binding.drawer.openDrawer(GravityCompat.START)
-                }
+            // 기타 상황
+            else -> {
+                showUiWithoutAnimation()
             }
+        }
+
+        sharedViewModel.previousPage = CONTROL_BRIGHTNESS
+
+        binding.apply {
+            actionEnroll.visibility = View.GONE
 
             btnBack.setOnClickListener {
                 parentActivity.onBackPressed()
             }
         }
 
+        handleSeekBar()
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        sharedViewModel.previousActivity.value = parentActivity.previousActivity
-        if(sharedViewModel.previousActivity.value == COLLECTION_MAIN) {
-            sharedViewModel.dateCode.value = parentActivity.intent.getStringExtra("datecode")
-        }
-
+    private fun handleSeekBar() {
         binding.apply {
-            setSeekBarReleaseListener()
-            setThumbFirstClickListener()
-        }
+            sbLight.setOnReleaseListener {
+                if(!sharedViewModel.isFragmentTransitionState) {
+                    sharedViewModel.isFragmentTransitionState = true
 
-    }
+                    saveBrightness()
 
-    override fun onResume() {
-        super.onResume()
-
-        isFirstPressed = true
-        isChangingFragment = false
-
-        binding.actionDatePick.setOnClickListener {
-            val dateBundle = Bundle().apply {
-                val dateCode = sharedViewModel.dateCode.value
-                dateCode?.let {
-                    putInt("YEAR", it.substring(0, 4).toInt())
-                    putInt("MONTH", it.substring(4, 6).toInt())
-                    putInt("DATE", it.substring(6, 8).toInt())
-                }
-            }
-
-            val picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
-                Log.d("PICKER_TEST", "${year}년 ${monthOfYear}월 ${dayOfMonth}일")
-
-                val sb = StringBuilder().apply {
-                    append(year)
-                    append(if(monthOfYear < 10) "0${monthOfYear}" else monthOfYear)
-                    append(if(dayOfMonth < 10) "0${dayOfMonth}" else dayOfMonth)
-                }
-
-                if(sb.toString().timeToLong() > System.currentTimeMillis()) {
-                    Snackbar.make(binding.root, "미래의 빛을 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
-                        val isEnrolledToday = deferred.await()
-
-                        launch(Dispatchers.Main) {
-                            if(isEnrolledToday) {
-                                Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
-                            } else {
-                                sharedViewModel.dateCode.value = sb.toString()
-                                binding.apply {
-                                    actionDatePick.visibility = View.GONE
-                                    tvAskCondition.visibility = View.GONE
-                                    tvBrightness.visibility = View.VISIBLE
-                                    tvBrightness.text =
-                                        (sharedViewModel.brightness.value ?: 0).toString()
-                                    sbLight.makeBarVisible()
-                                    sbLight.thumbAvailable = true
-                                    isFirstPressed = false
-                                }
-                            }
-                        }
+                    if(isAnimationActive()) {
+                        goToFragmentEnrollTagWithAnimation()
+                    } else {
+                        goToFragmentEnrollTag()
                     }
                 }
             }
-            picker.show(requireActivity().supportFragmentManager, "SlideDatePicker")
+        }
+
+    }
+
+    private fun setOnBackPressed() {
+        onBackPressedListener = object: OnBackPressedInFragment {
+            override fun onBackPressed(): Boolean {
+                binding.apply {
+                    return if(!sharedViewModel.isFragmentTransitionState) {
+                        sharedViewModel.brightness.value = 0
+                        sharedViewModel.isFragmentTransitionState = true
+
+                        // 모아보기에서 넘어온 경우
+                        if(sharedViewModel.previousActivity == COLLECTION_MAIN) {
+                            //TODO 아예 액티비티 전환
+
+                        } else {
+                            if(isAnimationActive()) {
+                                goBackToFragmentEnrollHomeWithAnimation()
+                            } else {
+                                goBackToFragmentEnrollHome()
+                            }
+                        }
+                        true
+                    } else {
+                        true
+                    }
+                }
+            }
         }
     }
 
+    private fun saveBrightness() {
+        sharedViewModel.brightness.value = binding.tvBrightness.text.toString().toInt()
+    }
+
+    fun setEntireLightFragmentColor(brightness: Int) {
+        binding.apply {
+            ColorUtil.setEntireViewColor(
+                brightness,
+                tvBrightness,
+                btnBack
+            )
+        }
+    }
+
+    private fun showUiWithoutAnimation() {
+        binding.apply {
+            tvBrightness.alpha = 1.0f
+            sbLight.makeBarVisible()
+            sbLight.thumbAvailable = true
+            sbLightFake.visibility = View.GONE
+        }
+    }
+
+    private fun showUiWithAnimationFromPreviousPage() {
+        binding.apply {
+            // TODO 배경색 별밤색으로 바꾸는 과정 필요
+            tvBrightness.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter(){})
+            // TODO 막대기 위로 올라오는 것처럼 보이도록 크기 늘리기
+            // TODO 막대기 다 올라오면 sbLightFake는 View.GONE
+        }
+    }
+
+    private fun showUiWithAnimationFromNextPage() {
+        binding.apply {
+            sbLightFake.visibility = View.GONE
+            tvBrightness.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter(){
+                    override fun onAnimationStart(animation: Animator?) {
+                        super.onAnimationStart(animation)
+                        tvBrightness.alpha = 0f
+                    }
+                })
+            sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter(){
+                    override fun onAnimationStart(animation: Animator?) {
+                        super.onAnimationStart(animation)
+                        sbLight.makeBarVisible()
+                        sbLight.alpha = 0f
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        sbLight.thumbAvailable = true
+                    }
+                })
+        }
+    }
+
+    private fun goToFragmentEnrollTag() {
+        saveBrightness()
+    }
+
+    private fun goToFragmentEnrollTagWithAnimation() {
+
+    }
+
+    private fun goBackToFragmentEnrollHome() {
+
+    }
+
+    private fun goBackToFragmentEnrollHomeWithAnimation() {
+        binding.apply {
+            tvBrightness.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter(){})
+            // TODO sbLight progress 0으로 만들기
+            // TODO sbLightFake 보여지게 바꾸기
+            // TODO sbLight 막대기 아래로 내려가보이도록 크기 줄이기
+            // TODO 배경 검정색으로 바꾸기
+
+
+        }
+
+    }
+}
+/*
     private fun showUiWithAnimation() {
         CoroutineScope(Dispatchers.Main).launch {
             binding.apply {
@@ -255,22 +326,6 @@ open class EnrollBrightnessFragment: BaseFragment() {
         }
     }
 
-    private fun setSeekBarReleaseListener() {
-        binding.apply {
-            sbLight.setOnReleaseListener {
-                if(!isFirstPressed && !isChangingFragment) {
-                    isChangingFragment = true
-                    saveBrightness()
-
-                    if(isAnimationActive()) {
-                        goToFragmentEnrollTagWithAnimation()
-                    } else {
-                        goToFragmentEnrollTag()
-                    }
-                }
-            }
-        }
-    }
 
     private fun setSeekBarProgressChangedListener() {
         binding.apply {
@@ -289,22 +344,6 @@ open class EnrollBrightnessFragment: BaseFragment() {
         }
     }
 
-    private fun setThumbFirstClickListener() {
-        binding.apply {
-            sbLight.setOnThumbFirstClickListener {
-                sbLight.thumbAvailable = true
-
-                if (isFirstPressed) {
-                    tvAskCondition.visibility = View.GONE
-                    tvBrightness.visibility = View.VISIBLE
-                    actionDatePick.visibility = View.GONE
-
-                    sbLight.makeBarVisible()
-                }
-            }
-        }
-
-    }
 
     private fun saveBrightness() {
         sharedViewModel.brightness.value = binding.tvBrightness.text.toString().toInt()

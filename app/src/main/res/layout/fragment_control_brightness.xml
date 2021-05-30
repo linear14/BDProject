@@ -55,20 +55,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
+        android:alpha="0"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_largest"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:alpha="1"
         tools:text="20"
         tools:visibility="visible" />
+
+    <com.bd.bdproject.custom_view.BitdamSeekBar
+        android:id="@+id/sb_light_fake"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="false" />
 
     <com.bd.bdproject.custom_view.BitdamSeekBar
         android:id="@+id/sb_light"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:alpha="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
