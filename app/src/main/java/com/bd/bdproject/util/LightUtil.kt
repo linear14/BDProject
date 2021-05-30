@@ -34,7 +34,7 @@ object LightUtil {
                 getLights(
                     levelMap[progress / 10]!!,
                     levelMap[(progress / 10) + 1]!!,
-                    progress
+                    progress * 10
                 )
             }
             progress == null -> {
@@ -56,12 +56,45 @@ object LightUtil {
     }
 
     /***
+     *  EnrollHomeFragment <-> EnrollBrightnessFragment 사이의 빛을 만들어줄때 사용한다.
+     *  @param totalTime 전체 애니메이션 시간
+     *  @param currentTime 현재 애니메이션 시간 위치
+     *  @param isReversed false면 검정 -> 별밤색, true면 별밤색 -> 검정색
+     */
+    fun getOutRangeLight(totalTime: Long, currentTime: Long, isReversed: Boolean): IntArray {
+        // progress를 0 ~ 10 사이의 값으로 설정
+        val ratio = ((currentTime / totalTime.toDouble()) * 100).toInt() // 0.681 -> 68
+        if(ratio == 100) {
+            return if(isReversed) {
+                intArrayOf(
+                    Color.rgb(0, 0, 0),
+                    Color.rgb(0, 0, 0)
+                )
+            } else {
+                val darkStart = levelMap[0]!!.first
+                val darkEnd = levelMap[0]!!.second
+
+                intArrayOf(
+                    Color.rgb(darkStart.r, darkStart.g, darkStart.b),
+                    Color.rgb(darkEnd.r, darkEnd.g, darkEnd.b)
+                )
+            }
+        }
+
+        return if(isReversed) {
+            getLights(levelMap[0]!!, Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), ratio)
+        } else {
+            getLights(Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), levelMap[0]!!, ratio)
+        }
+    }
+
+    /***
      *  @return IntArray(first, second)
      *  first: 시작 빛의 Color.rgb 코드값
      *  second: 종료 빛의 Color.rgb 코드값
      */
     private fun getLights(start: Pair<LightRGB, LightRGB>, end: Pair<LightRGB, LightRGB>, progress: Int): IntArray {
-        val progressRatio = ((progress % 10).toDouble() / 10)
+        val progressRatio = ((progress % 100).toDouble() / 100)
 
         val redStart = start.first.r + ((end.first.r - start.first.r) * progressRatio).toInt()
         val greenStart = start.first.g + ((end.first.g - start.first.g) * progressRatio).toInt()

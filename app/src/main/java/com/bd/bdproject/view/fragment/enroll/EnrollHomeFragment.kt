@@ -11,10 +11,12 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
+import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.FragmentControlHomeBinding
 import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_HOME
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.util.animateTransparency
 import com.bd.bdproject.util.screenTransitionAnimationMilliSecond
@@ -45,7 +47,7 @@ class EnrollHomeFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentControlHomeBinding.inflate(inflater, container, false)
 
-        parentActivity.updateBackgroundColor(null)
+        parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(null))
 
         if(isAnimationActive()) {
             showUiWithAnimation()

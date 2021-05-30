@@ -11,9 +11,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivityBitdamEnrollBinding
 import com.bd.bdproject.util.Constant
 import com.bd.bdproject.util.Constant.ACTIVITY_NOT_RECOGNIZED
-import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
-import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.timeToString
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
@@ -123,8 +121,8 @@ class BitdamEnrollActivity : AppCompatActivity() {
         else onBackPressed()
     }
 
-    fun updateBackgroundColor(progress: Int? = null) {
-        gradientDrawable.colors = LightUtil.getDiagonalLight(progress)
+    fun updateBackgroundColor(gradientLights: IntArray) {
+        gradientDrawable.colors = gradientLights
         binding.root.background = gradientDrawable
     }
 }

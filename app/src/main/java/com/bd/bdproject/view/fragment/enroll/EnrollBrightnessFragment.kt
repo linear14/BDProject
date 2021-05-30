@@ -98,6 +98,7 @@ open class EnrollBrightnessFragment: BaseFragment() {
         }
 
         handleSeekBar()
+        setOnBackPressed()
 
         return binding.root
     }
@@ -174,7 +175,14 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
     private fun showUiWithAnimationFromPreviousPage() {
         binding.apply {
-            // TODO 배경색 별밤색으로 바꾸는 과정 필요
+            // 배경 별밤색으로 바꾸기
+            CoroutineScope(Dispatchers.Main).launch {
+                for(time in 0..screenTransitionAnimationMilliSecond step 10) {
+                    parentActivity.updateBackgroundColor(LightUtil.getOutRangeLight(
+                        screenTransitionAnimationMilliSecond, time, false))
+                    delay(10)
+                }
+            }
             tvBrightness.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter(){})
             // TODO 막대기 위로 올라오는 것처럼 보이도록 크기 늘리기
@@ -227,7 +235,15 @@ open class EnrollBrightnessFragment: BaseFragment() {
             // TODO sbLight progress 0으로 만들기
             // TODO sbLightFake 보여지게 바꾸기
             // TODO sbLight 막대기 아래로 내려가보이도록 크기 줄이기
-            // TODO 배경 검정색으로 바꾸기
+
+            // 배경 검정색으로 바꾸기
+            CoroutineScope(Dispatchers.Main).launch {
+                for(time in 0..screenTransitionAnimationMilliSecond step 10) {
+                    parentActivity.updateBackgroundColor(LightUtil.getOutRangeLight(
+                        screenTransitionAnimationMilliSecond, time, true))
+                    delay(10)
+                }
+            }
 
 
         }
