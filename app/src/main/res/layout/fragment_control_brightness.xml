@@ -69,14 +69,15 @@
         android:id="@+id/sb_light_fake"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:clickable="false" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.bd.bdproject.custom_view.BitdamSeekBar
         android:id="@+id/sb_light"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:alpha="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

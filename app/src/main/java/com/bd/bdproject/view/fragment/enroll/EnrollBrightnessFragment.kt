@@ -2,21 +2,16 @@ package com.bd.bdproject.view.fragment.enroll
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Intent
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.GravityCompat
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation.findNavController
+import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
-import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.util.*
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
 import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
@@ -24,17 +19,13 @@ import com.bd.bdproject.util.Constant.CONTROL_HOME
 import com.bd.bdproject.util.Constant.CONTROL_TAG
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
-import com.bd.bdproject.view.activity.DetailActivity
 import com.bd.bdproject.view.fragment.BaseFragment
-import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 
 open class EnrollBrightnessFragment: BaseFragment() {
@@ -105,6 +96,15 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
     private fun handleSeekBar() {
         binding.apply {
+            sbLight.setOnProgressChangeListener { progress ->
+                if(!sharedViewModel.isFragmentTransitionState) {
+                    val brightness = progress.convertToBrightness()
+                    setEntireLightFragmentColor(brightness)
+                    tvBrightness.text = brightness.toString()
+                    parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(progress))
+                }
+            }
+
             sbLight.setOnReleaseListener {
                 if(!sharedViewModel.isFragmentTransitionState) {
                     sharedViewModel.isFragmentTransitionState = true
@@ -185,8 +185,26 @@ open class EnrollBrightnessFragment: BaseFragment() {
             }
             tvBrightness.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter(){})
-            // TODO 막대기 위로 올라오는 것처럼 보이도록 크기 늘리기
-            // TODO 막대기 다 올라오면 sbLightFake는 View.GONE
+
+            // 막대기 애니메이션
+            val scaleUp = AnimationUtils.loadAnimation(requireContext(), R.anim.bitdam_seekbar_scale_x_up).apply {
+                setAnimationListener(object: Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {
+                        sbLight.makeBarVisible()
+                        sbLight.alpha = 1.0f
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        sbLightFake.visibility = View.GONE
+                        sbLight.thumbAvailable = true
+                    }
+                })
+
+            }
+            sbLight.startAnimation(scaleUp)
         }
     }
 
