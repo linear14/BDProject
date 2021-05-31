@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.activityViewModels
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
@@ -102,12 +105,21 @@ open class EnrollBrightnessFragment: BaseFragment() {
                     setEntireLightFragmentColor(brightness)
                     tvBrightness.text = brightness.toString()
                     parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(progress))
+
+                    // Fake Thumb 위치까지 함께 조정
+                    layoutAddLight.getConstraintSet(R.id.start)?.let { set ->
+                        set.getConstraint(R.id.thumb_fake)?.let { item ->
+                            val ratio = sbLight.getThumbPositionRatio(progress)
+                            item.layout.verticalBias = ratio
+                        }
+                    }
+
                 }
             }
 
             sbLight.setOnReleaseListener {
                 if(!sharedViewModel.isFragmentTransitionState) {
-                    sharedViewModel.isFragmentTransitionState = true
+                    /*sharedViewModel.isFragmentTransitionState = true
 
                     saveBrightness()
 
@@ -115,7 +127,7 @@ open class EnrollBrightnessFragment: BaseFragment() {
                         goToFragmentEnrollTagWithAnimation()
                     } else {
                         goToFragmentEnrollTag()
-                    }
+                    }*/
                 }
             }
         }
@@ -250,9 +262,26 @@ open class EnrollBrightnessFragment: BaseFragment() {
         binding.apply {
             tvBrightness.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter(){})
-            // TODO sbLight progress 0으로 만들기
+            thumbFake.visibility = View.VISIBLE
+            layoutAddLight.transitionToEnd()
             // TODO sbLightFake 보여지게 바꾸기
             // TODO sbLight 막대기 아래로 내려가보이도록 크기 줄이기
+            val scaleDown = AnimationUtils.loadAnimation(requireContext(), R.anim.bitdam_seekbar_scale_x_down).apply {
+                setAnimationListener(object: Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {
+                        sbLight.thumbAvailable = false
+                        sbLightFake.visibility = View.VISIBLE
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                    }
+                })
+
+            }
+            sbLight.startAnimation(scaleDown)
 
             // 배경 검정색으로 바꾸기
             CoroutineScope(Dispatchers.Main).launch {
@@ -266,6 +295,25 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
         }
 
+    }
+
+    private fun setMotionLayoutTransitionEndListener() {
+        binding.apply {
+            layoutAddLight.setTransitionListener(object: MotionLayout.TransitionListener {
+                override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
+                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
+
+                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                    TODO("Not yet implemented")
+                }
+
+
+            })
+        }
     }
 }
 /*

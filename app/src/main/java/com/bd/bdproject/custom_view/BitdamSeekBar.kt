@@ -53,7 +53,7 @@ class BitdamSeekBar: View {
     private var defaultProgress: Int = 0
     var firstProgress: Int? = null
 
-    private var thumbRect: Rect? = null
+    var thumbRect: Rect? = null
     private var thumbPressed = false
     var thumbAvailable = false
 
@@ -249,6 +249,11 @@ class BitdamSeekBar: View {
     fun makeBarVisible() {
         barPaint.color = ContextCompat.getColor(context, R.color.white)
         invalidate()
+    }
+
+    fun getThumbPositionRatio(progress: Int): Float {
+        return 1- progress / maxValue.toFloat()
+        // return progress / maxValue.toFloat()
     }
 
 }
