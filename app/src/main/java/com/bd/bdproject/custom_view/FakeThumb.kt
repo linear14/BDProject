@@ -17,7 +17,7 @@ class FakeThumb: View {
     constructor(context: Context, attrs: AttributeSet): super(context, attrs)
 
     val thumbPaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.color_yellow)
+        color = ContextCompat.getColor(context, R.color.white)
         flags = Paint.ANTI_ALIAS_FLAG
     }
 

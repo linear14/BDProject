@@ -251,6 +251,16 @@ class BitdamSeekBar: View {
         invalidate()
     }
 
+    fun makeThumbInVisible() {
+        thumbPaint.color = ContextCompat.getColor(context, R.color.transparent)
+        invalidate()
+    }
+
+    fun makeThumbVisible() {
+        thumbPaint.color = ContextCompat.getColor(context, R.color.white)
+        invalidate()
+    }
+
     fun getThumbPositionRatio(progress: Int): Float {
         return 1- progress / maxValue.toFloat()
         // return progress / maxValue.toFloat()

@@ -16,8 +16,12 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/sb_light"
             app:layout_constraintTop_toTopOf="@id/sb_light"
-            app:layout_constraintVertical_bias="1" />
+            app:layout_constraintVertical_bias="1">
 
+            <PropertySet
+                android:visibility="visible"/>
+
+        </Constraint>
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -27,8 +31,12 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/sb_light"
             app:layout_constraintTop_toTopOf="@id/sb_light"
-            app:layout_constraintVertical_bias="1" />
+            app:layout_constraintVertical_bias="1">
 
+            <PropertySet
+                android:visibility="visible"/>
+
+        </Constraint>
     </ConstraintSet>
 
 </MotionScene>

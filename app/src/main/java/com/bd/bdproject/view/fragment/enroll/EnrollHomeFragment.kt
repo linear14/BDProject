@@ -15,6 +15,7 @@ import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.FragmentControlHomeBinding
 import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.util.Constant.COLLECTION_MAIN
+import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.util.Constant.CONTROL_HOME
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
@@ -49,11 +50,32 @@ class EnrollHomeFragment: BaseFragment() {
 
         parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(null))
 
-        if(isAnimationActive()) {
-            showUiWithAnimation()
-        } else {
-            showUiWithoutAnimation()
+        when {
+            // 최초 진입
+            sharedViewModel.previousPage == null -> {
+                if(isAnimationActive()) {
+                    showUiWithAnimation()
+                } else {
+                    showUiWithoutAnimation()
+                }
+            }
+
+            // 다음 페이지에서 돌아왔을 경우
+            sharedViewModel.previousPage == CONTROL_BRIGHTNESS -> {
+                if(isAnimationActive()) {
+                    showUiWithAnimationFromNextPage()
+                } else {
+                    showUiWithoutAnimation()
+                }
+            }
+
+            // 기타 상황
+            else -> {
+                showUiWithoutAnimation()
+            }
         }
+
+        sharedViewModel.previousPage = CONTROL_HOME
 
         binding.apply {
             btnDrawer.setOnClickListener {
@@ -119,9 +141,17 @@ class EnrollHomeFragment: BaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // 다시 진입하면 데이터 초기화
+        sharedViewModel.init()
+    }
+
     private fun showUiWithAnimation() {
         CoroutineScope(Dispatchers.Main).launch {
             binding.apply {
+                sbLight.alpha = 0.0f
+
                 tvAskCondition.clearAnimation()
                 sbLight.clearAnimation()
                 actionDatePick.clearAnimation()
@@ -135,10 +165,15 @@ class EnrollHomeFragment: BaseFragment() {
                         // SeekBar 및 데이터피커 애니메이션
                         override fun onAnimationEnd(animation: Animator?) {
                             super.onAnimationEnd(animation)
-                            if(!sharedViewModel.isFragmentTransitionState) {
-                                sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                                actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                            }
+                            sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                                .setListener(object: AnimatorListenerAdapter() {})
+                            actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                                .setListener(object: AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        super.onAnimationEnd(animation)
+                                        sharedViewModel.isFragmentTransitionState = false
+                                    }
+                                })
                         }
                     })
             }
@@ -146,22 +181,47 @@ class EnrollHomeFragment: BaseFragment() {
 
     }
 
+    private fun showUiWithAnimationFromNextPage() {
+        CoroutineScope(Dispatchers.Main).launch {
+            sharedViewModel.isFragmentTransitionState = true
+            binding.apply {
+                tvAskCondition.clearAnimation()
+                sbLight.clearAnimation()
+                actionDatePick.clearAnimation()
+
+                // 질문 메세지 애니메이션
+                tvAskCondition.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                    .setListener(object: AnimatorListenerAdapter() {})
+                actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
+                    .setListener(object: AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            super.onAnimationEnd(animation)
+                            sharedViewModel.isFragmentTransitionState = false
+                        }
+                    })
+
+            }
+        }
+    }
+
     private fun showUiWithoutAnimation() {
         binding.apply {
             tvAskCondition.alpha = 1.0f
             sbLight.alpha = 1.0f
             actionDatePick.alpha = 1.0f
+            sharedViewModel.isFragmentTransitionState = false
         }
     }
 
     private fun handleSeekBar() {
         binding.apply {
             sbLight.setOnReleaseListener {
-                sbLight.thumbAvailable = true
-                if(isAnimationActive()) {
-                    goToFragmentEnrollBrightnessWithAnimation()
-                } else {
-                    goToFragmentEnrollBrightness()
+                if(!sharedViewModel.isFragmentTransitionState) {
+                    if(isAnimationActive()) {
+                        goToFragmentEnrollBrightnessWithAnimation()
+                    } else {
+                        goToFragmentEnrollBrightness()
+                    }
                 }
             }
         }
@@ -170,6 +230,7 @@ class EnrollHomeFragment: BaseFragment() {
 
     private fun goToFragmentEnrollBrightnessWithAnimation() {
         binding.apply {
+            sharedViewModel.isFragmentTransitionState = true
             tvAskCondition.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter() {})
 
@@ -187,6 +248,7 @@ class EnrollHomeFragment: BaseFragment() {
     // java.lang.IllegalArgumentException: navigation destination xx is unknown to this NavController 뜬다.
     // https://stackoverflow.com/questions/51060762/illegalargumentexception-navigation-destination-xxx-is-unknown-to-this-navcontr
     private fun goToFragmentEnrollBrightness() {
+        sharedViewModel.isFragmentTransitionState = true
         sharedViewModel.previousPage = CONTROL_HOME
         parentActivity.binding.drawer.closeDrawer(GravityCompat.START)
         val navDirection: NavDirections =

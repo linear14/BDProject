@@ -44,7 +44,7 @@ open class EnrollTagFragment: ControlTagFragment() {
         }
 
         binding.ivTagRecommendInfo.setOnClickListener {
-            animateTagRecommendInfo(sharedViewModel.brightness.value ?: 0)
+            animateTagRecommendInfo(sharedViewModel.brightness ?: 0)
         }
 
         observeTagEnrolled()
@@ -56,8 +56,8 @@ open class EnrollTagFragment: ControlTagFragment() {
         super.onResume()
 
         makeBackground(
-            brightness = sharedViewModel.brightness.value ?: 0,
-            tags = sharedViewModel.tags.value ?: mutableListOf()
+            brightness = sharedViewModel.brightness ?: 0,
+            tags = sharedViewModel.tags ?: mutableListOf()
         )
         if(isAnimationActive()) {
             showUiWithAnimation()
@@ -115,7 +115,7 @@ open class EnrollTagFragment: ControlTagFragment() {
                     binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
                 }
 
-                val brightness = sharedViewModel.brightness.value
+                val brightness = sharedViewModel.brightness
                 submitList(enrolled.toMutableList(), brightness?:0)
             }
         }
@@ -123,7 +123,7 @@ open class EnrollTagFragment: ControlTagFragment() {
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(viewLifecycleOwner) { searchedResult ->
-            val brightness = sharedViewModel.brightness.value
+            val brightness = sharedViewModel.brightness
 
             tagRecommendAdapter.submitList(
                 searchedResult.map{ Tag(it.name) }.toMutableList(),
@@ -169,7 +169,7 @@ open class EnrollTagFragment: ControlTagFragment() {
     }
 
     private fun saveTags() {
-        sharedViewModel.tags.value = tagViewModel.candidateTags.value
+        sharedViewModel.tags = tagViewModel.candidateTags.value?: mutableListOf()
     }
 
     private fun goBackToFragmentEnrollBrightness() {

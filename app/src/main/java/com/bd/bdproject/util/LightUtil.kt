@@ -1,6 +1,7 @@
 package com.bd.bdproject.util
 
 import android.graphics.Color
+import android.util.Log
 import com.bd.bdproject.data.model.LightRGB
 
 object LightUtil {
@@ -61,7 +62,7 @@ object LightUtil {
      *  @param currentTime 현재 애니메이션 시간 위치
      *  @param isReversed false면 검정 -> 별밤색, true면 별밤색 -> 검정색
      */
-    fun getOutRangeLight(totalTime: Long, currentTime: Long, isReversed: Boolean): IntArray {
+    fun getOutRangeLight(totalTime: Long, currentTime: Long, isReversed: Boolean, firstProgress: Int = 0): IntArray {
         // progress를 0 ~ 10 사이의 값으로 설정
         val ratio = ((currentTime / totalTime.toDouble()) * 100).toInt() // 0.681 -> 68
         if(ratio == 100) {
@@ -82,7 +83,7 @@ object LightUtil {
         }
 
         return if(isReversed) {
-            getLights(levelMap[0]!!, Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), ratio)
+            getLights(levelMap[firstProgress]!!, Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), ratio)
         } else {
             getLights(Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), levelMap[0]!!, ratio)
         }

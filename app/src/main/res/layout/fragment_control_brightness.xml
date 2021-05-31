@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_add_light"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutDescription="@xml/motion_control_brightness"
     android:background="@android:color/transparent"
+    app:layoutDescription="@xml/motion_control_brightness"
     tools:background="@color/black">
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -58,13 +57,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:alpha="0"
+        android:text="0"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_largest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:alpha="1"
-        tools:text="20"
         tools:visibility="visible" />
 
     <com.bd.bdproject.custom_view.BitdamSeekBar
@@ -87,10 +86,9 @@
         android:id="@+id/thumb_fake"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/sb_light"
         app:layout_constraintBottom_toBottomOf="@id/sb_light"
+        app:layout_constraintTop_toTopOf="@id/sb_light"
         app:layout_constraintVertical_bias="1"
-        android:visibility="gone"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

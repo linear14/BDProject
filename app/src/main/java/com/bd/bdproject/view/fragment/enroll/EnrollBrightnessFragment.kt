@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavDirections
+import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
@@ -49,6 +48,9 @@ open class EnrollBrightnessFragment: BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false)
+
+        binding.tvBrightness.text = sharedViewModel.brightness.toString()
+        setEntireLightFragmentColor(sharedViewModel.brightness)
 
         when {
             // 이전 페이지에서 넘어왔을 경우
@@ -119,11 +121,9 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
             sbLight.setOnReleaseListener {
                 if(!sharedViewModel.isFragmentTransitionState) {
-                    /*sharedViewModel.isFragmentTransitionState = true
-
                     saveBrightness()
 
-                    if(isAnimationActive()) {
+                    /*if(isAnimationActive()) {
                         goToFragmentEnrollTagWithAnimation()
                     } else {
                         goToFragmentEnrollTag()
@@ -139,7 +139,6 @@ open class EnrollBrightnessFragment: BaseFragment() {
             override fun onBackPressed(): Boolean {
                 binding.apply {
                     return if(!sharedViewModel.isFragmentTransitionState) {
-                        sharedViewModel.brightness.value = 0
                         sharedViewModel.isFragmentTransitionState = true
 
                         // 모아보기에서 넘어온 경우
@@ -163,10 +162,10 @@ open class EnrollBrightnessFragment: BaseFragment() {
     }
 
     private fun saveBrightness() {
-        sharedViewModel.brightness.value = binding.tvBrightness.text.toString().toInt()
+        sharedViewModel.brightness = binding.tvBrightness.text.toString().toInt()
     }
 
-    fun setEntireLightFragmentColor(brightness: Int) {
+    private fun setEntireLightFragmentColor(brightness: Int) {
         binding.apply {
             ColorUtil.setEntireViewColor(
                 brightness,
@@ -182,10 +181,12 @@ open class EnrollBrightnessFragment: BaseFragment() {
             sbLight.makeBarVisible()
             sbLight.thumbAvailable = true
             sbLightFake.visibility = View.GONE
+            sharedViewModel.isFragmentTransitionState = false
         }
     }
 
     private fun showUiWithAnimationFromPreviousPage() {
+        sharedViewModel.isFragmentTransitionState = true
         binding.apply {
             // 배경 별밤색으로 바꾸기
             CoroutineScope(Dispatchers.Main).launch {
@@ -210,8 +211,9 @@ open class EnrollBrightnessFragment: BaseFragment() {
                     }
 
                     override fun onAnimationEnd(animation: Animation?) {
-                        sbLightFake.visibility = View.GONE
+                        sbLightFake.makeThumbInVisible()
                         sbLight.thumbAvailable = true
+                        sharedViewModel.isFragmentTransitionState = false
                     }
                 })
 
@@ -221,6 +223,7 @@ open class EnrollBrightnessFragment: BaseFragment() {
     }
 
     private fun showUiWithAnimationFromNextPage() {
+        sharedViewModel.isFragmentTransitionState = true
         binding.apply {
             sbLightFake.visibility = View.GONE
             tvBrightness.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
@@ -241,13 +244,20 @@ open class EnrollBrightnessFragment: BaseFragment() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
                         sbLight.thumbAvailable = true
+                        sharedViewModel.isFragmentTransitionState = false
                     }
                 })
         }
     }
 
     private fun goToFragmentEnrollTag() {
+        sharedViewModel.isFragmentTransitionState = true
         saveBrightness()
+        sharedViewModel.previousPage = CONTROL_BRIGHTNESS
+        val navDirection: NavDirections =
+            EnrollBrightnessFragmentDirections.actionEnrollBrightnessFragmentToEnrollTagFragment()
+        findNavController(parentActivity.binding.layoutFragment).navigate(navDirection)
+        sharedViewModel.isFragmentTransitionState = false
     }
 
     private fun goToFragmentEnrollTagWithAnimation() {
@@ -255,25 +265,27 @@ open class EnrollBrightnessFragment: BaseFragment() {
     }
 
     private fun goBackToFragmentEnrollHome() {
-
+        sharedViewModel.isFragmentTransitionState = true
+        sharedViewModel.previousPage = CONTROL_BRIGHTNESS
+        (activity as BitdamEnrollActivity).onBackPressed(true)
     }
 
     private fun goBackToFragmentEnrollHomeWithAnimation() {
+        sharedViewModel.isFragmentTransitionState = true
         binding.apply {
             tvBrightness.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter(){})
-            thumbFake.visibility = View.VISIBLE
+
             layoutAddLight.transitionToEnd()
-            // TODO sbLightFake 보여지게 바꾸기
-            // TODO sbLight 막대기 아래로 내려가보이도록 크기 줄이기
             val scaleDown = AnimationUtils.loadAnimation(requireContext(), R.anim.bitdam_seekbar_scale_x_down).apply {
+                fillAfter = true
                 setAnimationListener(object: Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {
                     }
 
                     override fun onAnimationStart(animation: Animation?) {
+                        sbLight.makeThumbInVisible()
                         sbLight.thumbAvailable = false
-                        sbLightFake.visibility = View.VISIBLE
                     }
 
                     override fun onAnimationEnd(animation: Animation?) {
@@ -287,182 +299,13 @@ open class EnrollBrightnessFragment: BaseFragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 for(time in 0..screenTransitionAnimationMilliSecond step 10) {
                     parentActivity.updateBackgroundColor(LightUtil.getOutRangeLight(
-                        screenTransitionAnimationMilliSecond, time, true))
+                        screenTransitionAnimationMilliSecond, time, true, (sharedViewModel.brightness / 5)))
                     delay(10)
                 }
+                sharedViewModel.isFragmentTransitionState = false
+                goBackToFragmentEnrollHome()
             }
-
-
         }
 
-    }
-
-    private fun setMotionLayoutTransitionEndListener() {
-        binding.apply {
-            layoutAddLight.setTransitionListener(object: MotionLayout.TransitionListener {
-                override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
-                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
-
-                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                    TODO("Not yet implemented")
-                }
-
-
-            })
-        }
     }
 }
-/*
-    private fun showUiWithAnimation() {
-        CoroutineScope(Dispatchers.Main).launch {
-            binding.apply {
-                tvAskCondition.visibility = View.GONE
-                tvAskCondition.clearAnimation()
-                sbLight.clearAnimation()
-
-                delay(1000)
-
-                launch(Dispatchers.Main) {
-                    tvAskCondition.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                        .setListener(object: AnimatorListenerAdapter() {
-                            override fun onAnimationStart(animation: Animator?) {
-                                super.onAnimationStart(animation)
-                                tvAskCondition.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                if(!isChangingFragment) {
-                                    sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                                        .setListener(object: AnimatorListenerAdapter() {
-                                            override fun onAnimationStart(animation: Animator?) {
-                                                super.onAnimationStart(animation)
-                                                sbLight.visibility = View.VISIBLE
-                                            }
-                                        })
-                                    actionDatePick.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                                        .setListener(object: AnimatorListenerAdapter() {
-                                            override fun onAnimationStart(animation: Animator?) {
-                                                actionDatePick.visibility = View.VISIBLE
-                                            }
-                                        })
-                                }
-                            }
-                        })
-                }
-            }
-        }
-
-    }
-
-    private fun showUiWithoutAnimation() {
-        binding.apply {
-            tvAskCondition.visibility = View.VISIBLE
-            sbLight.visibility = View.VISIBLE
-            actionDatePick.visibility = View.VISIBLE
-
-            tvAskCondition.alpha = 1.0f
-            sbLight.alpha = 1.0f
-            actionDatePick.alpha = 1.0f
-        }
-    }
-
-    fun makeBackground(brightness: Int) {
-        binding.apply {
-            setEntireLightFragmentColor(brightness)
-            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-            layoutAddLight.background = gradientDrawable
-            tvBrightness.text = brightness.toString()
-            tvBrightness.visibility = View.VISIBLE
-            sbLight.firstProgress = brightness * 2
-            sbLight.thumbAvailable = true
-
-            actionDatePick.visibility = View.GONE
-            tvAskCondition.visibility = View.GONE
-            sbLight.makeBarVisible()
-            isFirstPressed = false
-
-            if(parentActivity.previousActivity == COLLECTION_MAIN) {
-                btnBack.visibility = View.VISIBLE
-                btnDrawer.visibility = View.GONE
-            } else {
-                btnBack.visibility = View.GONE
-                btnDrawer.visibility = View.VISIBLE
-            }
-
-            if(isAnimationActive()) {
-                if(sharedViewModel.brightness.value != null) {
-                    sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                } else {
-                    if(parentActivity.previousActivity == COLLECTION_MAIN) {
-                        sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                    }
-                }
-            } else {
-                sbLight.alpha = 1.0f
-            }
-        }
-    }
-
-
-    private fun setSeekBarProgressChangedListener() {
-        binding.apply {
-            sbLight.setOnProgressChangeListener { progress ->
-                if(!isChangingFragment) {
-                    val brightness = getBrightness(progress)
-                    setEntireLightFragmentColor(brightness)
-
-                    tvBrightness.text = brightness.toString()
-
-                    gradientDrawable.colors = LightUtil.getDiagonalLight(progress)
-                    layoutAddLight.background = gradientDrawable
-                    isFirstPressed = false
-                }
-            }
-        }
-    }
-
-
-    private fun saveBrightness() {
-        sharedViewModel.brightness.value = binding.tvBrightness.text.toString().toInt()
-    }
-
-    private fun goToFragmentEnrollTagWithAnimation() {
-        binding.sbLight.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
-            .setListener(object: AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    goToFragmentEnrollTag()
-                }
-            })
-    }
-
-    private fun goToFragmentEnrollTag() {
-        sharedViewModel.previousPage.value = CONTROL_BRIGHTNESS
-        parentActivity.binding.drawer.closeDrawer(GravityCompat.START)
-        val navDirection: NavDirections =
-            EnrollBrightnessFragmentDirections.actionEnrollBrightnessFragmentToEnrollTagFragment()
-        findNavController(binding.sbLight).navigate(navDirection)
-    }
-
-    private fun getBrightness(progress: Int): Int {
-        val converted = progress / 10
-        return (converted * 5)
-    }
-
-    fun setEntireLightFragmentColor(brightness: Int) {
-        binding.apply {
-            ColorUtil.setEntireViewColor(
-                brightness,
-                tvBrightness,
-                actionEnroll,
-                btnDrawer,
-                btnBack
-            )
-        }
-    }
-}*/
