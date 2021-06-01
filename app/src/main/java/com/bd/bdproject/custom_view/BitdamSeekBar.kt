@@ -56,6 +56,7 @@ class BitdamSeekBar: View {
     var thumbRect: Rect? = null
     private var thumbPressed = false
     var thumbAvailable = false
+    var isHome = false
 
     private var onProgressChangeListener: ((Int) -> Unit)? = null
     private var onPressListener: (() -> Unit)? = null
@@ -136,10 +137,21 @@ class BitdamSeekBar: View {
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
 
-                    thumbRect?.let { thumbRect ->
-                        if(thumbRect.contains(event.x.toInt(), event.y.toInt())) {
-                            thumbPressed = true
-                            onPressListener?.invoke()
+                    if(thumbAvailable) {
+                        thumbRect?.let { thumbRect ->
+                            if(thumbRect.contains(event.x.toInt(), event.y.toInt())) {
+                                thumbPressed = true
+                                onPressListener?.invoke()
+                            }
+                        }
+                    }
+
+                    if(isHome) {
+                        thumbRect?.let { thumbRect ->
+                            if(thumbRect.contains(event.x.toInt(), event.y.toInt())) {
+                                thumbPressed = true
+                                onPressListener?.invoke()
+                            }
                         }
                     }
 
@@ -194,13 +206,6 @@ class BitdamSeekBar: View {
                     if(thumbPressed) {
                         onReleaseListener?.invoke()
                         view.performClick()
-                        /*if(thumbAvailable) {
-                           onReleaseListener?.invoke()
-                            view.performClick()
-                        } else {
-                            onThumbFirstClickListener?.invoke()
-                            onProgressChangeListener?.invoke(firstProgress?:defaultProgress)
-                        }*/
                     }
                     thumbPressed = false
                 }

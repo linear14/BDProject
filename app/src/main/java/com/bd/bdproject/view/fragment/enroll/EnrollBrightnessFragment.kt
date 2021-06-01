@@ -52,6 +52,14 @@ open class EnrollBrightnessFragment: BaseFragment() {
         binding.tvBrightness.text = sharedViewModel.brightness.toString()
         setEntireLightFragmentColor(sharedViewModel.brightness)
 
+        binding.sbLight.firstProgress = sharedViewModel.brightness * 2
+        binding.layoutAddLight.getConstraintSet(R.id.start)?.let { set ->
+            set.getConstraint(R.id.thumb_fake)?.let { item ->
+                val ratio = binding.sbLight.getThumbPositionRatio(sharedViewModel.brightness * 2)
+                item.layout.verticalBias = ratio
+            }
+        }
+
         when {
             // 이전 페이지에서 넘어왔을 경우
             sharedViewModel.previousPage == CONTROL_HOME -> {
@@ -123,11 +131,11 @@ open class EnrollBrightnessFragment: BaseFragment() {
                 if(!sharedViewModel.isFragmentTransitionState) {
                     saveBrightness()
 
-                    /*if(isAnimationActive()) {
+                    if(isAnimationActive()) {
                         goToFragmentEnrollTagWithAnimation()
                     } else {
                         goToFragmentEnrollTag()
-                    }*/
+                    }
                 }
             }
         }
@@ -226,13 +234,7 @@ open class EnrollBrightnessFragment: BaseFragment() {
         sharedViewModel.isFragmentTransitionState = true
         binding.apply {
             sbLightFake.visibility = View.GONE
-            tvBrightness.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
-                .setListener(object: AnimatorListenerAdapter(){
-                    override fun onAnimationStart(animation: Animator?) {
-                        super.onAnimationStart(animation)
-                        tvBrightness.alpha = 0f
-                    }
-                })
+            tvBrightness.alpha = 1.0f
             sbLight.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter(){
                     override fun onAnimationStart(animation: Animator?) {
@@ -252,6 +254,7 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
     private fun goToFragmentEnrollTag() {
         sharedViewModel.isFragmentTransitionState = true
+        binding.sbLight.thumbAvailable = false
         saveBrightness()
         sharedViewModel.previousPage = CONTROL_BRIGHTNESS
         val navDirection: NavDirections =
@@ -261,18 +264,35 @@ open class EnrollBrightnessFragment: BaseFragment() {
     }
 
     private fun goToFragmentEnrollTagWithAnimation() {
+        sharedViewModel.isFragmentTransitionState = true
+        binding.sbLight.thumbAvailable = false
+        binding.apply {
+            sbLight.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter(){})
+            thumbFake.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
+                .setListener(object: AnimatorListenerAdapter(){
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        goToFragmentEnrollTag()
+                    }
+                })
+        }
 
     }
 
     private fun goBackToFragmentEnrollHome() {
         sharedViewModel.isFragmentTransitionState = true
+        binding.sbLight.thumbAvailable = false
         sharedViewModel.previousPage = CONTROL_BRIGHTNESS
         (activity as BitdamEnrollActivity).onBackPressed(true)
+        sharedViewModel.isFragmentTransitionState = false
     }
 
     private fun goBackToFragmentEnrollHomeWithAnimation() {
         sharedViewModel.isFragmentTransitionState = true
+        binding.sbLight.thumbAvailable = false
         binding.apply {
+            thumbFake.visibility = View.VISIBLE
             tvBrightness.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
                 .setListener(object: AnimatorListenerAdapter(){})
 

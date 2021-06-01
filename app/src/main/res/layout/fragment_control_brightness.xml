@@ -86,6 +86,7 @@
         android:id="@+id/thumb_fake"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/sb_light"
         app:layout_constraintTop_toTopOf="@id/sb_light"
         app:layout_constraintVertical_bias="1"

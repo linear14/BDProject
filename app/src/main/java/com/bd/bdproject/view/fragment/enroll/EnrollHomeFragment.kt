@@ -49,6 +49,7 @@ class EnrollHomeFragment: BaseFragment() {
         _binding = FragmentControlHomeBinding.inflate(inflater, container, false)
 
         parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(null))
+        binding.sbLight.isHome = true
 
         when {
             // 최초 진입

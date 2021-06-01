@@ -46,20 +46,18 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
     }
 
     fun insertTagToCandidate(tagName: String) {
-        val temp = candidateTags.value
-        temp?.add(Tag(tagName))
+        val temp = candidateTags.value?: mutableListOf()
+        temp.add(Tag(tagName))
 
         candidateTags.value = temp
     }
 
     fun editTagCandidate(oldTagName: String, newTagName: String) {
-        val temp = candidateTags.value
+        val temp = candidateTags.value?: mutableListOf()
 
-        temp?.let {
-            for((i, tag) in temp.withIndex()) {
-                if(tag.name == oldTagName) {
-                    temp[i] = Tag(newTagName)
-                }
+        for((i, tag) in temp.withIndex()) {
+            if(tag.name == oldTagName) {
+                temp[i] = Tag(newTagName)
             }
         }
 
@@ -67,8 +65,8 @@ class TagViewModel(private val tagRepo: TagRepository): ViewModel() {
     }
 
     fun deleteTagCandidate(tagName: String) {
-        val temp = candidateTags.value
-        temp?.remove(Tag(tagName))
+        val temp = candidateTags.value?: mutableListOf()
+        temp.remove(Tag(tagName))
         candidateTags.value = temp
     }
 }
