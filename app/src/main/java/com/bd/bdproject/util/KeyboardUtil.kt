@@ -3,7 +3,7 @@ package com.bd.bdproject.util
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
+import com.bd.bdproject.common.BitDamApplication.Companion.applicationContext
 
 object KeyboardUtil {
 

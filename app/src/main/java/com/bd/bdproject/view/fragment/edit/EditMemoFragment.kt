@@ -3,7 +3,7 @@ package com.bd.bdproject.view.fragment.edit
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity

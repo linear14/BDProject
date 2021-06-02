@@ -17,8 +17,8 @@ import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityManageHashBinding
 import com.bd.bdproject.dialog.BottomSelector
 import com.bd.bdproject.dialog.TagCombiner
-import com.bd.bdproject.util.Constant.INFO_TAG
-import com.bd.bdproject.util.dpToPx
+import com.bd.bdproject.common.Constant.INFO_TAG
+import com.bd.bdproject.common.dpToPx
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar

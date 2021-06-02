@@ -5,10 +5,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
 import com.bd.bdproject.dialog.SlideDatePicker
-import com.bd.bdproject.util.Constant
-import com.bd.bdproject.util.Constant.INFO_DATE_CODE
-import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.common.Constant
+import com.bd.bdproject.common.Constant.INFO_DATE_CODE
+import com.bd.bdproject.common.timeToLong
+import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.view.adapter.CollectionCalendarAdapter
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.CalendarViewModel

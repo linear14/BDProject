@@ -7,7 +7,7 @@ import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.TagRepository
-import com.bd.bdproject.util.timeToLong
+import com.bd.bdproject.common.timeToLong
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async

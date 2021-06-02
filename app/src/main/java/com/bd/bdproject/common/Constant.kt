@@ -1,4 +1,4 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.common
 
 object Constant {
 

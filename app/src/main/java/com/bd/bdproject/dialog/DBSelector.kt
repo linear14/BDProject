@@ -9,10 +9,7 @@ import androidx.fragment.app.DialogFragment
 import com.bd.bdproject.R
 import com.bd.bdproject.data.model.DBInfo
 import com.bd.bdproject.databinding.DialogDbSelectorBinding
-import com.bd.bdproject.databinding.DialogTagCombinerBinding
-import com.bd.bdproject.util.Constant.INFO_DB
-import com.bd.bdproject.util.Constant.INFO_TAG
-import com.bd.bdproject.view.adapter.CombineTagAdapter
+import com.bd.bdproject.common.Constant.INFO_DB
 import com.bd.bdproject.view.adapter.DBAdapter
 
 class DBSelector(val onIdSelected: (String, DialogFragment) -> Unit) : DialogFragment() {

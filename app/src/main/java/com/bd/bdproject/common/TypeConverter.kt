@@ -1,4 +1,4 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.common
 
 import androidx.room.TypeConverter
 import java.text.SimpleDateFormat

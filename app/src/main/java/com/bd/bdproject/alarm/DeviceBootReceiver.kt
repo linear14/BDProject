@@ -5,10 +5,8 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import com.bd.bdproject.util.AlarmUtil.REQUEST_ALARM
-import com.bd.bdproject.util.BitDamApplication
-import java.text.SimpleDateFormat
+import com.bd.bdproject.common.BitDamApplication
 import java.util.*
 
 class DeviceBootReceiver : BroadcastReceiver() {

@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivityBitdamEnrollBinding
-import com.bd.bdproject.util.Constant
-import com.bd.bdproject.util.Constant.ACTIVITY_NOT_RECOGNIZED
-import com.bd.bdproject.util.Constant.INFO_PREVIOUS_ACTIVITY
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.common.Constant
+import com.bd.bdproject.common.Constant.ACTIVITY_NOT_RECOGNIZED
+import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
+import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import kotlinx.coroutines.CoroutineScope

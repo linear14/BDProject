@@ -7,10 +7,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.bd.bdproject.databinding.FragmentControlMemoBinding
 import com.bd.bdproject.util.ColorUtil
-import com.bd.bdproject.util.Constant.MAX_MEMO_LENGTH
+import com.bd.bdproject.common.Constant.MAX_MEMO_LENGTH
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager

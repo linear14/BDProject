@@ -10,6 +10,7 @@ import android.view.View
 import com.bd.bdproject.alarm.DairyAlarmReceiver
 import com.bd.bdproject.alarm.DeviceBootReceiver
 import com.bd.bdproject.alarm.ThreeDayAlarmReceiver
+import com.bd.bdproject.common.BitDamApplication
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 

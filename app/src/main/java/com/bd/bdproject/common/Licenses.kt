@@ -1,4 +1,4 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.common
 
 import com.bd.bdproject.data.model.License
 

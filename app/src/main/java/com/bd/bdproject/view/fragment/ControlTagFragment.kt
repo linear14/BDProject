@@ -9,10 +9,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
+import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentControlTagBinding
 import com.bd.bdproject.util.*

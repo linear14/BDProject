@@ -15,10 +15,13 @@ import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.*
-import com.bd.bdproject.util.Constant.COLLECTION_MAIN
-import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
-import com.bd.bdproject.util.Constant.CONTROL_HOME
-import com.bd.bdproject.util.Constant.CONTROL_TAG
+import com.bd.bdproject.common.Constant.COLLECTION_MAIN
+import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
+import com.bd.bdproject.common.Constant.CONTROL_HOME
+import com.bd.bdproject.common.Constant.CONTROL_TAG
+import com.bd.bdproject.common.animateTransparency
+import com.bd.bdproject.common.convertToBrightness
+import com.bd.bdproject.common.screenTransitionAnimationMilliSecond
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.BaseFragment

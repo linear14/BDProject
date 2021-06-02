@@ -3,12 +3,11 @@ package com.bd.bdproject.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.databinding.ActivityCalendarBinding
-import com.bd.bdproject.util.withDateSeparator
+import com.bd.bdproject.common.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 import com.google.android.material.snackbar.Snackbar

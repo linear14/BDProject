@@ -13,7 +13,7 @@ import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ItemTagBinding
-import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
+import com.bd.bdproject.common.BitDamApplication.Companion.applicationContext
 
 class TagAdapter: ListAdapter<Tag, TagAdapter.TagViewHolder>(TagDiffCallback()) {
 

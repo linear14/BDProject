@@ -1,4 +1,4 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.common
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

@@ -11,7 +11,7 @@ import com.bd.bdproject.data.model.StatisticCalendar
 import com.bd.bdproject.databinding.ItemStatisticCalendarDayBinding
 import com.bd.bdproject.databinding.ItemStatisticCalendarEmptyBinding
 import com.bd.bdproject.databinding.ItemStatisticCalendarHeaderBinding
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 import java.util.*
 

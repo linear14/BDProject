@@ -3,7 +3,7 @@ package com.bd.bdproject.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.PasswordType
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.common.BitDamApplication
 
 class PasswordViewModel: ViewModel() {
 

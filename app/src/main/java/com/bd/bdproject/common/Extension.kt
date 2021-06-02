@@ -1,11 +1,11 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.common
 
 import android.content.res.Resources
 import android.view.View
 import android.view.ViewPropertyAnimator
 import com.bd.bdproject.data.model.SearchedTag
-import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER
-import com.bd.bdproject.util.TypeConverter.Companion.FORMATTER_TIME
+import com.bd.bdproject.common.TypeConverter.Companion.FORMATTER
+import com.bd.bdproject.common.TypeConverter.Companion.FORMATTER_TIME
 
 val screenTransitionAnimationMilliSecond = 750L
 

@@ -7,11 +7,9 @@ import com.bd.bdproject.TagViewType
 import com.bd.bdproject.`interface`.OnCalendarItemClickedListener
 import com.bd.bdproject.data.model.TagCalendar
 import com.bd.bdproject.databinding.ActivityStatisticDetailBinding
-import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.util.BitdamSharedPreferences
-import com.bd.bdproject.util.Constant.INFO_TAG
-import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.util.withDateSeparator
+import com.bd.bdproject.common.BitDamApplication
+import com.bd.bdproject.common.Constant.INFO_TAG
+import com.bd.bdproject.common.withDateSeparator
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.view.adapter.TagCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticDetailViewModel

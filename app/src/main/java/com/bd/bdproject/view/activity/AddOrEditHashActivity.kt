@@ -2,14 +2,13 @@ package com.bd.bdproject.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bd.bdproject.databinding.ActivityAddOrEditHashBinding
-import com.bd.bdproject.util.Constant.INFO_TAG
+import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.util.KeyboardUtil
-import com.bd.bdproject.util.dpToPx
+import com.bd.bdproject.common.dpToPx
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.ACTION_ADD
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.ACTION_EDIT
 import com.bd.bdproject.viewmodel.ManageHashViewModel

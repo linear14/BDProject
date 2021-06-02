@@ -6,15 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.`interface`.OnTagClickListener
-import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.util.convertToBrightness
+import com.bd.bdproject.common.convertToBrightness
 import com.bd.bdproject.view.activity.BitdamEditActivity
-import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,4 @@
-package com.bd.bdproject.util
+package com.bd.bdproject.common
 
 import com.bd.bdproject.BitdamLog
 import com.google.android.gms.tasks.Task
@@ -7,10 +7,8 @@ import com.google.api.client.http.FileContent
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
 import com.google.api.services.drive.model.FileList
-import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.Executors
 
 class DriveServiceHelper(val driveService: Drive) {

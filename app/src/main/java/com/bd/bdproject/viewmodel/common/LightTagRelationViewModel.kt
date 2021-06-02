@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.LightTagRelation
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.LightTagRelationRepository
-import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
+import com.bd.bdproject.common.BitDamApplication.Companion.applicationContext
 import kotlinx.coroutines.*
 
 class LightTagRelationViewModel(private val lightTagRelationRepository: LightTagRelationRepository) : ViewModel() {

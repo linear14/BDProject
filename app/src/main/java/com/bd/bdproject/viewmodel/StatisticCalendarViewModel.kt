@@ -2,10 +2,8 @@ package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.StatisticViewType
 import com.bd.bdproject.data.model.StatisticCalendar
-import com.bd.bdproject.util.timeToString
 import java.util.*
 
 class StatisticCalendarViewModel: ViewModel() {

@@ -5,8 +5,7 @@ import android.os.Bundle
 import com.bd.bdproject.databinding.ActivityPushBinding
 import com.bd.bdproject.dialog.SlideTimePicker
 import com.bd.bdproject.util.AlarmUtil
-import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.common.BitDamApplication
 
 class PushActivity : AppCompatActivity() {
 

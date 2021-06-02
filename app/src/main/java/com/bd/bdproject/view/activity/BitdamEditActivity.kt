@@ -3,7 +3,6 @@ package com.bd.bdproject.view.activity
 import android.app.Activity
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
@@ -12,13 +11,13 @@ import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.ActivityBitdamEditBinding
-import com.bd.bdproject.util.Constant.CONTROL_BRIGHTNESS
-import com.bd.bdproject.util.Constant.CONTROL_MEMO
-import com.bd.bdproject.util.Constant.CONTROL_TAG
-import com.bd.bdproject.util.Constant.DESTINATION_NOT_RECOGNIZED
-import com.bd.bdproject.util.Constant.INFO_DESTINATION
-import com.bd.bdproject.util.Constant.INFO_LIGHT
-import com.bd.bdproject.util.Constant.INFO_TAG
+import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
+import com.bd.bdproject.common.Constant.CONTROL_MEMO
+import com.bd.bdproject.common.Constant.CONTROL_TAG
+import com.bd.bdproject.common.Constant.DESTINATION_NOT_RECOGNIZED
+import com.bd.bdproject.common.Constant.INFO_DESTINATION
+import com.bd.bdproject.common.Constant.INFO_LIGHT
+import com.bd.bdproject.common.Constant.INFO_TAG
 
 class BitdamEditActivity : AppCompatActivity() {
 

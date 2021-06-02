@@ -5,7 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import com.bd.bdproject.util.addTransparency
+import com.bd.bdproject.common.addTransparency
 import kotlin.math.roundToInt
 
 class PieChartView: View {

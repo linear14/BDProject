@@ -1,8 +1,8 @@
 package com.bd.bdproject
 
 import android.util.Log
-import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.common.timeToLong
+import com.bd.bdproject.common.timeToString
 
 object BitdamLog {
 

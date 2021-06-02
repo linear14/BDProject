@@ -1,9 +1,8 @@
 package com.bd.bdproject.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.common.timeToString
 
 class EnrollViewModel: ViewModel() {
     var dateCode: String = System.currentTimeMillis().timeToString()

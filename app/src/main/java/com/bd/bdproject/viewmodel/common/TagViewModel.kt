@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.TagRepository
-import com.bd.bdproject.util.returnBoundaryList
+import com.bd.bdproject.common.returnBoundaryList
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

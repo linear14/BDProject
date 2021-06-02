@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -15,11 +14,11 @@ import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.R
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
-import com.bd.bdproject.util.Constant.INFO_TAG
-import com.bd.bdproject.util.animateTransparency
-import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
-import com.bd.bdproject.util.withDateSeparator
+import com.bd.bdproject.common.Constant.INFO_TAG
+import com.bd.bdproject.common.animateTransparency
+import com.bd.bdproject.common.timeToLong
+import com.bd.bdproject.common.timeToString
+import com.bd.bdproject.common.withDateSeparator
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
 import kotlinx.coroutines.Dispatchers

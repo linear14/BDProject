@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.bd.bdproject.databinding.ActivitySetPasswordBinding
-import com.bd.bdproject.util.BitDamApplication
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.viewmodel.PasswordViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.repository.LightRepository
-import com.bd.bdproject.util.timeToLong
-import com.bd.bdproject.util.timeToString
+import com.bd.bdproject.common.timeToLong
+import com.bd.bdproject.common.timeToString
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*

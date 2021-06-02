@@ -15,13 +15,10 @@ import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.data.model.DBInfo
 import com.bd.bdproject.databinding.ActivitySettingBinding
 import com.bd.bdproject.dialog.DBSelector
-import com.bd.bdproject.util.AlarmUtil
-import com.bd.bdproject.util.AlarmUtil.NOT_USE_ALARM
-import com.bd.bdproject.util.BitDamApplication
-import com.bd.bdproject.util.Constant.INFO_DB
-import com.bd.bdproject.util.DriveServiceHelper
+import com.bd.bdproject.common.BitDamApplication
+import com.bd.bdproject.common.Constant.INFO_DB
+import com.bd.bdproject.common.DriveServiceHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.snackbar.Snackbar

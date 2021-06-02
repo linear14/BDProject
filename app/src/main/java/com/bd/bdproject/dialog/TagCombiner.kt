@@ -8,7 +8,7 @@ import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.bd.bdproject.R
 import com.bd.bdproject.databinding.DialogTagCombinerBinding
-import com.bd.bdproject.util.Constant.INFO_TAG
+import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.view.adapter.CombineTagAdapter
 
 class TagCombiner(val doCombined: (String) -> Unit) : DialogFragment() {
