@@ -16,7 +16,6 @@ import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.BaseFragment
-import com.bd.bdproject.view.fragment.ControlMemoFragment
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
