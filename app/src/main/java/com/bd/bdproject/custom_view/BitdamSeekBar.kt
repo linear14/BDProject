@@ -252,7 +252,7 @@ class BitdamSeekBar: View {
     }
 
     fun makeBarVisible() {
-        barPaint.color = ContextCompat.getColor(context, R.color.white)
+        barPaint.color = ContextCompat.getColor(context, R.color.white_60)
         invalidate()
     }
 
