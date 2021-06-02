@@ -12,6 +12,10 @@ class LightViewModel(private val lightRepo: LightRepository): ViewModel() {
 
     val lightWithTags: MutableLiveData<LightWithTags> = MutableLiveData()
 
+    suspend fun insertLight(light: Light) {
+        lightRepo.insertLight(light)
+    }
+
     fun asyncInsertLight(light: Light) {
         GlobalScope.launch { lightRepo.insertLight(light) }
     }

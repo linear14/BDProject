@@ -138,7 +138,13 @@ class EnrollHomeFragment: BaseFragment() {
 
         sharedViewModel.previousActivity = parentActivity.previousActivity
         if(sharedViewModel.previousActivity == COLLECTION_MAIN) {
-            sharedViewModel.dateCode = parentActivity.intent.getStringExtra("datecode")
+            val dateCode = parentActivity.intent.getStringExtra("datecode")
+            if(dateCode != null) {
+                sharedViewModel.dateCode = dateCode
+            } else {
+                parentActivity.finish()
+            }
+
         }
     }
 

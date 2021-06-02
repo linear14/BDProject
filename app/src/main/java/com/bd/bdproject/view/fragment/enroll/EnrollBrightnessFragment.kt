@@ -81,8 +81,13 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
             // 모아보기 페이지에서 빛 등록을 눌렀을 경우
             sharedViewModel.previousActivity == COLLECTION_MAIN -> {
-                sharedViewModel.dateCode = parentActivity.intent.getStringExtra("datecode")
-                showUiWithoutAnimation()
+                val dateCode = parentActivity.intent.getStringExtra("datecode")
+                if(dateCode != null) {
+                    sharedViewModel.dateCode = dateCode
+                    showUiWithoutAnimation()
+                } else {
+                    parentActivity.finish()
+                }
             }
 
             // 기타 상황

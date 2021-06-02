@@ -6,7 +6,7 @@ import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.util.timeToString
 
 class EnrollViewModel: ViewModel() {
-    var dateCode: String? = System.currentTimeMillis().timeToString()
+    var dateCode: String = System.currentTimeMillis().timeToString()
 
     var brightness: Int = 0
     var tags: List<Tag> = mutableListOf()

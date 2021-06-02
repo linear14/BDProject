@@ -97,6 +97,8 @@ open class EnrollTagFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentControlTagBinding.inflate(inflater, container, false)
 
+        initDataAndBackground()
+
         when {
             // 이전 페이지에서 넘어왔을 경우
             sharedViewModel.previousPage == CONTROL_BRIGHTNESS -> {
@@ -125,16 +127,6 @@ open class EnrollTagFragment: BaseFragment() {
         sharedViewModel.previousPage = CONTROL_TAG
 
         binding.apply {
-            actionEnroll.visibility = View.GONE
-
-            parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(sharedViewModel.brightness * 2))
-            tvBrightness.text = sharedViewModel.brightness.toString()
-            setEntireTagFragmentColor(sharedViewModel.brightness)
-
-            setTagRecyclerView()
-            tagViewModel.candidateTags.value = sharedViewModel.tags.toMutableList()
-
-
             inputTag.addTextChangedListener(InputTagWatcher())
 
             ivClearText.setOnClickListener {
@@ -185,6 +177,21 @@ open class EnrollTagFragment: BaseFragment() {
     }
 
     // region View
+
+    private fun initDataAndBackground() {
+        binding.apply {
+            actionEnroll.visibility = View.GONE
+
+            sharedViewModel.brightness.also {
+                parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(it * 2))
+                tvBrightness.text = it.toString()
+                setEntireTagFragmentColor(it)
+            }
+
+            setTagRecyclerView()
+            tagViewModel.candidateTags.value = sharedViewModel.tags.toMutableList()
+        }
+    }
 
     private fun setTagRecyclerView() {
         binding.apply {
