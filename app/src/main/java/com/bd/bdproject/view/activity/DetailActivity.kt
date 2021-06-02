@@ -298,4 +298,19 @@ class DetailActivity : AppCompatActivity() {
         arrow.startAnimation(arrowRotation)
         isHideDetails = !isHideDetails
     }
+
+    override fun onBackPressed() {
+        binding.apply {
+            if(viewFilter.visibility == View.VISIBLE) {
+                viewFilter.visibility = View.GONE
+                layoutMore.visibility = View.GONE
+                binding.apply {
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                }
+            } else {
+                super.onBackPressed()
+            }
+        }
+
+    }
 }
