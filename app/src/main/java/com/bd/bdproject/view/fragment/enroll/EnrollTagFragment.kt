@@ -70,7 +70,7 @@ open class EnrollTagFragment: BaseFragment() {
         it.onTagDeleteButtonClickListener = object: OnTagDeleteButtonClickListener {
             override fun onClick(tagName: String) {
                 if(!sharedViewModel.isFragmentTransitionState) {
-                    deleteTag(tagName)
+                    deleteCandidateTag(tagName)
                 }
             }
         }
@@ -81,7 +81,7 @@ open class EnrollTagFragment: BaseFragment() {
             override fun onClick(tagName: String) {
                 if(checkIsValidTag(tagName)) {
                     if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
-                        editTag(tagEnrolledAdapter.editModeTag!!, tagName)
+                        editCandidateTag(tagEnrolledAdapter.editModeTag!!, tagName)
                     }
                     else {
                         if(!sharedViewModel.isFragmentTransitionState) { enrollTagToCandidate(tagName) }
@@ -442,13 +442,13 @@ open class EnrollTagFragment: BaseFragment() {
         tagViewModel.searchTag(null)
     }
 
-    private fun editTag(oldTagName: String, newTagName: String) {
+    private fun editCandidateTag(oldTagName: String, newTagName: String) {
         tagViewModel.editTagCandidate(oldTagName, newTagName)
         binding.inputTag.text.clear()
         tagViewModel.searchTag(null)
     }
 
-    private fun deleteTag(tagName: String) {
+    private fun deleteCandidateTag(tagName: String) {
         tagViewModel.deleteTagCandidate(tagName)
         binding.inputTag.text.clear()
         tagViewModel.searchTag(null)
@@ -540,7 +540,7 @@ open class EnrollTagFragment: BaseFragment() {
                 if(isLastWordBlank(s)) {
                     if(checkIsValidTag(tagName)) {
                         if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
-                            editTag(tagEnrolledAdapter.editModeTag!!, tagName)
+                            editCandidateTag(tagEnrolledAdapter.editModeTag!!, tagName)
                         }
                         else {
                             if(!sharedViewModel.isFragmentTransitionState) { enrollTagToCandidate(tagName) }

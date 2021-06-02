@@ -1,24 +1,25 @@
 package com.bd.bdproject.view.fragment.edit
 
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.R
+import com.bd.bdproject.`interface`.OnTagClickListener
+import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.convertToBrightness
 import com.bd.bdproject.view.activity.BitdamEditActivity
+import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.view.fragment.BaseFragment
-import com.bd.bdproject.view.fragment.ControlBrightnessFragment
 import com.bd.bdproject.viewmodel.common.LightViewModel
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class EditBrightnessFragment: BaseFragment() {

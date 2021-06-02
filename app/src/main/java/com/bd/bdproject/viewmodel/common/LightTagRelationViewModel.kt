@@ -6,8 +6,7 @@ import com.bd.bdproject.data.model.LightTagRelation
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.util.BitDamApplication.Companion.applicationContext
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class LightTagRelationViewModel(private val lightTagRelationRepository: LightTagRelationRepository) : ViewModel() {
 
@@ -23,8 +22,9 @@ class LightTagRelationViewModel(private val lightTagRelationRepository: LightTag
     }
 
     fun updateRelationsAll(dateCode: String, tagList: List<Tag>?) {
-        GlobalScope.launch {
-            lightTagRelationRepository.deleteRelationsAll(dateCode)
+        CoroutineScope(Dispatchers.IO).launch {
+            val job = launch { lightTagRelationRepository.deleteRelationsAll(dateCode) }
+            job.join()
             insertRelation(dateCode, tagList)
         }
     }
