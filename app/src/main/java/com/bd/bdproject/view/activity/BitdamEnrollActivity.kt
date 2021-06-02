@@ -28,7 +28,7 @@ class BitdamEnrollActivity : AppCompatActivity() {
     }
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
-    val gradientDrawable = GradientDrawable().apply {
+    private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR
     }
 

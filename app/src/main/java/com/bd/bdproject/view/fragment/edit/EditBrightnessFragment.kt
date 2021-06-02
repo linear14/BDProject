@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
+import com.bd.bdproject.R
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.BitDamApplication
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.LightUtil
+import com.bd.bdproject.util.convertToBrightness
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.view.fragment.ControlBrightnessFragment
@@ -21,7 +23,7 @@ import org.koin.android.ext.android.inject
 
 class EditBrightnessFragment: BaseFragment() {
 
-    var _binding: FragmentControlBrightnessBinding? = null
+    private var _binding: FragmentControlBrightnessBinding? = null
     val binding get() = _binding!!
 
     private val lightViewModel: LightViewModel by inject()
@@ -33,101 +35,75 @@ class EditBrightnessFragment: BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false).apply {
+        _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false)
 
-        }
-        return binding.root
-    }
-
-/*    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        initViewAndData(args.light?.bright?:0)
 
         binding.apply {
             actionEnroll.setOnClickListener { editBrightness() }
+            btnBack.setOnClickListener { parentActivity.onBackPressed() }
         }
+
+        handleSeekBar()
+
+        return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        isFirstPressed = true
-        isChangingFragment = false
-        makeBackground(args.light?.bright?:0)
 
-        binding.btnBack.setOnClickListener {
-            parentActivity.onBackPressed()
-        }
-    }
-
-    fun makeBackground(brightness: Int) {
+    private fun initViewAndData(brightness: Int) {
 
         binding.apply {
             setEntireLightFragmentColor(brightness)
-            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
-            layoutAddLight.background = gradientDrawable
-            tvBrightness.text = brightness.toString()
-            tvBrightness.visibility = View.VISIBLE
-            sbLight.firstProgress = brightness * 2
-            sbLight.thumbAvailable = true
+            parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(brightness * 2))
 
-            btnBack.visibility = View.VISIBLE
-            btnDrawer.visibility = View.GONE
-            sbLight.alpha = 1.0f
-            sbLight.makeBarVisible()
+            sbLight.apply {
+                firstProgress = brightness * 2
+                thumbAvailable = true
+                alpha = 1.0f
+            }.also { it.makeBarVisible() }
+            sbLightFake.visibility = View.GONE
+            thumbFake.visibility = View.GONE
+
+            tvBrightness.text = brightness.toString()
+            tvBrightness.alpha = 1.0f
             actionEnroll.visibility = View.VISIBLE
         }
     }
 
-    private fun getBrightness(progress: Int): Int {
-        val converted = progress / 10
-        return (converted * 5)
-    }
-
-    fun setEntireLightFragmentColor(brightness: Int) {
+    private fun setEntireLightFragmentColor(brightness: Int) {
         binding.apply {
             ColorUtil.setEntireViewColor(
                 brightness,
                 tvBrightness,
                 actionEnroll,
-                btnDrawer,
                 btnBack
             )
         }
     }
 
-    private fun editBrightness() {
-        runBlocking {
-            val job = GlobalScope.launch {
-                args.light?.let {
-                    lightViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), it.dateCode)
-                }
-            }
-
-            job.join()
-
-            if(job.isCancelled) {
-                Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
-            } else {
-                CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                    parentActivity.returnToDetailActivity()
-                }
+    private fun handleSeekBar() {
+        binding.apply {
+            sbLight.setOnProgressChangeListener { progress ->
+                val brightness = progress.convertToBrightness()
+                setEntireLightFragmentColor(brightness)
+                tvBrightness.text = brightness.toString()
+                parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(progress))
             }
         }
     }
 
-    private fun setSeekBarProgressChangedListener() {
-        binding.apply {
-            sbLight.setOnProgressChangeListener { progress ->
-                if(!isChangingFragment) {
-                    val brightness = getBrightness(progress)
-                    setEntireLightFragmentColor(brightness)
-
-                    tvBrightness.text = brightness.toString()
-
-                    gradientDrawable.colors = LightUtil.getDiagonalLight(progress)
-                    layoutAddLight.background = gradientDrawable
-                    isFirstPressed = false
+    private fun editBrightness() {
+        CoroutineScope(Dispatchers.IO).launch {
+            launch {
+                val light = args.light
+                if(light != null) {
+                    lightViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), light.dateCode)
                 }
+            }.join()
+
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                parentActivity.returnToDetailActivity()
             }
         }
     }
@@ -135,6 +111,6 @@ class EditBrightnessFragment: BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }*/
+    }
 
 }

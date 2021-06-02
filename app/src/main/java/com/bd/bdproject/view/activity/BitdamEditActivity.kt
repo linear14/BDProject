@@ -1,6 +1,7 @@
 package com.bd.bdproject.view.activity
 
 import android.app.Activity
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,10 @@ import com.bd.bdproject.util.Constant.INFO_TAG
 class BitdamEditActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityBitdamEditBinding
+
+    private val gradientDrawable = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.TL_BR
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,5 +72,10 @@ class BitdamEditActivity : AppCompatActivity() {
     fun returnToDetailActivity() {
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    fun updateBackgroundColor(gradientLights: IntArray) {
+        gradientDrawable.colors = gradientLights
+        binding.root.background = gradientDrawable
     }
 }

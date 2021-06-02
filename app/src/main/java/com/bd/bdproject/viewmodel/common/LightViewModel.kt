@@ -27,9 +27,7 @@ class LightViewModel(private val lightRepo: LightRepository): ViewModel() {
     }
 
     fun editBrightness(brightness: Int, dateCode: String) {
-        GlobalScope.launch {
-            lightRepo.updateBrightness(brightness, dateCode)
-        }
+        lightRepo.updateBrightness(brightness, dateCode)
     }
 
     fun editMemo(memo: String?, dateCode: String) {
