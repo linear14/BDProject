@@ -15,9 +15,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.common.*
-import com.bd.bdproject.data.model.Light
-import com.bd.bdproject.databinding.FragmentControlMemoBinding
-import com.bd.bdproject.util.*
 import com.bd.bdproject.common.Constant.BITDAM_ENROLL
 import com.bd.bdproject.common.Constant.COLLECTION_MAIN
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
@@ -25,6 +22,11 @@ import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.Constant.INFO_DATE_CODE
 import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.common.Constant.INFO_SHOULD_HAVE_DRAWER
+import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.databinding.FragmentControlMemoBinding
+import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.KeyboardUtil
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.activity.DetailActivity
@@ -39,7 +41,10 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.snackbar.Snackbar
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 open class EnrollMemoFragment: BaseFragment() {

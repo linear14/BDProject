@@ -7,20 +7,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
-import com.bd.bdproject.databinding.FragmentControlHomeBinding
-import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.common.Constant.COLLECTION_MAIN
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_HOME
-import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.common.screenTransitionAnimationMilliSecond
 import com.bd.bdproject.common.timeToLong
+import com.bd.bdproject.common.timeToString
+import com.bd.bdproject.databinding.FragmentControlHomeBinding
+import com.bd.bdproject.dialog.SlideDatePicker
+import com.bd.bdproject.util.LightUtil
+import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
@@ -46,6 +48,8 @@ class EnrollHomeFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentControlHomeBinding.inflate(inflater, container, false)
+
+        goBrightnessFragmentIfPreviousActivityIsCollectionMain()
 
         parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(null))
         binding.sbLight.isHome = true
@@ -74,8 +78,6 @@ class EnrollHomeFragment: BaseFragment() {
                 showUiWithoutAnimation()
             }
         }
-
-        sharedViewModel.previousPage = CONTROL_HOME
 
         binding.apply {
             btnDrawer.setOnClickListener {
@@ -132,25 +134,26 @@ class EnrollHomeFragment: BaseFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
+        // 다시 진입하면 데이터 초기화
+        if(sharedViewModel.previousPage == CONTROL_BRIGHTNESS) {
+            sharedViewModel.init()
+        }
+    }
 
+    private fun goBrightnessFragmentIfPreviousActivityIsCollectionMain() {
         sharedViewModel.previousActivity = parentActivity.previousActivity
         if(sharedViewModel.previousActivity == COLLECTION_MAIN) {
             val dateCode = parentActivity.intent.getStringExtra("datecode")
             if(dateCode != null) {
                 sharedViewModel.dateCode = dateCode
+                goToFragmentEnrollBrightness()
             } else {
+                Toast.makeText(requireContext(), "날짜값이 비어있습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
                 parentActivity.finish()
             }
-
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // 다시 진입하면 데이터 초기화
-        sharedViewModel.init()
     }
 
     private fun showUiWithAnimation() {
@@ -223,6 +226,7 @@ class EnrollHomeFragment: BaseFragment() {
         binding.apply {
             sbLight.setOnReleaseListener {
                 if(!sharedViewModel.isFragmentTransitionState) {
+                    sharedViewModel.dateCode = System.currentTimeMillis().timeToString()
                     if(isAnimationActive()) {
                         goToFragmentEnrollBrightnessWithAnimation()
                     } else {
@@ -245,6 +249,7 @@ class EnrollHomeFragment: BaseFragment() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
                         goToFragmentEnrollBrightness()
+                        sharedViewModel.isFragmentTransitionState = false
                     }
                 })
         }
@@ -260,6 +265,7 @@ class EnrollHomeFragment: BaseFragment() {
         val navDirection: NavDirections =
             EnrollHomeFragmentDirections.actionEnrollHomeFragmentToEnrollBrightnessFragment()
         findNavController(parentActivity.binding.layoutFragment).navigate(navDirection)
+        sharedViewModel.isFragmentTransitionState = false
     }
 
     override fun onDestroyView() {

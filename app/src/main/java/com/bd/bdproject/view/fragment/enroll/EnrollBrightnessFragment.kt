@@ -13,8 +13,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
-import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
-import com.bd.bdproject.util.*
 import com.bd.bdproject.common.Constant.COLLECTION_MAIN
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_HOME
@@ -22,16 +20,17 @@ import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.common.convertToBrightness
 import com.bd.bdproject.common.screenTransitionAnimationMilliSecond
+import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
+import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.fragment.BaseFragment
-import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.EnrollViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 open class EnrollBrightnessFragment: BaseFragment() {
 
@@ -39,7 +38,6 @@ open class EnrollBrightnessFragment: BaseFragment() {
     val binding get() = _binding!!
 
     private val sharedViewModel: EnrollViewModel by activityViewModels()
-    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
 
     private val parentActivity by lazy {
         activity as BitdamEnrollActivity
@@ -82,24 +80,11 @@ open class EnrollBrightnessFragment: BaseFragment() {
                 }
             }
 
-            // 모아보기 페이지에서 빛 등록을 눌렀을 경우
-            sharedViewModel.previousActivity == COLLECTION_MAIN -> {
-                val dateCode = parentActivity.intent.getStringExtra("datecode")
-                if(dateCode != null) {
-                    sharedViewModel.dateCode = dateCode
-                    showUiWithoutAnimation()
-                } else {
-                    parentActivity.finish()
-                }
-            }
-
             // 기타 상황
             else -> {
                 showUiWithoutAnimation()
             }
         }
-
-        sharedViewModel.previousPage = CONTROL_BRIGHTNESS
 
         binding.apply {
             actionEnroll.visibility = View.GONE
@@ -159,8 +144,7 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
                         // 모아보기에서 넘어온 경우
                         if(sharedViewModel.previousActivity == COLLECTION_MAIN) {
-                            //TODO 아예 액티비티 전환
-
+                            parentActivity.finish()
                         } else {
                             if(isAnimationActive()) {
                                 goBackToFragmentEnrollHomeWithAnimation()

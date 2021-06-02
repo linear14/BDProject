@@ -16,14 +16,16 @@ import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
-import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.databinding.FragmentControlTagBinding
-import com.bd.bdproject.util.*
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.common.screenTransitionAnimationMilliSecond
+import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.databinding.FragmentControlTagBinding
+import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.KeyboardUtil
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.util.SharedUtil.isAnimationActive
 import com.bd.bdproject.view.activity.BitdamEnrollActivity
 import com.bd.bdproject.view.adapter.TagAdapter
@@ -125,8 +127,6 @@ open class EnrollTagFragment: BaseFragment() {
                 showUiWithoutAnimation()
             }
         }
-
-        sharedViewModel.previousPage = CONTROL_TAG
 
         binding.apply {
             inputTag.addTextChangedListener(InputTagWatcher())
