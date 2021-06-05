@@ -94,7 +94,9 @@ open class EnrollMemoFragment: BaseFragment() {
                 parentActivity.onBackPressed()
             }
             actionEnroll.setOnClickListener {
-                insertLightWithTag()
+                if(!sharedViewModel.isFragmentTransitionState) {
+                    insertLightWithTag()
+                }
             }
         }
 

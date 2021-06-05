@@ -177,9 +177,11 @@ open class EnrollBrightnessFragment: BaseFragment() {
 
     private fun showUiWithoutAnimation() {
         binding.apply {
+            parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(sharedViewModel.brightness * 2))
             tvBrightness.alpha = 1.0f
             sbLight.makeBarVisible()
             sbLight.thumbAvailable = true
+            sbLight.alpha = 1.0f
             sbLightFake.visibility = View.GONE
             sharedViewModel.isFragmentTransitionState = false
         }
