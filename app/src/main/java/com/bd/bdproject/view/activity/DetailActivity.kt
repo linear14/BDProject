@@ -31,6 +31,7 @@ import com.bd.bdproject.common.Constant.INFO_LIGHT
 import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.common.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.common.Constant.INFO_TAG
+import com.bd.bdproject.common.Constant.mentToday
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.common.toBitDamDateFormat
@@ -44,6 +45,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DetailActivity : AppCompatActivity() {
 
@@ -195,7 +198,13 @@ class DetailActivity : AppCompatActivity() {
                 gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
                 layoutLightDetail.background = gradientDrawable
 
-                // TODO 추천멘트 띄워주기
+                when(brightness) {
+                    0 -> { getMent(0) }
+                    in 5..35 -> { getMent(1) }
+                    in 40..60 -> { getMent(2) }
+                    in 65..85 -> { getMent(3) }
+                    else -> { getMent(4) }
+                }
 
                 tagAdapter?.submitList(tags.toMutableList(), brightness)
             }
@@ -290,6 +299,16 @@ class DetailActivity : AppCompatActivity() {
                 controlBackgroundByFabState()
             }
         }
+    }
+
+    private fun getMent(level: Int) {
+        if(level !in 0 until 5) return
+
+        val size = mentToday[level].size
+        val rand = Random()
+        val randIndex = rand.nextInt(size)
+
+        binding.tvMent.text = mentToday[level][randIndex]
     }
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->

@@ -29,4 +29,23 @@ object Constant {
     const val DESTINATION_NOT_RECOGNIZED = -1000
 
     const val MAX_MEMO_LENGTH = 50
+
+
+    // 위로멘트 (0, 5~35, 40~60, 65~85, 90~100)
+    val ment0 = arrayOf(
+        "빛 0~0 사이의 멘트입니다."
+    )
+    val ment1 = arrayOf(
+        "빛 5~35 사이의 멘트입니다."
+    )
+    val ment2 = arrayOf(
+        "빛 40~60 사이의 멘트입니다."
+    )
+    val ment3 = arrayOf(
+        "빛 65~85 사이의 멘트입니다."
+    )
+    val ment4 = arrayOf(
+        "빛 90~100 사이의 멘트입니다."
+    )
+    val mentToday: Array<Array<String>> = arrayOf(ment0, ment1, ment2, ment3, ment4)
 }
