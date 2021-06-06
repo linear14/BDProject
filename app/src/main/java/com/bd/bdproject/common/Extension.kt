@@ -6,6 +6,8 @@ import android.view.ViewPropertyAnimator
 import com.bd.bdproject.data.model.SearchedTag
 import com.bd.bdproject.common.TypeConverter.Companion.FORMATTER
 import com.bd.bdproject.common.TypeConverter.Companion.FORMATTER_TIME
+import java.text.SimpleDateFormat
+import java.util.*
 
 val screenTransitionAnimationMilliSecond = 750L
 
@@ -25,6 +27,19 @@ fun Long?.hmsToString(): String {
 
 fun String?.timeToLong(): Long {
     return this.let { FORMATTER.parse(it).time }
+}
+
+/***
+ *  "2020년 3월 11일의 빛" 형태로 변환
+ */
+fun String.toFullDateToolbar(): String {
+    if(this.length != 8) return this
+    try {
+        this.toLong()
+    } catch(e: Exception) { return this }
+
+    val currentTimeMillis = this.timeToLong()
+    return SimpleDateFormat("yyyy년 M월 d일의 빛", Locale.KOREAN).format(currentTimeMillis)
 }
 
 /***
@@ -61,6 +76,9 @@ fun String.toBitDamDateFormat(): String {
     return stringBuilder.toString()
 }
 
+/***
+ *   "2020.04.03" 식의 형태로 변환
+ */
 fun String?.withDateSeparator(regex: String): String? {
     if(this == null || this.length != 8) return this
 
@@ -81,16 +99,7 @@ fun Long?.withDateSeparator(regex: String): String? {
     if(this == null) return this
 
     val dateCode = this.timeToString()
-
-    val sb = StringBuilder().apply {
-        append(dateCode.substring(0, 4))
-        append(regex)
-        append(dateCode.substring(4, 6))
-        append(regex)
-        append(dateCode.substring(6, 8))
-    }
-
-    return sb.toString()
+    return dateCode.withDateSeparator(regex)
 }
 
 fun Int.toLightLabel(): String {
@@ -99,6 +108,10 @@ fun Int.toLightLabel(): String {
     return "$start ~ $end"
 }
 
+/***
+ *  seekbar의 progress 값을 brightness 값으로 변환시켜주는 함수
+ *  ex. (progress 값이 152일 경우 -> 75의 brightness 값으로 변홤시켜줌)
+ */
 fun Int?.convertToBrightness(): Int {
     if(this == null) return 0
 

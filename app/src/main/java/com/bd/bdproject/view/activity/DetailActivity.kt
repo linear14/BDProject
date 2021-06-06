@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import com.bd.bdproject.R
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityDetailBinding
@@ -33,6 +34,7 @@ import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.common.toBitDamDateFormat
+import com.bd.bdproject.common.toFullDateToolbar
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
@@ -60,6 +62,8 @@ class DetailActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lightViewModel.currentDateCode = intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString()
 
         binding = ActivityDetailBinding.inflate(layoutInflater).apply {
             setContentView(root)
@@ -118,6 +122,7 @@ class DetailActivity : AppCompatActivity() {
                 val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
                 val isEnrolledToday = deferred.await()
 
+                // 오늘 등록되지 않은 빛일 경우 다음 페이지로 이동
                 if (!isEnrolledToday) {
                     launch(Dispatchers.Main) {
                         val intent =
@@ -128,39 +133,49 @@ class DetailActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    lightViewModel.getLightWithTags(intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString())
+                    lightViewModel.getLightWithTags()
 
                     launch(Dispatchers.Main) {
-                        initButtons()
-                        setTagRecyclerView()
+                        initBackground()
                         setEditButtons()
                     }
                 }
             }
         } else {
-            lightViewModel.getLightWithTags(intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString())
-            initButtons()
-            setTagRecyclerView()
+            lightViewModel.getLightWithTags()
+            initBackground()
             setEditButtons()
         }
 
     }
 
-    private fun initButtons() {
+    private fun initBackground() {
         binding.apply {
             when(intent.getBooleanExtra(INFO_SHOULD_HAVE_DRAWER, true)) {
+                // 드로어가 필요한 경우 (오늘의 빛을 홈 화면에서 보는 경우)
                 true -> {
                     btnDrawer.visibility = View.VISIBLE
                     btnBack.visibility = View.GONE
+                    tvToolbarTitle.visibility = View.GONE
+                    tvMent.visibility = View.VISIBLE
+                    tvDate.visibility = View.VISIBLE
+                    btnSpreadUpDown.visibility = View.VISIBLE
                 }
+                
+                // 드로어가 필요없는 경우 (Collection Main에서 빛 상세보기 진입한 경우)
                 false -> {
                     btnDrawer.visibility = View.GONE
                     btnBack.visibility = View.VISIBLE
+                    tvToolbarTitle.visibility = View.VISIBLE
+                    tvMent.visibility = View.GONE
+                    tvDate.visibility = View.GONE
+                    btnSpreadUpDown.visibility = View.GONE
                 }
             }
             fabMore.setOnClickListener { controlBackgroundByFabState() }
             viewFilter.setOnClickListener { controlBackgroundByFabState() }
         }
+        setTagRecyclerView()
     }
 
     private fun observeLight() {
@@ -174,10 +189,13 @@ class DetailActivity : AppCompatActivity() {
                 setColorAllViews(brightness)
 
                 tvDate.text = dateCode.toBitDamDateFormat()
+                tvToolbarTitle.text = dateCode.toFullDateToolbar()
                 tvBrightness.text = brightness.toString()
                 tvMemo.text = memo?:""
                 gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
                 layoutLightDetail.background = gradientDrawable
+
+                // TODO 추천멘트 띄워주기
 
                 tagAdapter?.submitList(tags.toMutableList(), brightness)
             }
@@ -222,12 +240,14 @@ class DetailActivity : AppCompatActivity() {
         binding.apply {
             ColorUtil.setEntireViewColor(
                 brightness,
+                tvToolbarTitle,
+                tvMent,
                 tvBrightness,
                 tvDate,
                 tvMemo,
                 btnSpreadUpDown,
-                binding.btnDrawer,
-                binding.btnBack
+                btnDrawer,
+                btnBack
             )
         }
     }
