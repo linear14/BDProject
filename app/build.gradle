@@ -29,7 +29,8 @@ android {
     }
 
     packagingOptions {
-        pickFirst  '**'
+        exclude 'META-INF/MANIFEST.MF'
+        exclude 'META-INF/DEPENDENCIES'
     }
     
     compileOptions {
