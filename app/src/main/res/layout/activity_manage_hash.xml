@@ -82,11 +82,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/noto_regular"
-                    android:text="x개 선택"
                     android:textColor="@color/white"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="2개 선택" />
 
                 <TextView
                     android:id="@+id/action_cancel"
@@ -95,6 +96,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="취소"
                     android:textColor="@color/white"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -231,7 +233,8 @@
             android:background="#b9b9b9"
             android:gravity="center"
             android:text="삭제"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/action_combine"
@@ -241,7 +244,8 @@
             android:background="#898989"
             android:gravity="center"
             android:text="합치기"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
