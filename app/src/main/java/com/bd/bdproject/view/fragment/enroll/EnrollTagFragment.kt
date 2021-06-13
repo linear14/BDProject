@@ -218,10 +218,12 @@ open class EnrollTagFragment: BaseFragment() {
 
     private fun setEntireTagFragmentColor(brightness: Int) {
         binding.apply {
+            val textDeleteButtonResource = if(brightness in 0 until 80) R.drawable.ic_delete_for_dark else R.drawable.ic_delete_for_bright
+            ivClearText.setImageResource(textDeleteButtonResource)
+
             ColorUtil.setEntireViewColor(
                 brightness,
                 tvBrightness,
-                ivClearText,
                 actionNext,
                 actionEnroll,
                 tvHash,

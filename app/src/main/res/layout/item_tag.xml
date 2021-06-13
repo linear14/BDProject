@@ -46,7 +46,7 @@
             android:id="@+id/btn_delete_tag"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_delete_dark"
+            android:src="@drawable/ic_delete_tag"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/layout_tag"
             app:layout_constraintTop_toTopOf="parent"
