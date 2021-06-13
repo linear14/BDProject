@@ -88,9 +88,9 @@ class BitdamSeekBar: View {
 
     private fun drawBar(canvas: Canvas) {
         canvas.drawRect(
-            width / 2 - 1f,
+            width / 2 - 1.5f,
             verticalOffset,
-            width / 2 + 1f,
+            width / 2 + 1.5f,
             (height - verticalOffset),
             barPaint
         )
