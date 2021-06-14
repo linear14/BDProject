@@ -129,6 +129,7 @@
             android:textColor="@color/white"
             android:textColorHint="#D4D4D4"
             android:textSize="14sp"
+            android:theme="@style/EditTextForDarkStyle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/action_reset"
             app:layout_constraintStart_toStartOf="parent"

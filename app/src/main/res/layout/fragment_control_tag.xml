@@ -125,6 +125,8 @@
             android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_normal"
+            android:theme="@style/EditTextForYellowStyle"
+            android:textCursorDrawable="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
