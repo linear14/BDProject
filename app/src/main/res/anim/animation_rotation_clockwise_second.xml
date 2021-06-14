@@ -4,6 +4,6 @@
         android:pivotX = "50%"
         android:pivotY = "50%"
         android:fromDegrees = "0"
-        android:toDegrees = "-180"
-        android:duration = "200"/>
+        android:toDegrees = "180"
+        android:duration = "750"/>
 </set>

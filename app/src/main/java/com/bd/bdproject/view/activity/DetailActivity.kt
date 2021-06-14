@@ -16,8 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import com.bd.bdproject.R
+import com.bd.bdproject.common.*
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityDetailBinding
 import com.bd.bdproject.util.ColorUtil
@@ -33,9 +33,6 @@ import com.bd.bdproject.common.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.common.Constant.mentToday
 import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.common.timeToString
-import com.bd.bdproject.common.toBitDamDateFormat
-import com.bd.bdproject.common.toFullDateToolbar
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
@@ -322,16 +319,14 @@ class DetailActivity : AppCompatActivity() {
         val arrowRotation: Animation
 
         if(isHideDetails) {
-            arrowRotation = AnimationUtils.loadAnimation(this, R.anim.animation_rotation_clockwise_half).apply{ fillAfter = true }
+            arrowRotation = AnimationUtils.loadAnimation(this, R.anim.animation_rotation_clockwise_first).apply{ fillAfter = true }
             binding.apply {
-                layoutDetail.visibility = View.VISIBLE
-                layoutDetail.startAnimation(AnimationUtils.loadAnimation(this.root.context, R.anim.slide_down))
+                layoutDetail.animateTransparency(1.0f, screenTransitionAnimationMilliSecond)
             }
         } else {
-            arrowRotation = AnimationUtils.loadAnimation(this, R.anim.animation_rotation_anticlockwise_half).apply{ fillAfter = true }
+            arrowRotation = AnimationUtils.loadAnimation(this, R.anim.animation_rotation_clockwise_second).apply{ fillAfter = true }
             binding.apply {
-                layoutDetail.visibility = View.GONE
-                layoutDetail.startAnimation(AnimationUtils.loadAnimation(this.root.context, R.anim.slide_up))
+                layoutDetail.animateTransparency(0.0f, screenTransitionAnimationMilliSecond)
             }
         }
         arrow.startAnimation(arrowRotation)
