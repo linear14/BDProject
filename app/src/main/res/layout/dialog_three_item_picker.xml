@@ -54,6 +54,7 @@
             android:id="@+id/picker_first"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
             app:layout_constraintStart_toStartOf="parent" />
 
         <NumberPicker
@@ -61,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="24dp"
+            android:descendantFocusability="blocksDescendants"
             app:layout_constraintEnd_toStartOf="@id/picker_third"
             app:layout_constraintStart_toEndOf="@id/picker_first" />
 
@@ -68,6 +70,7 @@
             android:id="@+id/picker_third"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
             app:layout_constraintEnd_toEndOf="parent" />
 
 

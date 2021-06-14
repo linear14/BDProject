@@ -96,7 +96,7 @@ class SetPasswordFragment: Fragment() {
     private fun setScreenUpdatePassword() {
         binding.apply {
             tvSetPasswordTitle.text = "암호 변경"
-            tvSetPasswordDescription.text = "설정할 암호를 입력해 주세요"
+            tvSetPasswordDescription.text = "변경할 새로운 암호를 입력해 주세요"
         }
     }
 
