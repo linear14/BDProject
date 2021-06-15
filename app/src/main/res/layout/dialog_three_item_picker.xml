@@ -42,7 +42,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_picker"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingVertical="24dp"
@@ -52,26 +52,34 @@
 
         <NumberPicker
             android:id="@+id/picker_first"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:descendantFocusability="blocksDescendants"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/picker_second"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <!-- NumberPicker 붙이지 않는 경우 View 넣어주는 자리 -->
 
         <NumberPicker
             android:id="@+id/picker_second"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="24dp"
             android:descendantFocusability="blocksDescendants"
             app:layout_constraintEnd_toStartOf="@id/picker_third"
-            app:layout_constraintStart_toEndOf="@id/picker_first" />
+            app:layout_constraintStart_toEndOf="@id/picker_first"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <!-- NumberPicker 붙이지 않는 경우 View 넣어주는 자리 -->
 
         <NumberPicker
             android:id="@+id/picker_third"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:descendantFocusability="blocksDescendants"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/picker_second"
+            app:layout_constraintHorizontal_weight="1"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
