@@ -43,6 +43,7 @@ class ManageHashActivity : AppCompatActivity() {
                 manageHashViewModel.addOrRemoveCheckedTag(resultTag)
             }},
         bottomSelectorClickedListener = { tag ->
+            binding.actionCancel.performClick()
             val bottomSelector = BottomSelector(tag).apply {
                 setOnSelectedListener(object: OnBottomOptionSelectedListener {
                     override fun onEdit(tag: Tag) {
