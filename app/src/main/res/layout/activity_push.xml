@@ -92,7 +92,10 @@
                     android:id="@+id/switch_push_app"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    app:useMaterialThemeColors="false"
+                    app:thumbTint="@color/switch_setting_thumb"
+                    app:trackTint="@color/switch_setting_track"/>
 
             </LinearLayout>
 
@@ -122,7 +125,10 @@
                     android:id="@+id/switch_push_dairy"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    app:useMaterialThemeColors="false"
+                    app:thumbTint="@color/switch_setting_thumb"
+                    app:trackTint="@color/switch_setting_track"/>
 
             </LinearLayout>
 

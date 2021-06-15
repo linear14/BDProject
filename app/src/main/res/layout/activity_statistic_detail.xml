@@ -82,7 +82,10 @@
             android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="@id/tv_duration"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_duration" />
+            app:layout_constraintTop_toTopOf="@id/tv_duration"
+            app:useMaterialThemeColors="false"
+            app:thumbTint="@color/switch_statistic_thumb"
+            app:trackTint="@color/switch_statistic_track"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_tag_calendar"
