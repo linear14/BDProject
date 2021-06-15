@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant
+import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.databinding.FragmentControlMemoBinding
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.KeyboardUtil
@@ -97,8 +98,7 @@ open class EditMemoFragment: BaseFragment() {
             }.join()
 
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(BitDamApplication.applicationContext(), "메모 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                parentActivity.returnToDetailActivity()
+                parentActivity.returnToDetailActivity(CONTROL_MEMO)
             }
         }
     }
@@ -117,7 +117,7 @@ open class EditMemoFragment: BaseFragment() {
                 if(length > Constant.MAX_MEMO_LENGTH) {
                     inputMemo.setText(s?.substring(0, Constant.MAX_MEMO_LENGTH))
                     inputMemo.setSelection(Constant.MAX_MEMO_LENGTH)
-                    Snackbar.make(binding.root, "메모는 ${Constant.MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Snackbar.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "메모는 ${Constant.MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     tvTextCount.text = "${s?.length?:0}/${Constant.MAX_MEMO_LENGTH}자"
                 }

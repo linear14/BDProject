@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.common.BitDamApplication
+import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
+import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.common.convertToBrightness
@@ -100,8 +102,7 @@ class EditBrightnessFragment: BaseFragment() {
             }.join()
 
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(BitDamApplication.applicationContext(), "밝기 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                parentActivity.returnToDetailActivity()
+                parentActivity.returnToDetailActivity(CONTROL_BRIGHTNESS)
             }
         }
     }

@@ -38,6 +38,7 @@ import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -310,8 +311,29 @@ class DetailActivity : AppCompatActivity() {
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            Log.d("INTENT_TEST", "${intent?.getStringExtra("INTENT_TEST")}에서 돌아옴")
+            val data = result.data?.getIntExtra("TYPE", -1)
+            data?.let {
+                when (data) {
+                    CONTROL_BRIGHTNESS -> {
+                        Snackbar.make(binding.root, "밝기 변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                            /*.apply {
+                                setAction("확인") { dismiss() }
+                            }.show()*/
+                    }
+                    CONTROL_TAG -> {
+                        Snackbar.make(binding.root, "태그 변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                            /*.apply {
+                                setAction("확인") { dismiss() }
+                            }.show()*/
+                    }
+                    CONTROL_MEMO -> {
+                        Snackbar.make(binding.root, "메모 변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                            /*.apply {
+                                setAction("확인") { dismiss() }
+                            }.show()*/
+                    }
+                }
+            }
         }
     }
 

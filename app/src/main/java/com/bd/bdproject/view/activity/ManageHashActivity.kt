@@ -1,5 +1,6 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,15 +11,17 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
 import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
+import com.bd.bdproject.common.Constant.INFO_TAG
+import com.bd.bdproject.common.dpToPx
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityManageHashBinding
 import com.bd.bdproject.dialog.BottomSelector
 import com.bd.bdproject.dialog.TagCombiner
-import com.bd.bdproject.common.Constant.INFO_TAG
-import com.bd.bdproject.common.dpToPx
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -45,10 +48,11 @@ class ManageHashActivity : AppCompatActivity() {
                     override fun onEdit(tag: Tag) {
                         dismiss()
 
-                        startActivity(Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
+                        val intent = Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
                             putExtra("TYPE", ACTION_EDIT)
                             putExtra(INFO_TAG, tag.name)
-                        })
+                        }
+                        showSnackBarForResult.launch(intent)
                     }
 
                     override fun onDelete(tag: Tag) {
@@ -71,6 +75,22 @@ class ManageHashActivity : AppCompatActivity() {
             }
             bottomSelector.show(supportFragmentManager, "selector")
         })
+
+    private val showSnackBarForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            val data = result.data?.getIntExtra("TYPE", -1)
+            data?.let {
+                when(data) {
+                    ACTION_ADD -> {
+                        Snackbar.make(binding.root, "태그가 추가되었습니다.", Snackbar.LENGTH_SHORT).show()
+                    }
+                    ACTION_EDIT -> {
+                        Snackbar.make(binding.root, "태그가 수정되었습니다.", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
 
     private val textWatcher = object: TextWatcher {
         private var text: String? = null
@@ -168,9 +188,10 @@ class ManageHashActivity : AppCompatActivity() {
             }
 
             actionAdd.setOnClickListener {
-                startActivity(Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
+                val intent = Intent(this@ManageHashActivity, AddOrEditHashActivity::class.java).apply {
                     putExtra("TYPE", ACTION_ADD)
-                })
+                }
+                showSnackBarForResult.launch(intent)
             }
 
             actionCombine.setOnClickListener {

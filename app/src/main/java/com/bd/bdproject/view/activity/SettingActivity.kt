@@ -18,6 +18,8 @@ import com.bd.bdproject.dialog.DBSelector
 import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant.INFO_DB
 import com.bd.bdproject.common.DriveServiceHelper
+import com.bd.bdproject.view.activity.SetPasswordActivity.Companion.SET_PASSWORD_FAILED
+import com.bd.bdproject.view.activity.SetPasswordActivity.Companion.SET_PASSWORD_SUCCESS
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -38,6 +40,22 @@ class SettingActivity : AppCompatActivity() {
 
     private lateinit var driveServiceHelper: DriveServiceHelper
     lateinit var binding: ActivitySettingBinding
+
+    private val showSnackBarForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            val data = result.data?.getIntExtra("TYPE", -1)
+            data?.let {
+                when(data) {
+                    SET_PASSWORD_SUCCESS -> {
+                        Snackbar.make(binding.root, "암호 설정이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                    }
+                    SET_PASSWORD_FAILED -> {
+                        Snackbar.make(binding.root, "설정 오류가 발생했습니다. 다시 시도해주세요.", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
 
     private val startSendDataForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -64,7 +82,8 @@ class SettingActivity : AppCompatActivity() {
             }
 
             settingLock.setOnClickListener {
-                startActivity(Intent(it.context, SetPasswordActivity::class.java))
+                val intent = Intent(it.context, SetPasswordActivity::class.java)
+                showSnackBarForResult.launch(intent)
             }
 
             settingSendDataToDrive.setOnClickListener {
@@ -147,7 +166,7 @@ class SettingActivity : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(this@SettingActivity, "구글 연동에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "구글 계정 연동에 실패했습니다.", Snackbar.LENGTH_SHORT).show()
                 }
         }
     }
@@ -193,12 +212,11 @@ class SettingActivity : AppCompatActivity() {
         driveServiceHelper?.createFile(filePath)
             .addOnSuccessListener {
                 progressDialog.dismiss()
-                Toast.makeText(this, "Uploaded successfully", Toast.LENGTH_SHORT).show()
-
+                Snackbar.make(binding.root, "성공적으로 저장되었습니다.", Snackbar.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 progressDialog.dismiss()
-                Toast.makeText(this, "저장 오류", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "저장 오류가 발생했습니다.", Snackbar.LENGTH_SHORT).show()
                 BitdamLog.contentLogger(it.message.toString())
             }
 
@@ -214,7 +232,6 @@ class SettingActivity : AppCompatActivity() {
         driveServiceHelper?.findFiles()
             .addOnSuccessListener { files ->
                 progressDialog.dismiss()
-                Toast.makeText(this, "Found Successfully", Toast.LENGTH_SHORT).show()
 
                 val dbNameBundle = Bundle().apply {
                     val bundleArrayList = arrayListOf<DBInfo>().apply {
@@ -233,7 +250,7 @@ class SettingActivity : AppCompatActivity() {
             }
             .addOnFailureListener {
                 progressDialog.dismiss()
-                Toast.makeText(this, "파일 탐색 오류", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "파일 탐색에 실패했습니다.", Snackbar.LENGTH_SHORT).show()
                 BitdamLog.contentLogger(it.message.toString())
             }
     }
@@ -250,12 +267,12 @@ class SettingActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 progressDialog.dismiss()
                 dialog.dismiss()
-                Toast.makeText(this, "Downloaded Succesfully", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "데이터를 성공적으로 불러왔습니다.", Snackbar.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 progressDialog.dismiss()
                 dialog.dismiss()
-                Toast.makeText(this, "다운로드 오류", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "다운로드 오류가 발생했습니다.", Snackbar.LENGTH_SHORT).show()
                 BitdamLog.contentLogger(it.message.toString())
             }
 

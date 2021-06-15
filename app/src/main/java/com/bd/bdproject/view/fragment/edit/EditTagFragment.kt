@@ -15,10 +15,13 @@ import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.common.BitDamApplication
+import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.FragmentControlTagBinding
-import com.bd.bdproject.util.*
+import com.bd.bdproject.util.ColorUtil
+import com.bd.bdproject.util.KeyboardUtil
+import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.view.fragment.BaseFragment
@@ -27,7 +30,6 @@ import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
@@ -247,7 +249,7 @@ open class EditTagFragment: BaseFragment() {
 
         // 태그 갯수가 4개 이상 (등록)
         if (!tagEnrolledAdapter.isEditMode && candidateTags.size >= 4) {
-            Snackbar.make(binding.root, "태그는 최대 4개까지 등록 가능합니다.", Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "태그는 최대 4개까지 등록 가능합니다.", Toast.LENGTH_SHORT).show()
             binding.inputTag.setText(tagName)
             binding.inputTag.setSelection(binding.inputTag.text.length)
             return false
@@ -258,7 +260,7 @@ open class EditTagFragment: BaseFragment() {
             (tagEnrolledAdapter.isEditMode && tagName in candidateTags
                 .filter { tag -> tag.name != tagEnrolledAdapter.editModeTag }
                 .map { it.name })) {
-            Snackbar.make(binding.root, "태그명이 중복되었습니다. 다시 입력해주세요.", Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "태그명이 중복되었습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show()
             binding.inputTag.setText(tagName)
             binding.inputTag.setSelection(binding.inputTag.text.length)
             return false
@@ -297,8 +299,7 @@ open class EditTagFragment: BaseFragment() {
                 joinAll(updateTagJob, updateRelationJob)
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(BitDamApplication.applicationContext(), "태그 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                    parentActivity.returnToDetailActivity()
+                    parentActivity.returnToDetailActivity(CONTROL_TAG)
                 }
             }
 
@@ -372,7 +373,7 @@ open class EditTagFragment: BaseFragment() {
         // 공백이 중간에 끼어있을 경우를 검사 (마지막 스페이스는 제외)
         private fun checkIsThereAnyBlank(s: CharSequence): Boolean {
             if((s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" ")))  {
-                Snackbar.make(binding.root, "공백이 포함된 태그는 등록할 수 없습니다.", Snackbar.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
                 binding.inputTag.text.clear()
                 return true
             }

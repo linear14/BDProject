@@ -1,5 +1,7 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -10,6 +12,11 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SetPasswordActivity : AppCompatActivity() {
+
+    companion object {
+        const val SET_PASSWORD_SUCCESS = 4000
+        const val SET_PASSWORD_FAILED = 4100
+    }
 
     lateinit var binding: ActivitySetPasswordBinding
     private val viewModel: PasswordViewModel by viewModel()
@@ -43,11 +50,17 @@ class SetPasswordActivity : AppCompatActivity() {
 
     private fun savePassword() {
         if(viewModel.confirmPassword.value?.length != 4 || viewModel.confirmPassword.value == null) {
-            Toast.makeText(this, "설정 오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+            val resultIntent = Intent().apply {
+                putExtra("TYPE", SET_PASSWORD_FAILED)
+            }
+            setResult(Activity.RESULT_OK, resultIntent)
         } else {
             BitDamApplication.pref.bitdamPassword = viewModel.confirmPassword.value
             BitDamApplication.pref.passwordHint = viewModel.passwordHint
-            Toast.makeText(this, "암호 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            val resultIntent = Intent().apply {
+                putExtra("TYPE", SET_PASSWORD_SUCCESS)
+            }
+            setResult(Activity.RESULT_OK, resultIntent)
         }
         finish()
     }

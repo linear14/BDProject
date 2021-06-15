@@ -1,6 +1,7 @@
 package com.bd.bdproject.view.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -68,8 +69,11 @@ class BitdamEditActivity : AppCompatActivity() {
         }
     }
 
-    fun returnToDetailActivity() {
-        setResult(Activity.RESULT_OK)
+    fun returnToDetailActivity(type: Int) {
+        val resultIntent = Intent().apply {
+            putExtra("TYPE", type)
+        }
+        setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }
 

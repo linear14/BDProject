@@ -236,7 +236,6 @@ open class EnrollMemoFragment: BaseFragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 sharedViewModel.isFragmentTransitionState = false
                 sharedViewModel.previousPage = CONTROL_MEMO
-                Toast.makeText(BitDamApplication.applicationContext(), "빛 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
                 when {
                     // 모아보기 화면에서 다른날의 빛을 추가했었던 경우
@@ -317,7 +316,7 @@ open class EnrollMemoFragment: BaseFragment() {
                 if(length > Constant.MAX_MEMO_LENGTH) {
                     inputMemo.setText(s?.substring(0, Constant.MAX_MEMO_LENGTH))
                     inputMemo.setSelection(Constant.MAX_MEMO_LENGTH)
-                    Snackbar.make(binding.root, "메모는 ${Constant.MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Snackbar.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "메모는 ${Constant.MAX_MEMO_LENGTH}자를 넘을 수 없습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     tvTextCount.text = "${s?.length?:0}/${Constant.MAX_MEMO_LENGTH}자"
                 }
