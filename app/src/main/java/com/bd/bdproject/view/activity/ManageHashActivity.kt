@@ -264,6 +264,7 @@ class ManageHashActivity : AppCompatActivity() {
 
     private fun observeTag() {
         manageHashViewModel.tags.observe(this) { result ->
+            binding.tvTotalCount.text = "총 ${result.size}개"
             binding.rvResult.adapter?.let {
                 (it as ManageHashAdapter).tags = result
                 it.notifyDataSetChanged()
