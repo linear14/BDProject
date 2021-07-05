@@ -9,7 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.PasswordType
 import com.bd.bdproject.R
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.databinding.FragmentSetPasswordBinding
+import com.bd.bdproject.util.SharedUtil
 import com.bd.bdproject.viewmodel.PasswordViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
@@ -54,6 +56,11 @@ class LockActivity : AppCompatActivity() {
             btn8.setOnClickListener { viewModel.clickButton("8") }
             btn9.setOnClickListener { viewModel.clickButton("9") }
             btnDelete.setOnClickListener { viewModel.clickButton("BACK") }
+
+            tvHint.setOnClickListener {
+                tvHint.visibility = View.GONE
+                tvSetPasswordDescription.text = BitDamApplication.pref.passwordHint?:"힌트가 없습니다"
+            }
         }
         observeVerifyPassword()
     }

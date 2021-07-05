@@ -47,6 +47,14 @@ class PasswordViewModel: ViewModel() {
     fun verifyPassword(): Boolean {
         return verifyPassword.value == BitDamApplication.pref.bitdamPassword
     }
+
+    fun initCurrentState() {
+        if(type == PasswordType.TYPE_NEW) {
+            tempPassword.value = ""
+        } else if(type == PasswordType.TYPE_CONFIRM) {
+            confirmPassword.value = ""
+        }
+    }
 }
 
 data class ConfirmPasswordEntry(

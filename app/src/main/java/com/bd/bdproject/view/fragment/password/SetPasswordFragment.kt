@@ -29,6 +29,7 @@ class SetPasswordFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSetPasswordBinding.inflate(inflater, container, false).apply {
+            view1.visibility = View.GONE
             btn0.setOnClickListener { viewModel.clickButton("0") }
             btn1.setOnClickListener { viewModel.clickButton("1") }
             btn2.setOnClickListener { viewModel.clickButton("2") }
@@ -55,6 +56,7 @@ class SetPasswordFragment: Fragment() {
 
     private fun screenLock() {
         binding.apply {
+            viewModel.initCurrentState()
             layoutInputPassword.visibility = View.INVISIBLE
             tvSetPasswordTitle.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color_gray))
             tvSetPasswordDescription.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color_gray))
