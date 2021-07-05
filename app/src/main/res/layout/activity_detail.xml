@@ -13,11 +13,13 @@
         android:id="@+id/layout_light_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:background="@android:color/transparent">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
             android:overScrollMode="never">
 
             <androidx.constraintlayout.widget.ConstraintLayout
