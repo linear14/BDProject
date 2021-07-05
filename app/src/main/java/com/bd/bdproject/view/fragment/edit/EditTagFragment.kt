@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
-import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.data.model.Tag
@@ -223,10 +222,10 @@ open class EditTagFragment: BaseFragment() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
 
-                        GlobalScope.launch {
+                        CoroutineScope(Dispatchers.IO).launch {
                             delay(2000)
 
-                            GlobalScope.launch(Dispatchers.Main) {
+                            launch(Dispatchers.Main) {
                                 tvTagRecommendInfo.animateTransparency(0.0f, 500)
                                     .setListener(object: AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
@@ -322,63 +321,70 @@ open class EditTagFragment: BaseFragment() {
         }
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            if(s.isEmpty()) {
+            if(s.isBlank() || s.isEmpty()) {
                 binding.ivClearText.visibility = View.INVISIBLE
+                binding.inputTag.text.clear()
 
                 searchJob?.cancel()
-                searchJob = GlobalScope.launch {
+                searchJob = CoroutineScope(Dispatchers.IO).launch {
                     delay(500)
                     tagViewModel.searchTag(null)
                 }
+                return
             }
-            if(s.isNotEmpty()) {
-                binding.ivClearText.visibility = View.VISIBLE
 
-                val lastIndex = s.length - 1
-                val tagName = s.substring(0, lastIndex)
+            binding.ivClearText.visibility = View.VISIBLE
 
-                // 길이가 9일때 마지막 단어가 공백이 아니면 8자리로 돌리고 return
-                if(s.length == 9 && s[lastIndex] != ' ') {
-                    binding.inputTag.setText(s.substring(0, 8))
-                    binding.inputTag.setSelection(8)
-                    return
-                }
+            if(checkIsThereAnyBlank(s)) {
+                Toast.makeText(requireContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
 
-                // 추천 검색어
-                if(!isLastWordBlank(s)) {
-                    searchJob?.cancel()
-                    searchJob = GlobalScope.launch {
-                        delay(500)
-                        if(s.isNotBlank()) {
-                            tagViewModel.searchTag(s.toString())
-                        }
+                val selectionStart = binding.inputTag.selectionStart
+                val split = s.split(" ")
+                binding.inputTag.setText(split[0] + split[1])
+                binding.inputTag.setSelection(selectionStart - 1)
+                return
+            }
+
+            val lastIndex = s.length - 1
+            val tagName = s.substring(0, lastIndex)
+
+            // 길이가 9일때 마지막 단어가 공백이 아니면 8자리로 돌리고 return
+            if(s.length == 9 && s[lastIndex] != ' ') {
+                Toast.makeText(requireContext(), "최대 8글자까지 가능합니다.", Toast.LENGTH_SHORT).show()
+
+                val selectionStart = binding.inputTag.selectionStart
+                binding.inputTag.setText(binding.inputTag.text.dropLast(1))
+                binding.inputTag.setSelection(selectionStart - 1)
+                return
+            }
+
+            // 추천 검색어
+            if(!isLastWordBlank(s)) {
+                searchJob?.cancel()
+                searchJob = CoroutineScope(Dispatchers.IO).launch {
+                    delay(500)
+                    if(s.isNotBlank()) {
+                        tagViewModel.searchTag(s.toString())
                     }
                 }
+            }
 
-                if(checkIsThereAnyBlank(s)) { return }
-
-                if(isLastWordBlank(s)) {
-                    if(checkIsValidTag(tagName)) {
-                        if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
-                            editCandidateTag(tagEnrolledAdapter.editModeTag!!, tagName)
-                        }
-                        else {
-                            enrollTagToCandidate(tagName)
-                        }
+            if(isLastWordBlank(s)) {
+                if(checkIsValidTag(tagName)) {
+                    if(tagEnrolledAdapter.isEditMode && tagEnrolledAdapter.editModeTag != null) {
+                        editCandidateTag(tagEnrolledAdapter.editModeTag!!, tagName)
+                    }
+                    else {
+                        enrollTagToCandidate(tagName)
                     }
                 }
             }
+
         }
 
         // 공백이 중간에 끼어있을 경우를 검사 (마지막 스페이스는 제외)
-        private fun checkIsThereAnyBlank(s: CharSequence): Boolean {
-            if((s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" ")))  {
-                Toast.makeText(requireContext(), "공백이 포함된 태그는 등록할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                binding.inputTag.text.clear()
-                return true
-            }
-            return false
-        }
+        private fun checkIsThereAnyBlank(s: CharSequence): Boolean =
+            (s.isBlank()) || ((!isLastWordBlank(s)) && s.contains(" "))
 
         private fun isLastWordBlank(s: CharSequence): Boolean =
             s[s.length - 1].toInt() == ' '.toInt()

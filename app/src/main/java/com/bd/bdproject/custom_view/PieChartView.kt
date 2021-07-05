@@ -27,7 +27,7 @@ class PieChartView: View {
     private val paintBlur = Paint().apply {
         style = Paint.Style.FILL
         isAntiAlias = true
-        maskFilter = BlurMaskFilter(20f, BlurMaskFilter.Blur.NORMAL)
+        maskFilter = BlurMaskFilter(40f, BlurMaskFilter.Blur.OUTER)
     }
 
     private val paintText = Paint().apply {
@@ -58,7 +58,7 @@ class PieChartView: View {
 
         //canvas.drawCircle(width / 2f, height / 2f, (width - 2 * pieOffset) / 2, paintWhite)
 
-        rect.set(layoutOffset, layoutOffset, rightEnd + layoutOffset, bottomEnd + layoutOffset)
+        rect.set(pieOffset, pieOffset, rightEnd, bottomEnd)
         drawCharts(canvas, true, paintBlur)
 
         rect.set(pieOffset, pieOffset, rightEnd, bottomEnd)
