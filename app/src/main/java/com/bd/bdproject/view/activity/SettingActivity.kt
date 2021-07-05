@@ -98,7 +98,7 @@ class SettingActivity : AppCompatActivity() {
                 val emailIntent = Intent(Intent.ACTION_SENDTO/*, Uri.fromParts("mailto", "", null)*/).apply {
                     type = "message/rfc822"
                     data = Uri.parse("mailto:")
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf("bitdam@gmail.com"))
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf("project.bdapps@gmail.com"))
                     putExtra(Intent.EXTRA_SUBJECT, "문의 제목")
                     putExtra(Intent.EXTRA_TEXT, "문의내용을 남겨주세요.\n(비밀번호 찾기 및 데이터 복원은 불가능합니다)")
                 }
@@ -115,6 +115,18 @@ class SettingActivity : AppCompatActivity() {
                 tvVersion.text = "현재 버전 $version"
             } catch (e: Exception) {
                 tvVersion.text = "현재 버전을 알 수 없습니다."
+            }
+
+            settingNotice.setOnClickListener {
+                val category = "1.%20%EB%B9%9B%EB%8B%B4/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://bdprojects.tistory.com/category/$category"))
+                startActivity(intent)
+            }
+
+            settingQuestion.setOnClickListener {
+                val category = "1.%20%EB%B9%9B%EB%8B%B4/%EC%9E%90%EC%A3%BC%20%EB%AC%BB%EB%8A%94%20%EC%A7%88%EB%AC%B8"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://bdprojects.tistory.com/category/$category"))
+                startActivity(intent)
             }
 
             btnBack.setOnClickListener { onBackPressed() }

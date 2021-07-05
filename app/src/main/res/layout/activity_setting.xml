@@ -232,7 +232,7 @@
                 android:background="#ebebeb" />
 
             <LinearLayout
-                android:id="@+id/setting_maker"
+                android:id="@+id/setting_notice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -244,7 +244,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
-                    android:text="만든이"
+                    android:text="공지사항"
                     android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
@@ -268,6 +268,29 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_regular"
                     android:text="앱 평가하기"
+                    android:textSize="@dimen/text_size_large" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
+
+            <LinearLayout
+                android:id="@+id/setting_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/noto_regular"
+                    android:text="자주 묻는 질문"
                     android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
@@ -324,6 +347,29 @@
                 android:background="#ebebeb" />
 
             <LinearLayout
+                android:id="@+id/setting_maker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/noto_regular"
+                    android:text="만든이"
+                    android:textSize="@dimen/text_size_large" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb" />
+
+            <LinearLayout
                 android:id="@+id/setting_version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -347,29 +393,6 @@
                     android:textColor="#b2b2b2"
                     android:textSize="@dimen/text_size_large"
                     tools:text="현재 버전 1.0.0" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ebebeb" />
-
-            <LinearLayout
-                android:id="@+id/setting_question"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/noto_regular"
-                    android:text="자주 묻는 질문"
-                    android:textSize="@dimen/text_size_large" />
 
             </LinearLayout>
 
