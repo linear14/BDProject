@@ -94,6 +94,24 @@ class SettingActivity : AppCompatActivity() {
                 requestSignIn(RETRIEVE_DATA)
             }
 
+            settingNotice.setOnClickListener {
+                val category = "1.%20%EB%B9%9B%EB%8B%B4/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://bdprojects.tistory.com/category/$category"))
+                startActivity(intent)
+            }
+
+            settingReview.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse("market://details?id=${packageName}")
+                startActivity(intent)
+            }
+
+            settingQuestion.setOnClickListener {
+                val category = "1.%20%EB%B9%9B%EB%8B%B4/%EC%9E%90%EC%A3%BC%20%EB%AC%BB%EB%8A%94%20%EC%A7%88%EB%AC%B8"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://bdprojects.tistory.com/category/$category"))
+                startActivity(intent)
+            }
+
             settingHelp.setOnClickListener {
                 val emailIntent = Intent(Intent.ACTION_SENDTO/*, Uri.fromParts("mailto", "", null)*/).apply {
                     type = "message/rfc822"
@@ -115,18 +133,6 @@ class SettingActivity : AppCompatActivity() {
                 tvVersion.text = "현재 버전 $version"
             } catch (e: Exception) {
                 tvVersion.text = "현재 버전을 알 수 없습니다."
-            }
-
-            settingNotice.setOnClickListener {
-                val category = "1.%20%EB%B9%9B%EB%8B%B4/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://bdprojects.tistory.com/category/$category"))
-                startActivity(intent)
-            }
-
-            settingQuestion.setOnClickListener {
-                val category = "1.%20%EB%B9%9B%EB%8B%B4/%EC%9E%90%EC%A3%BC%20%EB%AC%BB%EB%8A%94%20%EC%A7%88%EB%AC%B8"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://bdprojects.tistory.com/category/$category"))
-                startActivity(intent)
             }
 
             btnBack.setOnClickListener { onBackPressed() }
