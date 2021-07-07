@@ -6,7 +6,7 @@ import com.bd.bdproject.data.model.LightRGB
 
 object LightUtil {
     private val levelMap = mutableMapOf<Int, Pair<LightRGB, LightRGB>>().apply {
-        this[0] = Pair(LightRGB(0, 0, 0), LightRGB(60, 12, 30))
+        this[0] = Pair(LightRGB(0, 0, 0), LightRGB(44, 16, 25))
         this[1] = Pair(LightRGB(0, 0, 0), LightRGB(80, 24, 41))
         this[2] = Pair(LightRGB(0, 0, 0), LightRGB(105, 48, 48))
         this[3] = Pair(LightRGB(0, 0, 0), LightRGB(122, 65, 65))
@@ -41,7 +41,7 @@ object LightUtil {
             progress == null -> {
                 intArrayOf(
                     Color.rgb(0, 0, 0),
-                    Color.rgb(0, 0, 0)
+                    Color.rgb(31, 43, 59)
                 )
             }
             else -> {
@@ -69,7 +69,7 @@ object LightUtil {
             return if(isReversed) {
                 intArrayOf(
                     Color.rgb(0, 0, 0),
-                    Color.rgb(0, 0, 0)
+                    Color.rgb(31, 43, 59)
                 )
             } else {
                 val darkStart = levelMap[0]!!.first
@@ -83,9 +83,9 @@ object LightUtil {
         }
 
         return if(isReversed) {
-            getLights(levelMap[firstProgress]!!, Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), ratio)
+            getLights(levelMap[firstProgress]!!, Pair(LightRGB(0, 0, 0), LightRGB(31, 43, 59)), ratio)
         } else {
-            getLights(Pair(LightRGB(0, 0, 0), LightRGB(0, 0, 0)), levelMap[0]!!, ratio)
+            getLights(Pair(LightRGB(0, 0, 0), LightRGB(31, 43, 59)), levelMap[0]!!, ratio)
         }
     }
 
