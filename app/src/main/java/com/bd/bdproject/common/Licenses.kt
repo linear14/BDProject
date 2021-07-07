@@ -273,9 +273,21 @@ object Licenses {
         apacheLicense
     )
 
+    private val googleDriveLicense = License(
+        "Google Drive API",
+        "https://developers.google.com/drive",
+        apacheLicense
+    )
+
+    private val lottieLicense = License(
+        "Lottie",
+        "https://github.com/airbnb/lottie-android",
+        apacheLicense
+    )
+
     val items: MutableList<License> =
         mutableListOf(
             kotlinLicense, cardViewLicense, roomLicense, coroutineLicense, koinLicense, flexBoxLicense, activityLicense, fragmentLicense,
-            navigationLicense, tedKeyBoardObserverLicense, lifeCycleLicense
+            navigationLicense, tedKeyBoardObserverLicense, lifeCycleLicense, googleDriveLicense, lottieLicense
         )
 }

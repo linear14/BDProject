@@ -28,10 +28,17 @@
         <activity
             android:name=".view.activity.SettingActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.activity.LicenseActivity" />
+        <activity
+            android:name=".view.activity.LicenseActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.ManageHashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.AddOrEditHashActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".view.activity.CalendarActivity" />
-        <activity android:name=".view.activity.AddOrEditHashActivity" />
-        <activity android:name=".view.activity.ManageHashActivity" />
         <activity android:name=".view.activity.StatisticDetailActivity" />
         <activity android:name=".view.activity.StatisticActivity" />
         <activity android:name=".view.activity.BitdamEditActivity" />
