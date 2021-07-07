@@ -40,6 +40,7 @@ class SettingActivity : AppCompatActivity() {
 
     private lateinit var driveServiceHelper: DriveServiceHelper
     lateinit var binding: ActivitySettingBinding
+    private var dbSelector: DBSelector? = null
 
     private val showSnackBarForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if(result.resultCode == Activity.RESULT_OK) {
@@ -147,6 +148,11 @@ class SettingActivity : AppCompatActivity() {
         binding.apply {
             switchAnimation.isChecked = BitDamApplication.pref.isAnimationActivate
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dbSelector?.dismissAllowingStateLoss()
     }
 
     private fun setSwitchAnimation() {
@@ -260,11 +266,11 @@ class SettingActivity : AppCompatActivity() {
                     putParcelableArrayList(INFO_DB, bundleArrayList)
                 }
 
-                val selector = DBSelector { id, dialog ->
+                dbSelector = DBSelector { id, dialog ->
                     downloadFile(id, dialog)
                 }
-                selector.arguments = dbNameBundle
-                selector.show(supportFragmentManager, DBSelector.DB_SELECTOR)
+                dbSelector?.arguments = dbNameBundle
+                dbSelector?.show(supportFragmentManager, DBSelector.DB_SELECTOR)
             }
             .addOnFailureListener {
                 progressDialog.dismiss()

@@ -35,6 +35,7 @@ class ManageHashActivity : AppCompatActivity() {
 
     private val manageHashViewModel: ManageHashViewModel by inject()
     var searchJob: Job? = null
+    private var bottomSelector: BottomSelector? = null
 
     val adapter = ManageHashAdapter(
         mutableListOf(),
@@ -44,7 +45,7 @@ class ManageHashActivity : AppCompatActivity() {
             }},
         bottomSelectorClickedListener = { tag ->
             binding.actionCancel.performClick()
-            val bottomSelector = BottomSelector(tag).apply {
+            bottomSelector = BottomSelector(tag).apply {
                 setOnSelectedListener(object: OnBottomOptionSelectedListener {
                     override fun onEdit(tag: Tag) {
                         dismiss()
@@ -74,7 +75,7 @@ class ManageHashActivity : AppCompatActivity() {
 
                 })
             }
-            bottomSelector.show(supportFragmentManager, "selector")
+            bottomSelector?.show(supportFragmentManager, "selector")
         })
 
     private val showSnackBarForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -248,6 +249,11 @@ class ManageHashActivity : AppCompatActivity() {
         searchJob = GlobalScope.launch(Dispatchers.Main) {
             manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        bottomSelector?.dismissAllowingStateLoss()
     }
 
     override fun onCreateContextMenu(

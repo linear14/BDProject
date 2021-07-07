@@ -10,6 +10,7 @@ import com.bd.bdproject.common.BitDamApplication
 class PushActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityPushBinding
+    private var timePicker: SlideTimePicker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,11 @@ class PushActivity : AppCompatActivity() {
             switchPushApp.isChecked = BitDamApplication.pref.useAppPush
             switchPushDairy.isChecked = BitDamApplication.pref.useDairyPush
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        timePicker?.dismissAllowingStateLoss()
     }
 
     private fun setSwitchPush() {
@@ -68,7 +74,7 @@ class PushActivity : AppCompatActivity() {
     }
 
     private fun openTimePicker(use: Boolean) {
-        val picker = SlideTimePicker { hour, min, ap ->
+        timePicker = SlideTimePicker { hour, min, ap ->
             if(hour == -1 && min == -1 && ap == -1) {
                 binding.switchPushDairy.isChecked = false
             } else {
@@ -80,6 +86,6 @@ class PushActivity : AppCompatActivity() {
             }
         }
 
-        picker.show(supportFragmentManager, "SlideTimePicker")
+        timePicker?.show(supportFragmentManager, "SlideTimePicker")
     }
 }
