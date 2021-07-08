@@ -18,7 +18,7 @@ import kotlinx.coroutines.runBlocking
 import java.lang.StringBuilder
 
 class TagCalendarAdapter(
-    private var calendarList: MutableList<TagCalendar>,
+    var calendarList: MutableList<TagCalendar> = mutableListOf(),
     val viewModel: StatisticDetailViewModel,
     val onCalendarItemClickedListener: OnCalendarItemClickedListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -122,14 +122,14 @@ class TagCalendarAdapter(
 
         init {
             binding.root.setOnClickListener { view ->
-                when(viewModel.activatedDetailPosition.value) {
-                    null -> viewModel.activatedGridPosition.value = layoutPosition
+                when(viewModel.activatedDetailPosition) {
+                    null -> viewModel.activatedGridPosition = layoutPosition
 
                     // layoutPosition이 activatedDetailPosition보다 큰 경우
-                    in 0 until layoutPosition -> viewModel.activatedGridPosition.value = layoutPosition - 1
+                    in 0 until layoutPosition -> viewModel.activatedGridPosition = layoutPosition - 1
 
                     // layoutPosition이 activatedDetailPosition보다 작은 경우
-                    else -> viewModel.activatedGridPosition.value = layoutPosition
+                    else -> viewModel.activatedGridPosition = layoutPosition
                 }
 
                 calendarList[layoutPosition].light?.let { light ->
@@ -180,7 +180,7 @@ class TagCalendarAdapter(
         }
 
         private fun setBackgroundFilter() {
-            when(viewModel.activatedGridPosition.value) {
+            when(viewModel.activatedGridPosition) {
                 null -> binding.root.alpha = 1.0f
                 layoutPosition -> binding.root.alpha = 1.0f
                 else -> binding.root.alpha = 0.4f
@@ -194,7 +194,7 @@ class TagCalendarAdapter(
 
         init {
             binding.btnClose.setOnClickListener {
-                viewModel.activatedGridPosition.value = null
+                viewModel.activatedGridPosition = null
                 onCalendarItemClickedListener.onDetailClosed(layoutPosition)
             }
         }
@@ -202,9 +202,7 @@ class TagCalendarAdapter(
         fun onBind(dateCode: String) {
             runBlocking {
                 val deferred = viewModel.getLightWithTags(dateCode)
-                deferred.await()
-
-                val lwt = deferred.getCompleted()
+                val lwt = deferred.await()
                 binding.apply {
                     tvDate.text = makeDateText(lwt.light.dateCode)
                     tvBrightness.text = lwt.light.bright.toString()

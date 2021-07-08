@@ -12,27 +12,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.R
-import com.bd.bdproject.data.model.StatisticTagResult
-import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.common.timeToLong
 import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.common.withDateSeparator
+import com.bd.bdproject.data.model.StatisticTagResult
+import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
 import com.bd.bdproject.viewmodel.StatisticViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class StatisticActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityStatisticBinding
 
-    private val statisticViewModel: StatisticViewModel by inject()
+    private val statisticViewModel: StatisticViewModel by viewModel()
 
     private val statisticTagAdapter by lazy {
         StatisticTagAdapter { tagName ->
@@ -94,10 +91,10 @@ class StatisticActivity : AppCompatActivity() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
 
-                        GlobalScope.launch {
+                        CoroutineScope(Dispatchers.IO).launch {
                             delay(2000)
 
-                            GlobalScope.launch(Dispatchers.Main) {
+                            launch(Dispatchers.Main) {
                                 tvMyHashInfo.animateTransparency(0.0f, 500)
                                     .setListener(object: AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {

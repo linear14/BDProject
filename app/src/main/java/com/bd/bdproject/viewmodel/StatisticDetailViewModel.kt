@@ -8,10 +8,8 @@ import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.common.timeToLong
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import com.bd.bdproject.data.model.TagCalendar
+import kotlinx.coroutines.*
 
 class StatisticDetailViewModel(
     private val lightRepo: LightRepository,
@@ -21,29 +19,39 @@ class StatisticDetailViewModel(
     private val _isShowDate = MutableLiveData<Boolean>(false)
     val isShowDate: LiveData<Boolean> = _isShowDate
 
-    val activatedGridPosition = MutableLiveData<Int?>(null)
-    val activatedDetailPosition = MutableLiveData<Int?>(null)
+    var activatedGridPosition: Int? = null
+    var activatedDetailPosition: Int? = null
 
     val lights: MutableLiveData<List<Light>> = MutableLiveData()
-    val lightWithTags: MutableLiveData<LightWithTags> = MutableLiveData()
+    val calendarList: MutableLiveData<MutableList<TagCalendar>> = MutableLiveData()
 
-    fun getLightsForTag(tagName: String, startDay: Long, endDay: Long) {
-        // Log.d("DATE_CODE_TEST", "sd: ${startDay.timeToString()}_${startDay} ____ ed: ${endDay.timeToString()}_${endDay}")
-        GlobalScope.launch {
-            val result = tagRepo.selectTagWithLightsByTagName(tagName).lights
-                .sortedBy { it.dateCode.timeToLong() }
-                .filter { it.dateCode.timeToLong() in startDay..endDay }
+    var tagName: String? = null
+    var startDay: Long? = null
+    var endDay: Long? = null
 
-            /*result.forEach {
-                Log.d("DATE_CODE_TEST", "${it.dateCode}_${it.dateCode.timeToLong()}")
-            }*/
+    fun lateInitData() {
+        if(tagName == null || startDay == null || endDay == null) {
+            return
+        }
+        getLightsForTag(tagName!!, startDay!!, endDay!!)
+    }
 
-            lights.postValue(result)
+    fun isLoaded(): Boolean = !calendarList.value.isNullOrEmpty()
+
+    private fun getLightsForTag(tagName: String, startDay: Long, endDay: Long) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = async(Dispatchers.IO) {
+                tagRepo.selectTagWithLightsByTagName(tagName).lights
+                    .sortedBy { it.dateCode.timeToLong() }
+                    .filter { it.dateCode.timeToLong() in startDay..endDay }
+            }
+
+            lights.value = result.await()
         }
     }
 
     fun getLightWithTags(dateCode: String): Deferred<LightWithTags> {
-        return GlobalScope.async {
+        return CoroutineScope(Dispatchers.IO).async {
             lightRepo.selectLightsWithTagsByDateCode(dateCode)
         }
     }

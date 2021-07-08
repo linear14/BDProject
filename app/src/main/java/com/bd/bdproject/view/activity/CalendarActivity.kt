@@ -12,11 +12,12 @@ import com.bd.bdproject.view.adapter.StatisticCalendarAdapter
 import com.bd.bdproject.viewmodel.StatisticCalendarViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CalendarActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityCalendarBinding
-    private val viewModel: StatisticCalendarViewModel by inject()
+    private val viewModel: StatisticCalendarViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
