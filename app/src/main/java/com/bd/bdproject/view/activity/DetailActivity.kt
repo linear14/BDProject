@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -18,9 +17,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bd.bdproject.R
 import com.bd.bdproject.common.*
-import com.bd.bdproject.data.model.Tag
-import com.bd.bdproject.databinding.ActivityDetailBinding
-import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.common.Constant.CONTROL_TAG
@@ -32,6 +28,9 @@ import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.common.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.common.Constant.mentToday
+import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.databinding.ActivityDetailBinding
+import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
@@ -42,7 +41,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -50,8 +49,8 @@ class DetailActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityDetailBinding
 
-    private val lightViewModel: LightViewModel by inject()
-    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
+    private val lightViewModel: LightViewModel by viewModel()
+    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by viewModel()
     private var tagAdapter: TagAdapter? = null
 
     private val gradientDrawable = GradientDrawable().apply {
@@ -120,8 +119,7 @@ class DetailActivity : AppCompatActivity() {
         if(checkEnrollStateViewModel.isVisitedSetting) {
             checkEnrollStateViewModel.isVisitedSetting = false
             CoroutineScope(Dispatchers.IO).launch {
-                val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
-                val isEnrolledToday = deferred.await()
+                val isEnrolledToday = checkEnrollStateViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString()).await()
 
                 // 오늘 등록되지 않은 빛일 경우 다음 페이지로 이동
                 if (!isEnrolledToday) {

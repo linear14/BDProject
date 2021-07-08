@@ -46,9 +46,16 @@
         <activity
             android:name=".view.activity.StatisticDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.activity.CollectionMainActivity" />
+        <activity
+            android:name=".view.activity.CollectionMainActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.DetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.BitdamEnrollActivity"
+            android:theme="@style/Theme.BDProject.FullSize"/>
         <activity android:name=".view.activity.BitdamEditActivity" />
-        <activity android:name=".view.activity.DetailActivity" />
         <activity
             android:name=".view.activity.SplashActivity"
             android:screenOrientation="portrait"
@@ -59,9 +66,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.activity.BitdamEnrollActivity"
-            android:theme="@style/Theme.BDProject.FullSize"/>
 
         <receiver
             android:name=".alarm.DeviceBootReceiver"

@@ -33,12 +33,6 @@ class CalendarViewModel(private val lightRepo: LightRepository) : ViewModel() {
             calendarStart.add(Calendar.DATE, 1)
         }
 
-        /*Log.d("DATE_CODE_TEST", "*********start**********")
-        for(i in dateCodeList) {
-            Log.d("DATE_CODE_TEST", i)
-        }
-        Log.d("DATE_CODE_TEST", "*********end**********")*/
-
         return dateCodeList
     }
 

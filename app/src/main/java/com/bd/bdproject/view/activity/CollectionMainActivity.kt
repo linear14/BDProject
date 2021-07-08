@@ -14,18 +14,16 @@ import com.bd.bdproject.view.adapter.SpacesItemDecorator
 import com.bd.bdproject.viewmodel.CalendarViewModel
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class CollectionMainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityCollectionMainBinding
-    private val calendarViewModel: CalendarViewModel by inject()
-    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
+    private val calendarViewModel: CalendarViewModel by viewModel()
+    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by viewModel()
 
     private val calendarAdapter by lazy { CollectionCalendarAdapter { dateCode ->
         startActivity(Intent(this@CollectionMainActivity, DetailActivity::class.java).apply {
@@ -33,6 +31,8 @@ class CollectionMainActivity : AppCompatActivity() {
             putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, false)
         })
     } }
+
+    private var picker: SlideDatePicker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +61,11 @@ class CollectionMainActivity : AppCompatActivity() {
         setCurrentCalendar()
     }
 
+    override fun onStop() {
+        super.onStop()
+        picker?.dismissAllowingStateLoss()
+    }
+
     private fun observeLight() {
         calendarViewModel.lightLiveData.observe(this) {
             calendarAdapter.submitList(it)
@@ -85,7 +90,7 @@ class CollectionMainActivity : AppCompatActivity() {
             }
         }
 
-        val picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
+        picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
 
             val sb = StringBuilder().apply {
                 append(year)
@@ -98,28 +103,22 @@ class CollectionMainActivity : AppCompatActivity() {
             } else if(sb.toString() == System.currentTimeMillis().timeToString()) {
                 Snackbar.make(binding.root, "오늘의 빛은 홈 화면에서 등록해주세요.", Snackbar.LENGTH_SHORT).show()
             } else {
-                GlobalScope.launch {
-                    val deferred = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString())
-                    deferred.join()
-
-                    if(deferred.getCompleted()) {
-                        withContext(Dispatchers.Main) {
-                            Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
-                        }
+                CoroutineScope(Dispatchers.Main).launch {
+                    val isEnrolledToday = checkEnrollStateViewModel.isEnrolledTodayAsync(sb.toString()).await()
+                    if(isEnrolledToday) {
+                        Snackbar.make(binding.root, "이미 빛 정보가 등록되어 있는 날입니다.", Snackbar.LENGTH_SHORT).show()
                     } else {
-                        withContext(Dispatchers.Main) {
-                            val intent = Intent(this@CollectionMainActivity, BitdamEnrollActivity::class.java).apply {
-                                putExtra(Constant.INFO_PREVIOUS_ACTIVITY, Constant.COLLECTION_MAIN)
-                                putExtra("datecode", sb.toString())
-                            }
-
-                            startActivity(intent)
+                        val intent = Intent(this@CollectionMainActivity, BitdamEnrollActivity::class.java).apply {
+                            putExtra(Constant.INFO_PREVIOUS_ACTIVITY, Constant.COLLECTION_MAIN)
+                            putExtra("datecode", sb.toString())
                         }
+
+                        startActivity(intent)
                     }
                 }
             }
         }
-        picker.show(supportFragmentManager, "SlideDatePicker")
+        picker?.show(supportFragmentManager, "SlideDatePicker")
     }
 
     private fun moveToNextMonth() {
