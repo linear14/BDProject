@@ -11,19 +11,22 @@ import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivitySplashBinding
 import com.bd.bdproject.util.AlarmUtil
 import com.bd.bdproject.common.BitDamApplication
+import com.bd.bdproject.common.Constant.INFO_BRIGHTNESS
 import com.bd.bdproject.common.Constant.INFO_DATE_CODE
 import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.common.Constant.INFO_SHOULD_HAVE_DRAWER
 import com.bd.bdproject.common.Constant.SPLASH
 import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
+import com.bd.bdproject.viewmodel.common.LightViewModel
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SplashActivity : AppCompatActivity() {
 
     private var binding: ActivitySplashBinding? = null
-    private val splashViewModel: CheckEnrollStateViewModel by inject()
+    private val splashViewModel: CheckEnrollStateViewModel by viewModel()
 
     var splashJob: Job? = null
 
@@ -32,6 +35,7 @@ class SplashActivity : AppCompatActivity() {
         BitdamLog.contentLogger("SplashActivity: onCreate")
 
         super.onCreate(savedInstanceState)
+        splashViewModel
         binding = ActivitySplashBinding.inflate(layoutInflater).apply {
             setContentView(root)
 
@@ -43,30 +47,21 @@ class SplashActivity : AppCompatActivity() {
 
                     override fun onAnimationEnd(p0: Animation?) {
                         splashJob = CoroutineScope(Dispatchers.IO).launch {
-                            val deferred = splashViewModel.isEnrolledTodayAsync(System.currentTimeMillis().timeToString())
-                            val isEnrolledToday = deferred.await()
+                            val enterTime = System.currentTimeMillis()
+                            val isEnrolledToday = splashViewModel.isEnrolledTodayAsync(enterTime.timeToString()).await()
 
-                            BitDamApplication.pref.lastVisitedTime = System.currentTimeMillis()
+                            BitDamApplication.pref.lastVisitedTime = enterTime
                             if(BitDamApplication.pref.useAppPush) {
                                 AlarmUtil.setThreeDayAlarm(this@SplashActivity, use = true)
                             }
                             delay(1000)
 
-                            // 데이터 불러오기 실패했을 경우
-                            if(deferred.isCancelled) {
-                                val failedIntent = Intent().apply {
-                                    putExtra(INFO_PREVIOUS_ACTIVITY, SPLASH)
-                                }
-
-                                startActivity(failedIntent)
-                                finish()
-                            }
-
                             launch(Dispatchers.Main) {
                                 val intent: Intent = if(isEnrolledToday) {
                                     Intent(this@SplashActivity, DetailActivity::class.java).apply {
-                                        putExtra(INFO_DATE_CODE, System.currentTimeMillis().timeToString())
+                                        putExtra(INFO_DATE_CODE, enterTime.timeToString())
                                         putExtra(INFO_SHOULD_HAVE_DRAWER, true)
+                                        putExtra(INFO_BRIGHTNESS, splashViewModel.getTodayBrightness(enterTime.timeToString()).await())
                                     }
                                 } else {
                                     Intent(this@SplashActivity, BitdamEnrollActivity::class.java)

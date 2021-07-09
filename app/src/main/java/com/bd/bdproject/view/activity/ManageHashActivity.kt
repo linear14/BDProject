@@ -27,13 +27,14 @@ import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 // TODO Database 작업 완료 후 리스너 설정을 다른 방식으로 진행하는 방안 고려
 class ManageHashActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityManageHashBinding
 
-    private val manageHashViewModel: ManageHashViewModel by inject()
+    private val manageHashViewModel: ManageHashViewModel by viewModel()
     var searchJob: Job? = null
     private var bottomSelector: BottomSelector? = null
 

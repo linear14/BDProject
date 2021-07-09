@@ -17,18 +17,20 @@ import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.Exception
 
 class AddOrEditHashActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityAddOrEditHashBinding
 
-    private val manageHashViewModel: ManageHashViewModel by inject()
+    private val manageHashViewModel: ManageHashViewModel by viewModel()
 
     var type: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        manageHashViewModel
 
         binding = ActivityAddOrEditHashBinding.inflate(layoutInflater).apply {
             setContentView(root)

@@ -4,24 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.navArgs
-import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
-import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
-import com.bd.bdproject.common.Constant.CONTROL_MEMO
+import com.bd.bdproject.common.convertToBrightness
+import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.LightUtil
-import com.bd.bdproject.common.convertToBrightness
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.BaseFragment
 import com.bd.bdproject.viewmodel.EditViewModel
-import com.bd.bdproject.viewmodel.common.LightViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 class EditBrightnessFragment: BaseFragment() {
 
@@ -97,7 +91,8 @@ class EditBrightnessFragment: BaseFragment() {
             launch {
                 val light = editViewModel.light
                 if(light != null) {
-                    editViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), light.dateCode)
+                    val brightness = binding.tvBrightness.text.toString().toInt()
+                    editViewModel.editBrightness(brightness, light.dateCode)
                 }
             }.join()
 

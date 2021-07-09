@@ -19,6 +19,7 @@ import com.bd.bdproject.common.Constant.BITDAM_ENROLL
 import com.bd.bdproject.common.Constant.COLLECTION_MAIN
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.common.Constant.CONTROL_TAG
+import com.bd.bdproject.common.Constant.INFO_BRIGHTNESS
 import com.bd.bdproject.common.Constant.INFO_DATE_CODE
 import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.common.Constant.INFO_SHOULD_HAVE_DRAWER
@@ -46,15 +47,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class EnrollMemoFragment: BaseFragment() {
 
     private var _binding: FragmentControlMemoBinding? = null
     val binding get() = _binding!!
 
-    private val lightViewModel: LightViewModel by inject()
-    private val tagViewModel: TagViewModel by inject()
-    private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
+    private val lightViewModel: LightViewModel by viewModel()
+    private val tagViewModel: TagViewModel by viewModel()
+    private val lightTagRelationViewModel: LightTagRelationViewModel by viewModel()
     private val sharedViewModel: EnrollViewModel by activityViewModels()
 
     private val tagEnrolledAdapter by lazy { TagAdapter() }
@@ -120,6 +122,10 @@ open class EnrollMemoFragment: BaseFragment() {
     // region View
 
     private fun initDataAndBackground() {
+        lightViewModel
+        tagViewModel
+        lightTagRelationViewModel
+
         binding.apply {
             val brightness = sharedViewModel.brightness
             val tags = sharedViewModel.tags
@@ -250,6 +256,7 @@ open class EnrollMemoFragment: BaseFragment() {
                             putExtra(INFO_PREVIOUS_ACTIVITY, BITDAM_ENROLL)
                             putExtra(INFO_DATE_CODE, sharedViewModel.dateCode)
                             putExtra(INFO_SHOULD_HAVE_DRAWER, true)
+                            putExtra(INFO_BRIGHTNESS, sharedViewModel.brightness)
                         }
                         startActivity(intent)
                         parentActivity.finish()

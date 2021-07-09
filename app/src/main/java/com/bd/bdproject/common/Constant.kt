@@ -20,6 +20,7 @@ object Constant {
     const val INFO_DATE_CODE = "DATE_CODE"
     const val INFO_SHOULD_HAVE_DRAWER = "SHOULD_HAVE_DRAWER"
 
+    const val INFO_BRIGHTNESS="BRIGHTNESS"
     const val INFO_LIGHT = "LIGHT"
     const val INFO_TAG = "TAG"
     const val INFO_DB = "DB"

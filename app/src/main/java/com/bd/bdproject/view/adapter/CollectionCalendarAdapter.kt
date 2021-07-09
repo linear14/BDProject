@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.databinding.ItemCalendarBinding
 
-class CollectionCalendarAdapter(private val onClick: (String) -> Unit): ListAdapter<Light, CollectionCalendarAdapter.CalendarViewHolder>(
+class CollectionCalendarAdapter(private val onClick: (String, Int) -> Unit): ListAdapter<Light, CollectionCalendarAdapter.CalendarViewHolder>(
     LightDiffUtil()
 ) {
 
@@ -26,7 +26,7 @@ class CollectionCalendarAdapter(private val onClick: (String) -> Unit): ListAdap
                 light = item
                 executePendingBindings()
 
-                itemView.setOnClickListener { onClick(item.dateCode) }
+                itemView.setOnClickListener { onClick(item.dateCode, item.bright) }
             }
         }
     }

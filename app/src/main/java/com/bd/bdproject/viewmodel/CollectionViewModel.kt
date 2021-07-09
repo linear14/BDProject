@@ -10,11 +10,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-class CalendarViewModel(private val lightRepo: LightRepository) : ViewModel() {
+class CollectionViewModel(private val lightRepo: LightRepository) : ViewModel() {
 
     val lightLiveData: MutableLiveData<List<Light>> = MutableLiveData()
 
     val calendarCurrentState = GregorianCalendar()
+    var todayBrightness: Int? = null
 
     fun getDateCode(year: Int, month: Int): MutableList<String> {
 

@@ -12,4 +12,10 @@ class CheckEnrollStateViewModel(private val lightRepo: LightRepository): ViewMod
         CoroutineScope(Dispatchers.IO).async {
             lightRepo.isEnrolledToday(dateCode)
         }
+
+    fun getTodayBrightness(dateCode: String) =
+        CoroutineScope(Dispatchers.IO).async {
+            val lwt = async { lightRepo.selectLightsWithTagsByDateCode(dateCode) }.await()
+            lwt.light.bright
+        }
 }

@@ -6,22 +6,23 @@ import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.repository.LightRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class LightViewModel(private val lightRepo: LightRepository): ViewModel() {
 
     var currentDateCode: String = System.currentTimeMillis().timeToString()
 
     val lightWithTags: MutableLiveData<LightWithTags> = MutableLiveData()
+    var lightBeforeDBAccessed: MutableLiveData<Int?> = MutableLiveData(null)
 
     suspend fun insertLight(light: Light) {
         lightRepo.insertLight(light)
     }
 
     fun getLightWithTags() {
-        GlobalScope.launch {
-            lightWithTags.postValue(lightRepo.selectLightsWithTagsByDateCode(currentDateCode))
+        CoroutineScope(Dispatchers.Main).launch {
+            val lwt = async(Dispatchers.IO) { lightRepo.selectLightsWithTagsByDateCode(currentDateCode) }
+            lightWithTags.value = lwt.await()
         }
     }
 }

@@ -39,6 +39,7 @@ import com.google.android.flexbox.JustifyContent
 import gun0912.tedkeyboardobserver.TedKeyboardObserver
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class EnrollTagFragment: BaseFragment() {
 
@@ -46,7 +47,7 @@ open class EnrollTagFragment: BaseFragment() {
     val binding get() = _binding!!
 
     private val sharedViewModel: EnrollViewModel by activityViewModels()
-    private val tagViewModel: TagViewModel by inject()
+    private val tagViewModel: TagViewModel by viewModel()
 
     private val parentActivity by lazy {
         activity as BitdamEnrollActivity

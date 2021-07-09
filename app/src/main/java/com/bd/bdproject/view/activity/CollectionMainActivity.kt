@@ -1,36 +1,49 @@
 package com.bd.bdproject.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
 import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.common.Constant
+import com.bd.bdproject.common.Constant.COLLECTION_MAIN
+import com.bd.bdproject.common.Constant.INFO_BRIGHTNESS
 import com.bd.bdproject.common.Constant.INFO_DATE_CODE
 import com.bd.bdproject.common.timeToLong
 import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.view.adapter.CollectionCalendarAdapter
 import com.bd.bdproject.view.adapter.SpacesItemDecorator
-import com.bd.bdproject.viewmodel.CalendarViewModel
+import com.bd.bdproject.viewmodel.CollectionViewModel
 import com.bd.bdproject.viewmodel.CheckEnrollStateViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class CollectionMainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityCollectionMainBinding
-    private val calendarViewModel: CalendarViewModel by viewModel()
+    private val collectionViewModel: CollectionViewModel by viewModel()
     private val checkEnrollStateViewModel: CheckEnrollStateViewModel by viewModel()
 
-    private val calendarAdapter by lazy { CollectionCalendarAdapter { dateCode ->
-        startActivity(Intent(this@CollectionMainActivity, DetailActivity::class.java).apply {
+    private val calendarAdapter by lazy { CollectionCalendarAdapter { dateCode, brightness ->
+        val intent = Intent(this@CollectionMainActivity, DetailActivity::class.java).apply {
             putExtra(INFO_DATE_CODE, dateCode)
+            putExtra(INFO_BRIGHTNESS, brightness)
             putExtra(Constant.INFO_SHOULD_HAVE_DRAWER, false)
-        })
+        }
+        detailForActivityResult.launch(intent)
     } }
+
+    private val detailForActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val brightness = result.data?.getIntExtra(INFO_BRIGHTNESS, 0)
+            collectionViewModel.todayBrightness = brightness
+        }
+    }
 
     private var picker: SlideDatePicker? = null
 
@@ -67,13 +80,13 @@ class CollectionMainActivity : AppCompatActivity() {
     }
 
     private fun observeLight() {
-        calendarViewModel.lightLiveData.observe(this) {
+        collectionViewModel.lightLiveData.observe(this) {
             calendarAdapter.submitList(it)
         }
     }
     
     private fun setCurrentCalendar() {
-        calendarViewModel.apply {
+        collectionViewModel.apply {
             binding.tvCurrentYear.text = "${calendarCurrentState.get(Calendar.YEAR)}"
             binding.tvCurrentMonth.text = "${calendarCurrentState.get(Calendar.MONTH) + 1}월"
             getLightsForMonth(getDateCode(calendarCurrentState.get(Calendar.YEAR), calendarCurrentState.get(Calendar.MONTH)))
@@ -122,14 +135,23 @@ class CollectionMainActivity : AppCompatActivity() {
     }
 
     private fun moveToNextMonth() {
-        calendarViewModel.calendarCurrentState.add(Calendar.MONTH, 1)
+        collectionViewModel.calendarCurrentState.add(Calendar.MONTH, 1)
         setCurrentCalendar()
     }
 
     private fun moveToPreviousMonth() {
-        calendarViewModel.calendarCurrentState.add(Calendar.MONTH, -1)
+        collectionViewModel.calendarCurrentState.add(Calendar.MONTH, -1)
         setCurrentCalendar()
     }
-    
-                    
+
+    override fun onBackPressed() {
+        if(collectionViewModel.todayBrightness != null) {
+            val resultIntent = Intent().apply {
+                putExtra("TYPE", COLLECTION_MAIN)
+                putExtra(INFO_BRIGHTNESS, collectionViewModel.todayBrightness)
+            }
+            setResult(Activity.RESULT_OK, resultIntent)
+        }
+        super.onBackPressed()
+    }
 }

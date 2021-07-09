@@ -33,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EnrollHomeFragment: BaseFragment() {
 
@@ -40,14 +41,17 @@ class EnrollHomeFragment: BaseFragment() {
     val binding get() = _binding!!
 
     private val sharedViewModel: EnrollViewModel by activityViewModels()
-    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
+    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by viewModel()
 
     private val parentActivity by lazy {
         activity as BitdamEnrollActivity
     }
 
+    private var picker: SlideDatePicker? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentControlHomeBinding.inflate(inflater, container, false)
+        checkEnrollStateViewModel
 
         goBrightnessFragmentIfPreviousActivityIsCollectionMain()
 
@@ -96,7 +100,7 @@ class EnrollHomeFragment: BaseFragment() {
                     }
                 }
 
-                val picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
+                picker = SlideDatePicker(dateBundle) { view, year, monthOfYear, dayOfMonth ->
                     Log.d("PICKER_TEST", "${year}년 ${monthOfYear}월 ${dayOfMonth}일")
 
                     val sb = StringBuilder().apply {
@@ -125,7 +129,7 @@ class EnrollHomeFragment: BaseFragment() {
                         }
                     }
                 }
-                picker.show(requireActivity().supportFragmentManager, "SlideDatePicker")
+                picker?.show(requireActivity().supportFragmentManager, "SlideDatePicker")
             }
         }
 
@@ -140,6 +144,11 @@ class EnrollHomeFragment: BaseFragment() {
         if(sharedViewModel.previousPage == CONTROL_BRIGHTNESS) {
             sharedViewModel.init()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        picker?.dismissAllowingStateLoss()
     }
 
     private fun goBrightnessFragmentIfPreviousActivityIsCollectionMain() {

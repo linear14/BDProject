@@ -11,16 +11,19 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bd.bdproject.R
 import com.bd.bdproject.common.*
+import com.bd.bdproject.common.Constant.COLLECTION_MAIN
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.Constant.DETAIL
+import com.bd.bdproject.common.Constant.INFO_BRIGHTNESS
 import com.bd.bdproject.common.Constant.INFO_DATE_CODE
 import com.bd.bdproject.common.Constant.INFO_DESTINATION
 import com.bd.bdproject.common.Constant.INFO_LIGHT
@@ -59,58 +62,31 @@ class DetailActivity : AppCompatActivity() {
 
     var isHideDetails = false
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        lightViewModel.currentDateCode = intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString()
 
         binding = ActivityDetailBinding.inflate(layoutInflater).apply {
             setContentView(root)
 
-            btnDrawer.setOnClickListener {
-                drawer.openDrawer(GravityCompat.START)
-            }
-
-            navigationDrawer.root.setOnTouchListener { _, _ -> true }
-
-            navigationDrawer.actionMyLight.setOnClickListener {
-                startActivity(Intent(this@DetailActivity, CollectionMainActivity::class.java))
-                drawer.closeDrawer(GravityCompat.START)
-            }
-
-            navigationDrawer.actionStatistic.setOnClickListener {
-                startActivity(Intent(this@DetailActivity, StatisticActivity::class.java))
-                drawer.closeDrawer(GravityCompat.START)
-            }
-
-            navigationDrawer.actionHash.setOnClickListener {
-                startActivity(Intent(this@DetailActivity, ManageHashActivity::class.java))
-                drawer.closeDrawer(GravityCompat.START)
-            }
-
-            navigationDrawer.actionSetting.setOnClickListener {
-                checkEnrollStateViewModel.isVisitedSetting = true
-                startActivity(Intent(this@DetailActivity, SettingActivity::class.java))
-                drawer.closeDrawer(GravityCompat.START)
-            }
-
             try {
-                val pInfo: PackageInfo = applicationContext.packageManager.getPackageInfo(packageName, 0)
+                val pInfo: PackageInfo =
+                    applicationContext.packageManager.getPackageInfo(packageName, 0)
                 val version = pInfo.versionName
                 navigationDrawer.tvVersion.text = "ver. $version"
             } catch (e: Exception) {
                 navigationDrawer.tvVersion.text = ""
             }
-
-            btnBack.setOnClickListener { onBackPressed() }
-
-            btnSpreadUpDown.setOnClickListener {
-                showOrHideDetails(btnSpreadUpDown)
-            }
         }
 
+        lightViewModel.currentDateCode = intent.getStringExtra(INFO_DATE_CODE)?:System.currentTimeMillis().timeToString()
+        if(lightViewModel.lightBeforeDBAccessed.value == null) {
+            lightViewModel.lightBeforeDBAccessed.value = intent.getIntExtra(INFO_BRIGHTNESS, 0)
+        }
+        initBackground()
+        bindViews()
+
         observeLight()
+        observeBeforeDBAccess()
     }
 
     override fun onResume() {
@@ -148,6 +124,45 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun bindViews() {
+        binding.apply {
+            btnDrawer.setOnClickListener {
+                drawer.openDrawer(GravityCompat.START)
+            }
+
+            navigationDrawer.root.setOnTouchListener { _, _ -> true }
+
+            navigationDrawer.actionMyLight.setOnClickListener {
+                val intent = Intent(this@DetailActivity, CollectionMainActivity::class.java)
+                startForResult.launch(intent)
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
+            navigationDrawer.actionStatistic.setOnClickListener {
+                startActivity(Intent(this@DetailActivity, StatisticActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
+            navigationDrawer.actionHash.setOnClickListener {
+                startActivity(Intent(this@DetailActivity, ManageHashActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
+            navigationDrawer.actionSetting.setOnClickListener {
+                checkEnrollStateViewModel.isVisitedSetting = true
+                startActivity(Intent(this@DetailActivity, SettingActivity::class.java))
+                drawer.closeDrawer(GravityCompat.START)
+            }
+
+            btnBack.setOnClickListener { onBackPressed() }
+
+            btnSpreadUpDown.setOnClickListener {
+                showOrHideDetails(btnSpreadUpDown)
+            }
+        }
+    }
+
     private fun initBackground() {
         binding.apply {
             when(intent.getBooleanExtra(INFO_SHOULD_HAVE_DRAWER, true)) {
@@ -177,6 +192,15 @@ class DetailActivity : AppCompatActivity() {
         setTagRecyclerView()
     }
 
+    private fun observeBeforeDBAccess() {
+        lightViewModel.lightBeforeDBAccessed.observe(this) {
+            val brightness = it?:0
+            setColorAllViews(brightness)
+            gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
+            binding.layoutLightDetail.background = gradientDrawable
+        }
+    }
+
     private fun observeLight() {
         lightViewModel.lightWithTags.observe(this) {
             binding.apply {
@@ -193,6 +217,7 @@ class DetailActivity : AppCompatActivity() {
                 tvMemo.text = memo?:""
                 gradientDrawable.colors = LightUtil.getDiagonalLight(brightness * 2)
                 layoutLightDetail.background = gradientDrawable
+                lightViewModel.lightBeforeDBAccessed.value = brightness
 
                 when(brightness) {
                     0 -> { getMent(0) }
@@ -314,21 +339,16 @@ class DetailActivity : AppCompatActivity() {
                 when (data) {
                     CONTROL_BRIGHTNESS -> {
                         Snackbar.make(binding.root, "밝기 변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
-                            /*.apply {
-                                setAction("확인") { dismiss() }
-                            }.show()*/
+                        lightViewModel.lightBeforeDBAccessed.value = result.data?.getIntExtra(INFO_BRIGHTNESS, 0)
                     }
                     CONTROL_TAG -> {
                         Snackbar.make(binding.root, "태그 변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
-                            /*.apply {
-                                setAction("확인") { dismiss() }
-                            }.show()*/
                     }
                     CONTROL_MEMO -> {
                         Snackbar.make(binding.root, "메모 변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
-                            /*.apply {
-                                setAction("확인") { dismiss() }
-                            }.show()*/
+                    }
+                    COLLECTION_MAIN -> {
+                        lightViewModel.lightBeforeDBAccessed.value = result.data?.getIntExtra(INFO_BRIGHTNESS, 0)
                     }
                 }
             }
@@ -362,6 +382,12 @@ class DetailActivity : AppCompatActivity() {
                     drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 }
             } else {
+                if(lightViewModel.lightWithTags.value?.light?.dateCode == System.currentTimeMillis().timeToString()) {
+                    val resultIntent = Intent().apply {
+                        putExtra(INFO_BRIGHTNESS, lightViewModel.lightWithTags.value?.light?.bright)
+                    }
+                    setResult(Activity.RESULT_OK, resultIntent)
+                }
                 super.onBackPressed()
             }
         }

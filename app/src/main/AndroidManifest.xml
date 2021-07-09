@@ -57,7 +57,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".view.activity.BitdamEnrollActivity"
-            android:theme="@style/Theme.BDProject.FullSize"/>
+            android:theme="@style/Theme.BDProject.FullSize"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.activity.SplashActivity"
             android:screenOrientation="portrait"

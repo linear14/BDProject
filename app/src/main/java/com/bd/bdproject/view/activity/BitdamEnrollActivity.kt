@@ -11,6 +11,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.databinding.ActivityBitdamEnrollBinding
 import com.bd.bdproject.common.Constant
 import com.bd.bdproject.common.Constant.ACTIVITY_NOT_RECOGNIZED
+import com.bd.bdproject.common.Constant.INFO_BRIGHTNESS
 import com.bd.bdproject.common.Constant.INFO_PREVIOUS_ACTIVITY
 import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.view.fragment.BaseFragment
@@ -19,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BitdamEnrollActivity : AppCompatActivity() {
 
@@ -26,7 +28,7 @@ class BitdamEnrollActivity : AppCompatActivity() {
     val previousActivity by lazy {
         intent.getIntExtra(INFO_PREVIOUS_ACTIVITY, ACTIVITY_NOT_RECOGNIZED)
     }
-    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by inject()
+    private val checkEnrollStateViewModel: CheckEnrollStateViewModel by viewModel()
 
     private val gradientDrawable = GradientDrawable().apply {
         orientation = GradientDrawable.Orientation.TL_BR

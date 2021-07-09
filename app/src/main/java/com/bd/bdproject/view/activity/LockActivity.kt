@@ -15,6 +15,7 @@ import com.bd.bdproject.util.SharedUtil
 import com.bd.bdproject.viewmodel.PasswordViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LockActivity : AppCompatActivity() {
 
@@ -29,10 +30,11 @@ class LockActivity : AppCompatActivity() {
     }
 
     lateinit var binding: FragmentSetPasswordBinding
-    val viewModel: PasswordViewModel by inject()
+    val viewModel: PasswordViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel
 
         binding = FragmentSetPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)

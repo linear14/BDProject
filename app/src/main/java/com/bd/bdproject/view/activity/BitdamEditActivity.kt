@@ -18,6 +18,7 @@ import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.Constant.DESTINATION_NOT_RECOGNIZED
+import com.bd.bdproject.common.Constant.INFO_BRIGHTNESS
 import com.bd.bdproject.common.Constant.INFO_DESTINATION
 import com.bd.bdproject.common.Constant.INFO_LIGHT
 import com.bd.bdproject.common.Constant.INFO_TAG
@@ -79,6 +80,7 @@ class BitdamEditActivity : AppCompatActivity() {
     fun returnToDetailActivity(type: Int) {
         val resultIntent = Intent().apply {
             putExtra("TYPE", type)
+            putExtra(INFO_BRIGHTNESS, editViewModel.light?.bright)
         }
         setResult(Activity.RESULT_OK, resultIntent)
         finish()

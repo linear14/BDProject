@@ -25,7 +25,7 @@ val appModule = module {
     viewModel { TagViewModel(get()) }
     viewModel { LightTagRelationViewModel(get()) }
     viewModel { CheckEnrollStateViewModel(get()) }
-    viewModel { CalendarViewModel(get()) }
+    viewModel { CollectionViewModel(get()) }
     viewModel { StatisticViewModel(get()) }
     viewModel { StatisticDetailViewModel(get(), get()) }
     viewModel { ManageHashViewModel(get(), get()) }
