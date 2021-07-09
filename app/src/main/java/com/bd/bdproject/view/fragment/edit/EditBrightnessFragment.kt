@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.databinding.FragmentControlBrightnessBinding
 import com.bd.bdproject.common.BitDamApplication
@@ -15,6 +16,7 @@ import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.common.convertToBrightness
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.BaseFragment
+import com.bd.bdproject.viewmodel.EditViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,10 +27,7 @@ class EditBrightnessFragment: BaseFragment() {
 
     private var _binding: FragmentControlBrightnessBinding? = null
     val binding get() = _binding!!
-
-    private val lightViewModel: LightViewModel by inject()
-
-    private val args: EditBrightnessFragmentArgs by navArgs()
+    private val editViewModel: EditViewModel by activityViewModels()
 
     private val parentActivity by lazy {
         activity as BitdamEditActivity
@@ -37,7 +36,7 @@ class EditBrightnessFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentControlBrightnessBinding.inflate(inflater, container, false)
 
-        initViewAndData(args.light?.bright?:0)
+        initViewAndData(editViewModel.light?.bright?:0)
 
         binding.apply {
             actionEnroll.setOnClickListener { editBrightness() }
@@ -88,6 +87,7 @@ class EditBrightnessFragment: BaseFragment() {
                 setEntireLightFragmentColor(brightness)
                 tvBrightness.text = brightness.toString()
                 parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(progress))
+                editViewModel.light = editViewModel.light?.copy(bright = brightness)
             }
         }
     }
@@ -95,9 +95,9 @@ class EditBrightnessFragment: BaseFragment() {
     private fun editBrightness() {
         CoroutineScope(Dispatchers.IO).launch {
             launch {
-                val light = args.light
+                val light = editViewModel.light
                 if(light != null) {
-                    lightViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), light.dateCode)
+                    editViewModel.editBrightness(binding.tvBrightness.text.toString().toInt(), light.dateCode)
                 }
             }.join()
 

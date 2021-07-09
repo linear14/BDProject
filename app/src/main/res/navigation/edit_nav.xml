@@ -9,18 +9,18 @@
         android:id="@+id/editBrightnessFragment"
         android:name="com.bd.bdproject.view.fragment.edit.EditBrightnessFragment"
         tools:layout="@layout/fragment_control_brightness">
-        <argument
+        <!--<argument
             android:name="light"
             app:argType="com.bd.bdproject.data.model.Light"
             android:defaultValue="@null"
-            app:nullable="true"/>
+            app:nullable="true"/>-->
     </fragment>
 
     <fragment
         android:id="@+id/editTagFragment"
         android:name="com.bd.bdproject.view.fragment.edit.EditTagFragment"
         tools:layout="@layout/fragment_control_tag">
-        <argument
+        <!--<argument
             android:name="light"
             app:argType="com.bd.bdproject.data.model.Light"
             android:defaultValue="@null"
@@ -29,18 +29,18 @@
             android:name="tags"
             app:argType="com.bd.bdproject.data.model.Tags"
             android:defaultValue="@null"
-            app:nullable="true"/>
+            app:nullable="true"/>-->
     </fragment>
 
     <fragment
         android:id="@+id/editMemoFragment"
         android:name="com.bd.bdproject.view.fragment.edit.EditMemoFragment"
         tools:layout="@layout/fragment_control_memo">
-        <argument
+        <!--<argument
             android:name="light"
             app:argType="com.bd.bdproject.data.model.Light"
             android:defaultValue="@null"
-            app:nullable="true"/>
+            app:nullable="true"/>-->
     </fragment>
 
     <action

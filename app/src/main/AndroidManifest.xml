@@ -45,7 +45,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".view.activity.StatisticDetailActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.activity.CollectionMainActivity"
             android:screenOrientation="portrait"/>
@@ -53,9 +53,11 @@
             android:name=".view.activity.DetailActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".view.activity.BitdamEditActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".view.activity.BitdamEnrollActivity"
             android:theme="@style/Theme.BDProject.FullSize"/>
-        <activity android:name=".view.activity.BitdamEditActivity" />
         <activity
             android:name=".view.activity.SplashActivity"
             android:screenOrientation="portrait"

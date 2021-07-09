@@ -106,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="0/80자"
+            android:text="0/50자"
             android:textColor="#848484"
             android:textSize="@dimen/text_size_small"
             app:layout_constraintEnd_toEndOf="parent"

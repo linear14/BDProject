@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.bd.bdproject.R
@@ -17,6 +18,7 @@ import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
 import com.bd.bdproject.common.Constant.CONTROL_TAG
 import com.bd.bdproject.common.animateTransparency
 import com.bd.bdproject.data.model.Tag
+import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.databinding.FragmentControlTagBinding
 import com.bd.bdproject.util.ColorUtil
 import com.bd.bdproject.util.KeyboardUtil
@@ -24,6 +26,7 @@ import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.adapter.TagAdapter
 import com.bd.bdproject.view.fragment.BaseFragment
+import com.bd.bdproject.viewmodel.EditViewModel
 import com.bd.bdproject.viewmodel.common.LightTagRelationViewModel
 import com.bd.bdproject.viewmodel.common.TagViewModel
 import com.google.android.flexbox.FlexDirection
@@ -31,16 +34,16 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class EditTagFragment: BaseFragment() {
 
     private var _binding: FragmentControlTagBinding? = null
     val binding get() = _binding!!
 
-    private val tagViewModel: TagViewModel by inject()
-    private val lightTagRelationViewModel: LightTagRelationViewModel by inject()
-
-    private val args: EditTagFragmentArgs by navArgs()
+    private val tagViewModel: TagViewModel by viewModel()
+    private val lightTagRelationViewModel: LightTagRelationViewModel by viewModel()
+    private val editViewModel: EditViewModel by activityViewModels()
 
     private val parentActivity by lazy {
         activity as BitdamEditActivity
@@ -91,12 +94,15 @@ open class EditTagFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentControlTagBinding.inflate(inflater, container, false)
 
-        initViewAndData(args.light?.bright?:0, args.tags?: mutableListOf())
+        // 뷰모델이 메인 쓰레드에서 먼저 생성되어야 하기 때문에 한 번 호출함(지연 초기화로 인해 다른 쓰레드에서 생기니깐 ViewModel 내에서 Observer 추가하는데 문제 생김)
+        // https://stackoverflow.com/questions/66923170/android-java-lang-illegalstateexception-method-addobserver-must-be-called-on
+        lightTagRelationViewModel
+        initView(editViewModel.light?.bright?:0)
 
         binding.apply {
             inputTag.addTextChangedListener(InputTagWatcher())
             ivTagRecommendInfo.setOnClickListener {
-                animateTagRecommendInfo(args.light?.bright?:0)
+                animateTagRecommendInfo(editViewModel.light?.bright?:0)
             }
             actionEnroll.setOnClickListener {
                 KeyboardUtil.keyBoardHide(binding.inputTag)
@@ -114,6 +120,7 @@ open class EditTagFragment: BaseFragment() {
     override fun onResume() {
         super.onResume()
         isKeyboardShowing = false
+        initData(editViewModel.tags?: mutableListOf())
     }
 
     override fun onDestroyView() {
@@ -121,11 +128,9 @@ open class EditTagFragment: BaseFragment() {
         _binding = null
     }
 
-    private fun initViewAndData(brightness: Int, tags: List<Tag>) {
+    private fun initView(brightness: Int) {
         setEntireTagFragmentColor(brightness)
         parentActivity.updateBackgroundColor(LightUtil.getDiagonalLight(brightness * 2))
-        tagViewModel.candidateTags.value = tags.toMutableList()
-
         binding.apply {
             tvBrightness.text = brightness.toString()
             actionNext.visibility = View.GONE
@@ -136,6 +141,10 @@ open class EditTagFragment: BaseFragment() {
         }
 
         setTagRecyclerView()
+    }
+
+    private fun initData(tags: List<Tag>) {
+        tagViewModel.candidateTags.value = tags.toMutableList()
     }
 
     private fun setTagRecyclerView() {
@@ -161,6 +170,12 @@ open class EditTagFragment: BaseFragment() {
 
     private fun observeTagEnrolled() {
         tagViewModel.candidateTags.observe(viewLifecycleOwner) { enrolled ->
+            val tags = Tags()
+            for(i in enrolled?: mutableListOf()) {
+                tags.add(i)
+            }
+            editViewModel.tags = tags
+
             tagEnrolledAdapter.apply {
                 if(isEditMode) {
                     binding.rvTagEnrolled.itemAnimator = null
@@ -169,8 +184,7 @@ open class EditTagFragment: BaseFragment() {
                 } else {
                     binding.rvTagEnrolled.itemAnimator = DefaultItemAnimator()
                 }
-
-                val brightness = args.light?.bright ?: 0
+                val brightness = editViewModel.light?.bright ?: 0
                 submitList(enrolled.toMutableList(), brightness)
             }
         }
@@ -178,7 +192,7 @@ open class EditTagFragment: BaseFragment() {
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(viewLifecycleOwner) { searchedResult ->
-            val brightness = args.light?.bright ?: 0
+            val brightness = editViewModel.light?.bright ?: 0
 
             tagRecommendAdapter.submitList(
                 searchedResult.map{ Tag(it.name) }.toMutableList(),
@@ -288,7 +302,7 @@ open class EditTagFragment: BaseFragment() {
 
     private fun updateTag() {
         CoroutineScope(Dispatchers.IO).launch {
-            val light = args.light
+            val light = editViewModel.light
             val tags = tagViewModel.candidateTags.value?: mutableListOf()
 
             if(light != null) {
@@ -297,7 +311,7 @@ open class EditTagFragment: BaseFragment() {
 
                 joinAll(updateTagJob, updateRelationJob)
 
-                CoroutineScope(Dispatchers.Main).launch {
+                launch(Dispatchers.Main) {
                     parentActivity.returnToDetailActivity(CONTROL_TAG)
                 }
             }

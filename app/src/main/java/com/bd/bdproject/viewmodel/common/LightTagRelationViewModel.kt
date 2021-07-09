@@ -23,8 +23,7 @@ class LightTagRelationViewModel(private val lightTagRelationRepository: LightTag
 
     fun updateRelationsAll(dateCode: String, tagList: List<Tag>?) {
         CoroutineScope(Dispatchers.IO).launch {
-            val job = launch { lightTagRelationRepository.deleteRelationsAll(dateCode) }
-            job.join()
+            launch { lightTagRelationRepository.deleteRelationsAll(dateCode) }.join()
             insertRelation(dateCode, tagList)
         }
     }

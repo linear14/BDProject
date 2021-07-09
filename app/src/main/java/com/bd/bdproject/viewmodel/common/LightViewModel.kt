@@ -24,14 +24,4 @@ class LightViewModel(private val lightRepo: LightRepository): ViewModel() {
             lightWithTags.postValue(lightRepo.selectLightsWithTagsByDateCode(currentDateCode))
         }
     }
-
-    fun editBrightness(brightness: Int, dateCode: String) {
-        lightRepo.updateBrightness(brightness, dateCode)
-    }
-
-    fun editMemo(memo: String?, dateCode: String) {
-        GlobalScope.launch {
-            lightRepo.updateMemo(memo, dateCode)
-        }
-    }
 }

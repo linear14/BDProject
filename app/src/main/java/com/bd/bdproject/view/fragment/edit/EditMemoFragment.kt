@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant
@@ -17,6 +18,7 @@ import com.bd.bdproject.util.KeyboardUtil
 import com.bd.bdproject.util.LightUtil
 import com.bd.bdproject.view.activity.BitdamEditActivity
 import com.bd.bdproject.view.fragment.BaseFragment
+import com.bd.bdproject.viewmodel.EditViewModel
 import com.bd.bdproject.viewmodel.common.LightViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
@@ -26,10 +28,7 @@ open class EditMemoFragment: BaseFragment() {
 
     private var _binding: FragmentControlMemoBinding? = null
     val binding get() = _binding!!
-
-    private val lightViewModel: LightViewModel by inject()
-
-    private val args: EditMemoFragmentArgs by navArgs()
+    private val editViewModel: EditViewModel by activityViewModels()
 
     private val parentActivity by lazy {
         activity as BitdamEditActivity
@@ -40,7 +39,7 @@ open class EditMemoFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentControlMemoBinding.inflate(inflater, container, false)
 
-        initViewAndData(args.light?.bright?:0, args.light?.memo)
+        initViewAndData(editViewModel.light?.bright?:0, editViewModel.light?.memo)
 
         binding.apply {
             inputMemo.addTextChangedListener(InputMemoWatcher())
@@ -67,6 +66,7 @@ open class EditMemoFragment: BaseFragment() {
 
             if(memo != null && memo.isNotEmpty()) {
                 inputMemo.setText(memo)
+                tvTextCount.text = "${memo.length}/${Constant.MAX_MEMO_LENGTH}자"
             }
 
             tvBrightness.visibility = View.GONE
@@ -91,9 +91,9 @@ open class EditMemoFragment: BaseFragment() {
     private fun editMemo() {
         CoroutineScope(Dispatchers.IO).launch {
             launch {
-                val light = args.light
+                val light = editViewModel.light
                 if(light != null) {
-                    lightViewModel.editMemo(binding.inputMemo.text.toString(), light.dateCode)
+                    editViewModel.editMemo(binding.inputMemo.text.toString(), light.dateCode)
                 }
             }.join()
 
@@ -121,6 +121,7 @@ open class EditMemoFragment: BaseFragment() {
                 } else {
                     tvTextCount.text = "${s?.length?:0}/${Constant.MAX_MEMO_LENGTH}자"
                 }
+                editViewModel.light = editViewModel.light?.copy(memo = inputMemo.text.toString())
             }
         }
 
