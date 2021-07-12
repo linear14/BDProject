@@ -9,4 +9,12 @@
 
     <string name="spinner_edit">수정하기</string>
     <string name="spinner_delete">삭제하기</string>
+
+    <!-- Helper Message -->
+    <string name="helper_enroll_home">버튼을 눌러 빛을 기록해보세요</string>
+    <string name="helper_enroll_tag">빛의 설명을 해시태그로 담아보세요!\n"띄어쓰기"를 하면 등록됩니다\n(최대 4개까지 등록 가능해요)</string>
+    <string name="helper_enroll_memo">오늘의 빛을 설명해 줄\n메모를 입력해보세요!</string>
+    <string name="helper_collection">모아보기에서 지금까지\n나의 빛을 확인할 수 있어요</string>
+    <string name="helper_statistic">통계에서는 설정된 기간동안 나의 빛에\n대한 통계와 나의 해시태그에 대한 통계를\n알 수 있어요</string>
+    <string name="helper_manage_hash">해시태그 관리에서는 그동안 등록한\n해시태그들을 수정, 삭제, 합치기 등\n관리할 수 있어요</string>
 </resources>

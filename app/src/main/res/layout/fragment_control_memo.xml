@@ -114,5 +114,16 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.bd.bdproject.custom_view.ToolTip
+        android:id="@+id/tooltip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:direction="up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_memo"
+        app:text="@string/helper_enroll_memo"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

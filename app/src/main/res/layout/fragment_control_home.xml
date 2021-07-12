@@ -48,6 +48,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.bd.bdproject.custom_view.FakeThumb
+        android:id="@+id/thumb_fake"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/sb_light"
+        android:visibility="invisible"/>
+
     <com.bd.bdproject.custom_view.BitdamSeekBar
         android:id="@+id/sb_light"
         android:layout_width="match_parent"
@@ -56,6 +65,18 @@
         tools:alpha="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.bd.bdproject.custom_view.ToolTip
+        android:id="@+id/tooltip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:direction="down"
+        app:layout_constraintBottom_toTopOf="@id/thumb_fake"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:text="@string/helper_enroll_home"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_date_pick"

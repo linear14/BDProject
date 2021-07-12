@@ -2,6 +2,7 @@ package com.bd.bdproject.view.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -10,13 +11,11 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.bd.bdproject.BitdamLog
 import com.bd.bdproject.R
+import com.bd.bdproject.common.*
 import com.bd.bdproject.common.Constant.INFO_TAG
-import com.bd.bdproject.common.animateTransparency
-import com.bd.bdproject.common.timeToLong
-import com.bd.bdproject.common.timeToString
-import com.bd.bdproject.common.withDateSeparator
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.databinding.ActivityStatisticBinding
 import com.bd.bdproject.view.adapter.StatisticTagAdapter
@@ -77,6 +76,7 @@ class StatisticActivity : AppCompatActivity() {
 
         observeDate()
         observeLightForDuration()
+        showHelper()
 
         binding.apply {
             ivMyHashInfo.setOnClickListener {
@@ -136,6 +136,16 @@ class StatisticActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showHelper() {
+        if(BitDamApplication.pref.firstInStatistic) {
+            binding.helper.tvHelper.setText(R.string.helper_statistic)
+            binding.helper.root.setOnTouchListener() { _, _ -> true }
+            binding.helper.root.visibility = View.VISIBLE
+            BitDamApplication.pref.firstInStatistic = false
+        }
+    }
+
     private fun observeDate() {
         statisticViewModel.duration.observe(this) {
             val startDay = it.first.timeToString()
@@ -166,6 +176,14 @@ class StatisticActivity : AppCompatActivity() {
 
             statisticTagAdapter.submitList(tagStatistic)
         }
+    }
+
+    override fun onBackPressed() {
+        if(binding.helper.root.isVisible) {
+            binding.helper.root.visibility = View.GONE
+            return
+        }
+        super.onBackPressed()
     }
 
 }

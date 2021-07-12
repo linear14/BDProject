@@ -9,16 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
+import com.bd.bdproject.common.*
 import com.bd.bdproject.common.Constant.COLLECTION_MAIN
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_HOME
-import com.bd.bdproject.common.animateTransparency
-import com.bd.bdproject.common.screenTransitionAnimationMilliSecond
-import com.bd.bdproject.common.timeToLong
-import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.databinding.FragmentControlHomeBinding
 import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.util.LightUtil
@@ -144,6 +142,9 @@ class EnrollHomeFragment: BaseFragment() {
         if(sharedViewModel.previousPage == CONTROL_BRIGHTNESS) {
             sharedViewModel.init()
         }
+        if(BitDamApplication.pref.firstInEnrollHome) {
+            binding.actionDatePick.visibility = View.GONE
+        }
     }
 
     override fun onStop() {
@@ -192,6 +193,10 @@ class EnrollHomeFragment: BaseFragment() {
                                         sharedViewModel.isFragmentTransitionState = false
                                     }
                                 })
+                            if(BitDamApplication.pref.firstInEnrollHome) {
+                                tooltip.show()
+                                BitDamApplication.pref.firstInEnrollHome = false
+                            }
                         }
                     })
             }
@@ -261,6 +266,9 @@ class EnrollHomeFragment: BaseFragment() {
                         sharedViewModel.isFragmentTransitionState = false
                     }
                 })
+            if(tooltip.isVisible) {
+                tooltip.hide()
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
@@ -17,6 +18,7 @@ import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnBackPressedInFragment
 import com.bd.bdproject.`interface`.OnTagClickListener
 import com.bd.bdproject.`interface`.OnTagDeleteButtonClickListener
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant.CONTROL_BRIGHTNESS
 import com.bd.bdproject.common.Constant.CONTROL_MEMO
 import com.bd.bdproject.common.Constant.CONTROL_TAG
@@ -131,6 +133,11 @@ open class EnrollTagFragment: BaseFragment() {
 
         binding.apply {
             inputTag.addTextChangedListener(InputTagWatcher())
+            inputTag.setOnFocusChangeListener { _, hasFocus ->
+                if(hasFocus && tooltip.isVisible) {
+                    tooltip.hide()
+                }
+            }
 
             ivClearText.setOnClickListener {
                 inputTag.setText(null)
@@ -232,6 +239,7 @@ open class EnrollTagFragment: BaseFragment() {
                 separator1,
                 tvTagRecommend,
                 ivTagRecommendInfo,
+                tooltip.binding.tvTooltip,
                 btnBack
             )
         }
@@ -290,6 +298,8 @@ open class EnrollTagFragment: BaseFragment() {
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(viewLifecycleOwner) { searchedResult ->
+            binding.layoutTagRecommend.isVisible = searchedResult.isNotEmpty()
+
             val brightness = sharedViewModel.brightness
 
             tagRecommendAdapter.submitList(
@@ -325,6 +335,10 @@ open class EnrollTagFragment: BaseFragment() {
                         sharedViewModel.isFragmentTransitionState = false
                     }
                 })
+            if(BitDamApplication.pref.firstInEnrollTag) {
+                tooltip.show()
+                BitDamApplication.pref.firstInEnrollTag = false
+            }
         }
     }
 
@@ -399,6 +413,9 @@ open class EnrollTagFragment: BaseFragment() {
                         goBackToFragmentEnrollBrightness()
                     }
                 })
+            if(tooltip.isVisible) {
+                tooltip.hide()
+            }
         }
     }
 

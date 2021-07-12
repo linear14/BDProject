@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -192,6 +193,8 @@ open class EditTagFragment: BaseFragment() {
 
     private fun observeTagSearched() {
         tagViewModel.searchedTagNames.observe(viewLifecycleOwner) { searchedResult ->
+            binding.layoutTagRecommend.isVisible = searchedResult.isNotEmpty()
+
             val brightness = editViewModel.light?.bright ?: 0
 
             tagRecommendAdapter.submitList(

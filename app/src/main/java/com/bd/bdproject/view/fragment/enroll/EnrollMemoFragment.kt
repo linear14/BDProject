@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
@@ -90,6 +91,11 @@ open class EnrollMemoFragment: BaseFragment() {
 
         binding.apply {
             inputMemo.addTextChangedListener(InputMemoWatcher())
+            inputMemo.setOnFocusChangeListener { _, hasFocus ->
+                if(hasFocus && tooltip.isVisible) {
+                    tooltip.hide()
+                }
+            }
             btnBack.setOnClickListener {
                 KeyboardUtil.keyBoardHide(binding.inputMemo)
                 isKeyboardShowing = false
@@ -160,6 +166,7 @@ open class EnrollMemoFragment: BaseFragment() {
                 actionEnroll,
                 inputMemo,
                 tvTextCount,
+                tooltip.binding.tvTooltip,
                 btnBack
             )
         }
@@ -185,7 +192,10 @@ open class EnrollMemoFragment: BaseFragment() {
                     sharedViewModel.isFragmentTransitionState = false
                 }
             })
-
+        if(BitDamApplication.pref.firstInEnrollMemo) {
+            binding.tooltip.show()
+            BitDamApplication.pref.firstInEnrollMemo = false
+        }
     }
 
     private fun showUiWithoutAnimation() {
@@ -206,6 +216,9 @@ open class EnrollMemoFragment: BaseFragment() {
                         goBackToFragmentEnrollTag()
                     }
                 })
+            if(tooltip.isVisible) {
+                tooltip.hide()
+            }
         }
     }
 

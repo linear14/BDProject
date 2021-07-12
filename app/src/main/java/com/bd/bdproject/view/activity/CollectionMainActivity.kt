@@ -1,11 +1,16 @@
 package com.bd.bdproject.view.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.bd.bdproject.R
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.databinding.ActivityCollectionMainBinding
 import com.bd.bdproject.dialog.SlideDatePicker
 import com.bd.bdproject.common.Constant
@@ -65,6 +70,7 @@ class CollectionMainActivity : AppCompatActivity() {
             btnBack.setOnClickListener { onBackPressed() }
         }
 
+        showHelper()
         observeLight()
     }
 
@@ -144,7 +150,21 @@ class CollectionMainActivity : AppCompatActivity() {
         setCurrentCalendar()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showHelper() {
+        if(BitDamApplication.pref.firstInCollection) {
+            binding.helper.tvHelper.setText(R.string.helper_collection)
+            binding.helper.root.setOnTouchListener() { _, _ -> true }
+            binding.helper.root.visibility = View.VISIBLE
+            BitDamApplication.pref.firstInCollection = false
+        }
+    }
+
     override fun onBackPressed() {
+        if(binding.helper.root.isVisible) {
+            binding.helper.root.visibility = View.GONE
+            return
+        }
         if(collectionViewModel.todayBrightness != null) {
             val resultIntent = Intent().apply {
                 putExtra("TYPE", COLLECTION_MAIN)

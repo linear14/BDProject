@@ -264,4 +264,9 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/helper"
+        android:visibility="gone"
+        layout="@layout/layout_helper"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

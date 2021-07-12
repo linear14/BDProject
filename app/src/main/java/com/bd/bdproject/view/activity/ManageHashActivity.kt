@@ -1,5 +1,6 @@
 package com.bd.bdproject.view.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -14,8 +15,11 @@ import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.bd.bdproject.R
 import com.bd.bdproject.`interface`.OnAsyncWorkFinished
 import com.bd.bdproject.`interface`.OnBottomOptionSelectedListener
+import com.bd.bdproject.common.BitDamApplication
 import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.common.dpToPx
 import com.bd.bdproject.data.model.Tag
@@ -145,6 +149,7 @@ class ManageHashActivity : AppCompatActivity() {
 
         observeTag()
         observeCheckedState()
+        showHelper()
 
         binding.apply {
             actionCancel.setOnClickListener {
@@ -270,6 +275,16 @@ class ManageHashActivity : AppCompatActivity() {
         filterDesc?.setOnMenuItemClickListener(filterItems)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showHelper() {
+        if(BitDamApplication.pref.firstInManageHash) {
+            binding.helper.tvHelper.setText(R.string.helper_manage_hash)
+            binding.helper.root.setOnTouchListener() { _, _ -> true }
+            binding.helper.root.visibility = View.VISIBLE
+            BitDamApplication.pref.firstInManageHash = false
+        }
+    }
+
     private fun observeTag() {
         manageHashViewModel.tags.observe(this) { result ->
             binding.tvTotalCount.text = "총 ${result.size}개"
@@ -318,6 +333,14 @@ class ManageHashActivity : AppCompatActivity() {
             }
             return true
         }
+    }
+
+    override fun onBackPressed() {
+        if(binding.helper.root.isVisible) {
+            binding.helper.root.visibility = View.GONE
+            return
+        }
+        super.onBackPressed()
     }
 
     companion object {

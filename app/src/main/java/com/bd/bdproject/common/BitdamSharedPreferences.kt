@@ -41,4 +41,32 @@ class BitdamSharedPreferences(context: Context) {
     var useAppPush: Boolean
         get() = pref.getBoolean("USE_APP_PUSH", true)
         set(value) = pref.edit().putBoolean("USE_APP_PUSH", value).apply()
+
+
+    // Helper
+    var firstInEnrollHome: Boolean
+        get() = pref.getBoolean("FIRST_IN_ENROLL_HOME", true)
+        set(value) = pref.edit().putBoolean("FIRST_IN_ENROLL_HOME", value).apply()
+
+    var firstInEnrollTag: Boolean
+        get() = pref.getBoolean("FIRST_IN_ENROLL_TAG", true)
+        set(value) = pref.edit().putBoolean("FIRST_IN_ENROLL_TAG", value).apply()
+
+    var firstInEnrollMemo: Boolean
+        get() = pref.getBoolean("FIRST_IN_ENROLL_MEMO", true)
+        set(value) = pref.edit().putBoolean("FIRST_IN_ENROLL_MEMO", value).apply()
+
+
+
+    var firstInCollection: Boolean
+        get() = pref.getBoolean("FIRST_IN_COLLECTION", true)
+        set(value) = pref.edit().putBoolean("FIRST_IN_COLLECTION", value).apply()
+
+    var firstInStatistic: Boolean
+        get() = pref.getBoolean("FIRST_IN_STATISTIC", true)
+        set(value) = pref.edit().putBoolean("FIRST_IN_STATISTIC", value).apply()
+
+    var firstInManageHash: Boolean
+        get() = pref.getBoolean("FIRST_IN_MANAGE_HASH", true)
+        set(value) = pref.edit().putBoolean("FIRST_IN_MANAGE_HASH", value).apply()
 }
