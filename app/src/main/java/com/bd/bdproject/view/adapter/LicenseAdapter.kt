@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bd.bdproject.R
 import com.bd.bdproject.data.model.License
 import com.bd.bdproject.databinding.ItemLicenseBinding
-import com.bd.bdproject.common.Licenses
+import com.bd.bdproject.data.raw.Licenses
 import com.bd.bdproject.common.dpToPx
 
 class LicenseAdapter: RecyclerView.Adapter<LicenseAdapter.LicenseViewHolder>() {

@@ -17,48 +17,51 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BDProject">
         <activity
+            android:name=".view.activity.HowToUseActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.PushActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.LockActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.SetPasswordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.SettingActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.LicenseActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.ManageHashActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.AddOrEditHashActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.StatisticActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.CalendarActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.StatisticDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.CollectionMainActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.DetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.BitdamEditActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.BitdamEnrollActivity"
-            android:theme="@style/Theme.BDProject.FullSize"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BDProject.FullSize" />
         <activity
             android:name=".view.activity.SplashActivity"
             android:screenOrientation="portrait"

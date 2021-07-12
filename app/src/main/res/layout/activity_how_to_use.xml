@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activity.HowToUseActivity"
+    android:fitsSystemWindows="true">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_how_to_use"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        tools:layout="@layout/item_how_to_use" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/noto_regular"
+        android:gravity="center"
+        android:letterSpacing="-0.03"
+        android:textSize="@dimen/text_size_larger"
+        app:layout_constraintBottom_toTopOf="@id/indicator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="오늘의 기분을 빛으로 표현해보세요" />
+
+    <com.bd.bdproject.custom_view.Indicator
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:padding="@dimen/padding_for_image_button"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <include
+        layout="@layout/item_how_to_use"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

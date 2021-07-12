@@ -87,6 +87,10 @@ class SettingActivity : AppCompatActivity() {
                 showSnackBarForResult.launch(intent)
             }
 
+            settingHowToUse.setOnClickListener {
+                startActivity(Intent(it.context, HowToUseActivity::class.java))
+            }
+
             settingSendDataToDrive.setOnClickListener {
                 requestSignIn(SEND_DATA)
             }
