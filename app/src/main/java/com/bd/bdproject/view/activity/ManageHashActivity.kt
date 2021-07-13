@@ -24,13 +24,13 @@ import com.bd.bdproject.common.Constant.INFO_TAG
 import com.bd.bdproject.common.dpToPx
 import com.bd.bdproject.data.model.Tag
 import com.bd.bdproject.databinding.ActivityManageHashBinding
+import com.bd.bdproject.dialog.BitdamDialog
 import com.bd.bdproject.dialog.BottomSelector
 import com.bd.bdproject.dialog.TagCombiner
 import com.bd.bdproject.view.adapter.ManageHashAdapter
 import com.bd.bdproject.viewmodel.ManageHashViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 // TODO Database 작업 완료 후 리스너 설정을 다른 방식으로 진행하는 방안 고려
@@ -41,6 +41,7 @@ class ManageHashActivity : AppCompatActivity() {
     private val manageHashViewModel: ManageHashViewModel by viewModel()
     var searchJob: Job? = null
     private var bottomSelector: BottomSelector? = null
+    private var deleteDialog: BitdamDialog? = null
 
     val adapter = ManageHashAdapter(
         mutableListOf(),
@@ -75,7 +76,11 @@ class ManageHashActivity : AppCompatActivity() {
                             }
 
                         })
-                        manageHashViewModel.deleteTags(listOf(tag))
+
+                        deleteDialog = BitdamDialog("정말 [${tag.name}]태그를 삭제하실 건가요?") {
+                            manageHashViewModel.deleteTags(listOf(tag))
+                        }
+                        deleteDialog?.show(supportFragmentManager, "delete_one_tag")
                     }
 
                 })
@@ -190,8 +195,11 @@ class ManageHashActivity : AppCompatActivity() {
 
                 })
                 manageHashViewModel.checkedTags.value?.let {
-                    manageHashViewModel.deleteTags(it.toList().map { it.tag })
-                    manageHashViewModel.removeAllCheckedTags()
+                    deleteDialog = BitdamDialog("정말 ${it.size}개의 해시태그를 삭제하실 건가요?") {
+                        manageHashViewModel.deleteTags(it.toList().map { it.tag })
+                        manageHashViewModel.removeAllCheckedTags()
+                    }
+                    deleteDialog?.show(supportFragmentManager, "delete_hash")
                 }
             }
 
@@ -260,6 +268,7 @@ class ManageHashActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         bottomSelector?.dismissAllowingStateLoss()
+        deleteDialog?.dismissAllowingStateLoss()
     }
 
     override fun onCreateContextMenu(

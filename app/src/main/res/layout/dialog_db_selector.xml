@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_round"
-    android:paddingTop="20dp">
+    android:paddingTop="12dp">
 
     <ImageView
         android:id="@+id/btn_close"
@@ -44,7 +44,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:background="@drawable/deco_confirm_button_bottom_unchecked"
         android:text="선택 완료"
         android:textColor="@color/white"

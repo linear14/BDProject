@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_round"
+    android:paddingTop="12dp">
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="@dimen/image_button_size_large"
+        android:layout_height="@dimen/image_button_size_large"
+        android:layout_marginEnd="20dp"
+        android:padding="@dimen/padding_for_image_button"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingHorizontal="20dp"
+        android:textSize="@dimen/text_size_large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_close"
+        tools:text="테스트 메세지입니다.\n여기에 메세지가 들어감" />
+
+    <View
+        android:id="@+id/separator_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="28dp"
+        android:background="#F0F0F0"
+        app:layout_constraintTop_toBottomOf="@id/tv_description" />
+
+    <TextView
+        android:id="@+id/btn_yes"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="네"
+        app:layout_constraintEnd_toStartOf="@id/separator_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator_horizontal" />
+
+    <View
+        android:id="@+id/separator_vertical"
+        android:layout_width="1dp"
+        android:layout_height="56dp"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="@id/btn_yes"
+        app:layout_constraintEnd_toStartOf="@id/btn_no"
+        app:layout_constraintStart_toEndOf="@id/btn_yes"
+        app:layout_constraintTop_toTopOf="@id/btn_yes" />
+
+    <TextView
+        android:id="@+id/btn_no"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="아니요"
+        app:layout_constraintBottom_toBottomOf="@id/btn_yes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/separator_vertical"
+        app:layout_constraintTop_toTopOf="@id/btn_yes" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
