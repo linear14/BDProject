@@ -2,11 +2,13 @@ package com.bd.bdproject.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bd.bdproject.data.model.Light
-import com.bd.bdproject.data.repository.LightRepository
 import com.bd.bdproject.common.timeToLong
 import com.bd.bdproject.common.timeToString
-import kotlinx.coroutines.GlobalScope
+import com.bd.bdproject.data.model.Light
+import com.bd.bdproject.data.repository.LightRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -38,11 +40,12 @@ class CollectionViewModel(private val lightRepo: LightRepository) : ViewModel() 
     }
 
     fun getLightsForMonth(dateCodes: MutableList<String>) {
-        GlobalScope.launch {
-            val list = lightRepo.selectLightForSpecificDays(dateCodes)
-            .sortedBy { it.dateCode.timeToLong() }
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = async(Dispatchers.IO) {
+                lightRepo.selectLightForSpecificDays(dateCodes)
+            }.await().sortedBy { it.dateCode.timeToLong() }
 
-            lightLiveData.postValue(list)
+            lightLiveData.value = result
         }
     }
 }

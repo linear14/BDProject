@@ -3,11 +3,13 @@ package com.bd.bdproject.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bd.bdproject.BitdamLog
+import com.bd.bdproject.common.timeToString
 import com.bd.bdproject.data.model.LightWithTags
 import com.bd.bdproject.data.model.StatisticTagResult
 import com.bd.bdproject.data.repository.LightRepository
-import com.bd.bdproject.common.timeToString
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,9 +68,9 @@ class StatisticViewModel(val lightRepo: LightRepository): ViewModel() {
     }
 
     fun getLightWithTagsForDuration() {
-        GlobalScope.launch {
-            val list = lightRepo.selectLightWithTagsForSpecificDays(getDateCode())
-            lightForDuration.postValue(list)
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = async(Dispatchers.IO) { lightRepo.selectLightWithTagsForSpecificDays(getDateCode()) }.await()
+            lightForDuration.value = result
         }
     }
 

@@ -11,11 +11,7 @@ import com.bd.bdproject.data.repository.LightTagRelationRepository
 import com.bd.bdproject.data.repository.TagRepository
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_ASC
 import com.bd.bdproject.view.activity.ManageHashActivity.Companion.FILTER_DESC
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 class ManageHashViewModel(
     private val tagRepository: TagRepository,
@@ -40,29 +36,23 @@ class ManageHashViewModel(
 
 
     fun searchTag(word: String?) {
-        when(filter.value) {
-            FILTER_ASC -> {
-                if(word.isNullOrEmpty()) {
-                    GlobalScope.launch {
-                        tags.postValue(tagRepository.selectAllTagsAsc())
-                    }
-                } else {
-                    GlobalScope.launch {
-                        tags.postValue(tagRepository.searchTagReturnTagAsc("%${word}%"))
-                    }
-                }
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            if(word.isNullOrEmpty()) {
+                val result = when(filter.value) {
+                    FILTER_ASC -> async { tagRepository.selectAllTagsAsc() }
+                    FILTER_DESC -> async { tagRepository.selectAllTagsDesc() }
+                    else -> return@launch
+                }.await()
 
-            FILTER_DESC -> {
-                if(word.isNullOrEmpty()) {
-                    GlobalScope.launch {
-                        tags.postValue(tagRepository.selectAllTagsDesc())
-                    }
-                } else {
-                    GlobalScope.launch {
-                        tags.postValue(tagRepository.searchTagReturnTagDesc("%${word}%"))
-                    }
-                }
+                launch(Dispatchers.Main) { tags.value = result }
+            } else {
+                val result = when(filter.value) {
+                    FILTER_ASC -> async { tagRepository.searchTagReturnTagAsc("%${word}%") }
+                    FILTER_DESC -> async { tagRepository.searchTagReturnTagDesc("%${word}%") }
+                    else -> return@launch
+                }.await()
+
+                launch(Dispatchers.Main) { tags.value = result }
             }
         }
     }
@@ -72,7 +62,7 @@ class ManageHashViewModel(
     }
 
     suspend fun editTag(oldTag: String, newTag: String) {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             tagRepository.updateTag(listOf(oldTag), newTag)
             relationRepository.updateRelations(listOf(oldTag), newTag)
         }
@@ -81,22 +71,21 @@ class ManageHashViewModel(
     // 태그 이름 삭제, dateCode와 연결되어 있던 태그들 모두 삭제
     fun deleteTags(tags: List<Tag>) {
         runBlocking {
-            val job = GlobalScope.launch {
+            val job = CoroutineScope(Dispatchers.IO).launch {
                 tagRepository.deleteTag(tags)
                 relationRepository.deleteRelationByTag(tags)
             }
-
             job.join()
+
             if(job.isCancelled) onAsyncWorkFinished?.onFailure()
             else if(job.isCompleted) onAsyncWorkFinished?.onSuccess()
 
             searchTag(searchedText.value)
         }
-
     }
 
     suspend fun combineTags(combinedTo: String) {
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 checkedTags.value?.let { tagWithLights ->
                     // 사라질 태그 관련 정보
                     val willBeDeletedList = tagWithLights.toList().map { it.tag }.filter { it.name != combinedTo }

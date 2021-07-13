@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.bd.bdproject.data.model.Light
 import com.bd.bdproject.data.model.Tags
 import com.bd.bdproject.data.repository.LightRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class EditViewModel(private val lightRepo: LightRepository): ViewModel() {
     var light: Light? = null

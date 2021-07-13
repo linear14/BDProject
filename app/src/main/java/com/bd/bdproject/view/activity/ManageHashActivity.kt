@@ -112,17 +112,15 @@ class ManageHashActivity : AppCompatActivity() {
             searchJob?.cancel()
             if(s.isNullOrEmpty() || s.isBlank()) {
                 binding.actionReset.visibility = View.INVISIBLE
-                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
                     delay(500)
                     manageHashViewModel.searchedText.value = null
-                    manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                 }
             } else {
                 binding.actionReset.visibility = View.VISIBLE
-                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
                     delay(500)
                     manageHashViewModel.searchedText.value = s.toString()
-                    manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                 }
             }
         }
@@ -154,6 +152,7 @@ class ManageHashActivity : AppCompatActivity() {
 
         observeTag()
         observeCheckedState()
+        observeSearchedText()
         showHelper()
 
         binding.apply {
@@ -165,9 +164,8 @@ class ManageHashActivity : AppCompatActivity() {
             actionReset.setOnClickListener {
                 searchJob?.cancel()
                 binding.inputSearch.text.clear()
-                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
                     manageHashViewModel.searchedText.value = null
-                    manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                 }
             }
 
@@ -211,36 +209,34 @@ class ManageHashActivity : AppCompatActivity() {
             }
 
             actionCombine.setOnClickListener {
-                //val checkedTags = manageHashViewModel.checkedTags.value
-
                 val tagNameBundle = Bundle().apply {
                     putStringArray(INFO_TAG, manageHashViewModel.checkedTags.value?.map { it.tag.name }?.toTypedArray())
                 }
-
                 val combiner = TagCombiner { combinedTo ->
-                    runBlocking {
-                        val job = GlobalScope.launch {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val job = launch {
                             manageHashViewModel.combineTags(combinedTo)
                         }
                         job.join()
 
                         if(job.isCancelled) {
-                            GlobalScope.launch(Dispatchers.Main) {
+                            launch(Dispatchers.Main) {
                                 Snackbar.make(binding.root, "태그 합치기에 실패하였습니다.", Snackbar.LENGTH_SHORT).show()
                             }
                         } else if(job.isCompleted) {
                             searchJob?.cancel()
-                            searchJob = GlobalScope.launch(Dispatchers.Main) {
-                                Snackbar.make(binding.root, "태그 합치기가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                            searchJob = launch {
+                                launch(Dispatchers.Main) {
+                                    Snackbar.make(binding.root, "태그 합치기가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                                }
                                 manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                             }
                         }
 
-                        GlobalScope.launch(Dispatchers.Main) {
+                        launch(Dispatchers.Main) {
                             manageHashViewModel.removeAllCheckedTags()
                             adapter.removeAllCheckedPosition()
                         }
-
                     }
                 }
                 combiner.arguments = tagNameBundle
@@ -260,7 +256,7 @@ class ManageHashActivity : AppCompatActivity() {
             binding.actionReset.visibility = View.VISIBLE
         }
         searchJob?.cancel()
-        searchJob = GlobalScope.launch(Dispatchers.Main) {
+        searchJob = CoroutineScope(Dispatchers.IO).launch {
             manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
         }
     }
@@ -320,6 +316,12 @@ class ManageHashActivity : AppCompatActivity() {
         }
     }
 
+    private fun observeSearchedText() {
+        manageHashViewModel.searchedText.observe(this) { txt ->
+            manageHashViewModel.searchTag(txt)
+        }
+    }
+
     private val filterItems = object: MenuItem.OnMenuItemClickListener {
         override fun onMenuItemClick(item: MenuItem): Boolean {
             when(item.itemId) {
@@ -327,7 +329,7 @@ class ManageHashActivity : AppCompatActivity() {
                     binding.filter.text = "오름차순"
                     manageHashViewModel.filter.value = FILTER_ASC
                     searchJob?.cancel()
-                    searchJob = GlobalScope.launch(Dispatchers.Main) {
+                    searchJob = CoroutineScope(Dispatchers.IO).launch {
                         manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                     }
                 }
@@ -335,7 +337,7 @@ class ManageHashActivity : AppCompatActivity() {
                     binding.filter.text = "내림차순"
                     manageHashViewModel.filter.value = FILTER_DESC
                     searchJob?.cancel()
-                    searchJob = GlobalScope.launch(Dispatchers.Main) {
+                    searchJob = CoroutineScope(Dispatchers.IO).launch {
                         manageHashViewModel.searchTag(manageHashViewModel.searchedText.value)
                     }
                 }
