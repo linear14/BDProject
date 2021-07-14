@@ -42,7 +42,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.StatisticActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".view.activity.CalendarActivity"
             android:screenOrientation="portrait" />

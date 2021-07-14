@@ -1,7 +1,10 @@
 package com.bd.bdproject.custom_view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -25,9 +28,8 @@ class PieChartView: View {
     }
 
     private val paintBlur = Paint().apply {
-        style = Paint.Style.FILL
+        style = Paint.Style.STROKE
         isAntiAlias = true
-        maskFilter = BlurMaskFilter(40f, BlurMaskFilter.Blur.OUTER)
     }
 
     private val paintText = Paint().apply {
@@ -43,41 +45,53 @@ class PieChartView: View {
     var theMostCountBrightnessItem = -1
     var isOnlyOneData = false
 
-    val layoutOffset = 20f
-    val pieOffset = 40f
-
+    private var pieOffset = 0f
+    private var unit = 0f
+    private val divideCnt = 30
 
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         paintOutLine.strokeWidth = width * 0.008f
+        pieOffset = width * 0.032f
+        unit = pieOffset / divideCnt
+        paintBlur.strokeWidth = unit
 
         val rightEnd = width.toFloat() - pieOffset
         val bottomEnd = height.toFloat() - pieOffset
 
-        //canvas.drawCircle(width / 2f, height / 2f, (width - 2 * pieOffset) / 2, paintWhite)
-
-        rect.set(pieOffset, pieOffset, rightEnd, bottomEnd)
-        drawCharts(canvas, true, paintBlur)
+        drawCircle(canvas)
 
         rect.set(pieOffset, pieOffset, rightEnd, bottomEnd)
         drawCharts(canvas, true, paintIn)
         drawCharts(canvas, false, paintOutLine)
+
+        for(i in 1..divideCnt) {
+            val more = unit * i
+            val degree = (Math.PI / 180) *  3 * (50 - (0.5 * i))
+            rect.set(pieOffset - more, pieOffset - more, rightEnd + more, bottomEnd + more)
+            //drawCharts(canvas, false, paintBlur, "%02d".format((50 * sin(degree)).toInt()))
+            drawCharts(canvas, false, paintBlur, "%02d".format(60 - 2*i))
+            rect.set(pieOffset + more, pieOffset + more, rightEnd - more, bottomEnd - more)
+            //drawCharts(canvas, false, paintBlur, "%02d".format((50 * sin(degree)).toInt()))
+            drawCharts(canvas, false, paintBlur, "%02d".format(60 - 2*i))
+        }
     }
 
-    private fun drawCharts(canvas: Canvas, useCenter: Boolean, paint: Paint) {
+    private fun drawCircle(canvas: Canvas) {
+        paintIn.color = Color.parseColor("#05FFFFFF")
+        canvas.drawCircle(width / 2f, height / 2f, (width - 2 * pieOffset) / 2, paintIn)
+    }
+
+    private fun drawCharts(canvas: Canvas, useCenter: Boolean, paint: Paint, transparency: String? = null) {
         if(datas.isNullOrEmpty()) {
             return
         }
 
-        /*paintIn -> "20"
-        paintBlur -> "50"
-        else -> ""*/
-
         val additionalCode = when(paint) {
-            paintIn -> "70"
-            paintBlur -> "70"
+            paintIn -> "66"
+            paintBlur -> transparency!!
             else -> ""
         }
         var entireCount = 0
